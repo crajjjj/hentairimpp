@@ -1,0 +1,3 @@
+NOT IsFemale() AND
+IsFactionRankEqualTo(31, "Hentairim Director.esp" | 0x855) AND
+RANDOM(0.5)

@@ -1,0 +1,6 @@
+{
+   "int":{
+      "enablestagemaker":0,
+      "chancetousecustomstage":100
+   }
+}

@@ -1,0 +1,90 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "These weapons crack louder than fireworks, neighbors, and your opponent’s remaining sense of dignity.",
+      "name": "Whip Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Animated Armoury|NewArmoury.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/Whip.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x31BDDD|NewArmoury.esp",
+         "0x31BDDE|NewArmoury.esp",
+         "0x31BDDF|NewArmoury.esp",
+         "0x31BDE7|NewArmoury.esp",
+         "0x31BDFE|NewArmoury.esp",
+         "0x31BDFF|NewArmoury.esp",
+         "0x31BE00|NewArmoury.esp",
+         "0x31BE08|NewArmoury.esp",
+         "0x31BE0E|NewArmoury.esp"
+      ],
+      "rare": [
+         "0x31BDE0|NewArmoury.esp",
+         "0x31BDE1|NewArmoury.esp",
+         "0x31BDE2|NewArmoury.esp",
+         "0x31BDE8|NewArmoury.esp",
+         "0x31BDEA|NewArmoury.esp",
+         "0x31BDEB|NewArmoury.esp",
+         "0x31BE01|NewArmoury.esp",
+         "0x31BE02|NewArmoury.esp",
+         "0x31BE03|NewArmoury.esp",
+         "0x31BE09|NewArmoury.esp",
+         "0x31BE0A|NewArmoury.esp"
+      ],
+      "superrare": [
+         "0x31BDDC|NewArmoury.esp",
+         "0x31BDF9|NewArmoury.esp",
+         "0x31BDFA|NewArmoury.esp",
+         "0x31BDFB|NewArmoury.esp",
+         "0x31BDFC|NewArmoury.esp",
+         "0x31BDFD|NewArmoury.esp",
+         "0x31BE04|NewArmoury.esp",
+         "0x31BE05|NewArmoury.esp",
+         "0x31BE0B|NewArmoury.esp",
+         "0x31BE0C|NewArmoury.esp",
+         "0x31BE0D|NewArmoury.esp"
+      ],
+      "speciallysuperrare": [
+         "0x31BDEE|NewArmoury.esp",
+         "0x31BDEF|NewArmoury.esp",
+         "0x31BDF0|NewArmoury.esp",
+         "0x31BDF1|NewArmoury.esp",
+         "0x31BDF2|NewArmoury.esp",
+         "0x31BDF3|NewArmoury.esp",
+         "0x31BDF4|NewArmoury.esp",
+         "0x31BDF5|NewArmoury.esp",
+         "0x31BDF6|NewArmoury.esp",
+         "0x31BDF7|NewArmoury.esp",
+         "0x31BDF8|NewArmoury.esp"
+      ],
+      "ultrarare": [
+         "0x31BDE3|NewArmoury.esp",
+         "0x31BDE4|NewArmoury.esp",
+         "0x31BDE5|NewArmoury.esp",
+         "0x31BDE6|NewArmoury.esp",
+         "0x31BDE9|NewArmoury.esp",
+         "0x31BDEC|NewArmoury.esp",
+         "0x31BDED|NewArmoury.esp",
+         "0x31BE06|NewArmoury.esp",
+         "0x31BE07|NewArmoury.esp"
+      ]
+   }
+}

@@ -1,0 +1,58 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Perfect for whacking enemies, allies, and piñatas with equal levels of discipline.",
+      "name": "QtrStaff Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Animated Armoury|NewArmoury.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/qtrstaff.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x17C451|NewArmoury.esp",
+         "0x18B756|NewArmoury.esp",
+         "0x18B758|NewArmoury.esp",
+         "0x18B760|NewArmoury.esp",
+         "0x18B766|NewArmoury.esp"
+      ],
+      "rare": [
+         "0x18B761|NewArmoury.esp",
+         "0x18B762|NewArmoury.esp",
+         "0x18B767|NewArmoury.esp"
+      ],
+      "superrare": [
+         "0x18B759|NewArmoury.esp",
+         "0x18B75A|NewArmoury.esp",
+         "0x18B75E|NewArmoury.esp",
+         "0x18B764|NewArmoury.esp"
+      ],
+      "speciallysuperrare": [
+         "0x18B757|NewArmoury.esp",
+         "0x18B75C|NewArmoury.esp",
+         "0x18B75D|NewArmoury.esp",
+         "0x18B75F|NewArmoury.esp"
+      ],
+      "ultrarare": [
+         "0x18B75B|NewArmoury.esp",
+         "0x18B763|NewArmoury.esp",
+         "0x18B765|NewArmoury.esp"
+      ]
+   }
+}

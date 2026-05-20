@@ -1,0 +1,87 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Perfect for warriors who think weapons are overrated and cosplay as angry housecats.",
+      "name": "Claw Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Animated Armoury|NewArmoury.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/claw.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x19AAA5|NewArmoury.esp",
+         "0x19AAA6|NewArmoury.esp",
+         "0x19AAAD|NewArmoury.esp",
+         "0x19AAE2|NewArmoury.esp",
+         "0x19AAE3|NewArmoury.esp",
+         "0x19AAE4|NewArmoury.esp",
+         "0x19AAE9|NewArmoury.esp",
+         "0x1BE248|NewArmoury.esp",
+         "0x1BE250|NewArmoury.esp"
+      ],
+      "rare": [
+         "0x19AAA7|NewArmoury.esp",
+         "0x19AAA8|NewArmoury.esp",
+         "0x19AAB6|NewArmoury.esp",
+         "0x19AAE5|NewArmoury.esp",
+         "0x19AAEC|NewArmoury.esp",
+         "0x19AAEF|NewArmoury.esp",
+         "0x1B4017|NewArmoury.esp",
+         "0x1B401A|NewArmoury.esp",
+         "0x1BE249|NewArmoury.esp",
+         "0x1BE251|NewArmoury.esp"
+      ],
+      "superrare": [
+         "0x19AAA9|NewArmoury.esp",
+         "0x19AAAA|NewArmoury.esp",
+         "0x19AAAE|NewArmoury.esp",
+         "0x19AAB0|NewArmoury.esp",
+         "0x19AAE0|NewArmoury.esp",
+         "0x19AAE6|NewArmoury.esp",
+         "0x19AAEA|NewArmoury.esp",
+         "0x1A4CFF|NewArmoury.esp",
+         "0x1A4D00|NewArmoury.esp",
+         "0x1BE24A|NewArmoury.esp",
+         "0x1BE24F|NewArmoury.esp"
+      ],
+      "speciallysuperrare": [
+         "0x19AAAB|NewArmoury.esp",
+         "0x19AAB1|NewArmoury.esp",
+         "0x19AAE7|NewArmoury.esp",
+         "0x19AAED|NewArmoury.esp",
+         "0x1BE24B|NewArmoury.esp",
+         "0x1BE24E|NewArmoury.esp",
+         "0x1BE252|NewArmoury.esp",
+         "0x1BE255|NewArmoury.esp"
+      ],
+      "ultrarare": [
+         "0x19AAAC|NewArmoury.esp",
+         "0x19AAAF|NewArmoury.esp",
+         "0x19AAB2|NewArmoury.esp",
+         "0x19AAE8|NewArmoury.esp",
+         "0x19AAEB|NewArmoury.esp",
+         "0x19AAEE|NewArmoury.esp",
+         "0x1BE24C|NewArmoury.esp",
+         "0x1BE24D|NewArmoury.esp",
+         "0x1BE253|NewArmoury.esp",
+         "0x1BE254|NewArmoury.esp"
+      ]
+   }
+}

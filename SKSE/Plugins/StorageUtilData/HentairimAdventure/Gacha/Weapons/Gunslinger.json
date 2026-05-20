@@ -1,0 +1,41 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 1,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Spaghetti Western Guns",
+      "name": "Gunslinger"
+   },
+   "stringList": {
+      "requirements": [
+         "Spaghetti Western|Spaghetti Western.esp"
+      ],
+      "imagepath": []
+   },
+   "formList": {
+      "common": [],
+      "rare": [],
+      "superrare": [
+         "0x837|Spaghetti Western.esp",
+         "0x83A|Spaghetti Western.esp"
+      ],
+      "speciallysuperrare": [
+         "0x838|Spaghetti Western.esp",
+         "0x83B|Spaghetti Western.esp",
+         "0x916|Spaghetti Western.esp"
+      ],
+      "ultrarare": [
+         "0x839|Spaghetti Western.esp"
+      ]
+   }
+}

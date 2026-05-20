@@ -1,0 +1,10 @@
+{
+   "int":{
+      "enablesfx":1,
+      "usevelocity":1,
+	  "useadaptivevelocity":1,
+	  "timestosearch":3,
+      "volume":60,
+      "printdebug":0
+   }
+}

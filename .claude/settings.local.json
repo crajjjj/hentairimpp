@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Playground/Skyrim/mods/build/**)",
+      "Read(//c/Playground/Skyrim/mods/**)",
+      "Bash(ls \"C:\\\\Playground\\\\stubs\" 2>/dev/null || echo \"NOT FOUND\")",
+      "Read(//c/Playground/stubs/**)"
+    ],
+    "additionalDirectories": [
+      "C:\\Playground\\stubs"
+    ]
+  }
+}

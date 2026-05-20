@@ -1,0 +1,99 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Dai katana so long they double as bridges, trip hazards, and ego extensions.",
+      "name": "DaiKatana Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Akaviri Tsurugi Katana|AkaviriTsurugi.esp",
+         "Dancing Crane Katana|DualSwords.esp",
+         "Fudou Myouou Katana and Tachi|Fudou Myouou.esp",
+         "Genshin Impact Wolf's Gravestone Greatsword Twinblade Sword|GildWolfGravestone.esp",
+         "Hattori Hanzo Katanas|Hattori Hanzo 2H Katana.esp",
+         "Immersive Weapons|Immersive Weapons.esp",
+         "Insanitys Celtic Katana|Insanity's Sorrow.esp",
+         "Oborozuki Katana|Oborozuki.esp",
+         "Tetsunami Katana|Tetsunami.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/daikatana.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x030|DualSwords.esp",
+         "0x031|DualSwords.esp",
+         "0x032|DualSwords.esp",
+         "0x03A|DualSwords.esp",
+         "0x03B|DualSwords.esp",
+         "0x0747A3|Immersive Weapons.esp",
+         "0x0747A4|Immersive Weapons.esp",
+         "0x0747A5|Immersive Weapons.esp",
+         "0x800|Oborozuki.esp",
+         "0x801|Hattori Hanzo 2H Katana.esp",
+         "0x803|Hattori Hanzo 2H Katana.esp",
+         "0x805|Hattori Hanzo 2H Katana.esp",
+         "0x807|Hattori Hanzo 2H Katana.esp"
+      ],
+      "rare": [
+         "0x001|DualSwords.esp",
+         "0x00B|DualSwords.esp",
+         "0x029|DualSwords.esp",
+         "0x02A|DualSwords.esp",
+         "0x02B|DualSwords.esp",
+         "0x02C|DualSwords.esp",
+         "0x02D|DualSwords.esp",
+         "0x02E|DualSwords.esp",
+         "0x02F|DualSwords.esp"
+      ],
+      "superrare": [
+         "0xF32|Tetsunami.esp",
+         "0xF33|Tetsunami.esp",
+         "0xF34|Tetsunami.esp",
+         "0xF35|Tetsunami.esp",
+         "0xF36|Tetsunami.esp",
+         "0xF37|Tetsunami.esp",
+         "0xF38|Tetsunami.esp",
+         "0xF39|Tetsunami.esp",
+         "0xF9A|Tetsunami.esp",
+         "0xF9B|Tetsunami.esp"
+      ],
+      "speciallysuperrare": [
+         "0x007921|Immersive Weapons.esp",
+         "0x2F8|AkaviriTsurugi.esp",
+         "0x804|Tetsunami.esp",
+         "0xEDE|Tetsunami.esp",
+         "0xEF0|Tetsunami.esp",
+         "0xEFC|Tetsunami.esp",
+         "0xF2E|Tetsunami.esp",
+         "0xF2F|Tetsunami.esp",
+         "0xF30|Tetsunami.esp",
+         "0xF31|Tetsunami.esp"
+      ],
+      "ultrarare": [
+         "0x0747A1|Immersive Weapons.esp",
+         "0x2E9|AkaviriTsurugi.esp",
+         "0x2EE|AkaviriTsurugi.esp",
+         "0x2EF|AkaviriTsurugi.esp",
+         "0x804|Insanity's Sorrow.esp",
+         "0x805|Insanity's Sorrow.esp",
+         "0x806|Insanity's Sorrow.esp",
+         "0x80B|GildWolfGravestone.esp",
+         "0x80B|Insanity's Sorrow.esp",
+         "0xD65|Fudou Myouou.esp"
+      ]
+   }
+}

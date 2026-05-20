@@ -1,0 +1,55 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Perfect for close fights, sneaky strikes, and cutting fruit dramatically during awkward silence.",
+      "name": "Wakizashi Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Immersive Weapons|Immersive Weapons.esp",
+         "Katana Crafting|KatanaCrafting.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/Wakizashi.dds"
+      ]
+   },
+   "formList": {
+      "common": [],
+      "rare": [
+         "0x085|KatanaCrafting.esp",
+         "0x0D6|KatanaCrafting.esp"
+      ],
+      "superrare": [
+         "0x005555|Immersive Weapons.esp",
+         "0x005565|Immersive Weapons.esp",
+         "0x026|KatanaCrafting.esp",
+         "0x05A|KatanaCrafting.esp",
+         "0x05F|KatanaCrafting.esp",
+         "0x063|KatanaCrafting.esp",
+         "0x0FE|KatanaCrafting.esp"
+      ],
+      "speciallysuperrare": [
+         "0x044|KatanaCrafting.esp",
+         "0x0747CE|Immersive Weapons.esp",
+         "0x079D63|Immersive Weapons.esp",
+         "0x122|KatanaCrafting.esp",
+         "0xD7D|KatanaCrafting.esp"
+      ],
+      "ultrarare": [
+         "0x014|KatanaCrafting.esp",
+         "0xD76|KatanaCrafting.esp"
+      ]
+   }
+}

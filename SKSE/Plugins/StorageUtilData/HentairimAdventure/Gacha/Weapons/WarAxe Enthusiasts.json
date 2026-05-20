@@ -1,0 +1,47 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "These axes are so sharp they cut through armor, logic, and any sense of financial restraint.",
+      "name": "WarAxe Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "DawnGuard DLC|Dawnguard.esm",
+         "DragonBorn DLC|Dragonborn.esm"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/waraxe.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x0206F2|Dragonborn.esm",
+         "0x030CB2|Dragonborn.esm",
+         "0x0398E6|Dragonborn.esm"
+      ],
+      "rare": [
+         "0x00D098|Dawnguard.esm",
+         "0x01668C|Dawnguard.esm"
+      ],
+      "superrare": [
+         "0x01CDB2|Dragonborn.esm"
+      ],
+      "speciallysuperrare": [],
+      "ultrarare": [
+         "0x014FCF|Dawnguard.esm",
+         "0x01CDB9|Dragonborn.esm"
+      ]
+   }
+}

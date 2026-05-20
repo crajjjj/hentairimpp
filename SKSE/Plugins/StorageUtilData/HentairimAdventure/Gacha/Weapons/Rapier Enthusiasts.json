@@ -1,0 +1,56 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Every thrust delivers style, precision, and the unmistakable sting of passive-aggressive violence.",
+      "name": "Rapier Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Animated Armoury|NewArmoury.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/Rapier.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x005903|NewArmoury.esp",
+         "0x019D0D|NewArmoury.esp",
+         "0x01EE24|NewArmoury.esp",
+         "0x023F29|NewArmoury.esp"
+      ],
+      "rare": [
+         "0x019D0C|NewArmoury.esp",
+         "0x019D0E|NewArmoury.esp",
+         "0x019D0F|NewArmoury.esp"
+      ],
+      "superrare": [
+         "0x01EE22|NewArmoury.esp",
+         "0x01EE25|NewArmoury.esp",
+         "0x05183C|NewArmoury.esp",
+         "0x08E466|NewArmoury.esp"
+      ],
+      "speciallysuperrare": [
+         "0x019D10|NewArmoury.esp",
+         "0x019D11|NewArmoury.esp",
+         "0x019D12|NewArmoury.esp",
+         "0x01EE21|NewArmoury.esp"
+      ],
+      "ultrarare": [
+         "0x019D13|NewArmoury.esp",
+         "0x01EE23|NewArmoury.esp"
+      ]
+   }
+}

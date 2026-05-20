@@ -1,0 +1,51 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Every swing promises reach, drama, and at least one unfortunate self-inflicted haircut.",
+      "name": "Glaive Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Glaive Danger|GlaiveDanger.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/glaive.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x839|GlaiveDanger.esp",
+         "0x83A|GlaiveDanger.esp",
+         "0x843|GlaiveDanger.esp"
+      ],
+      "rare": [
+         "0x83B|GlaiveDanger.esp",
+         "0x83C|GlaiveDanger.esp"
+      ],
+      "superrare": [
+         "0x83E|GlaiveDanger.esp",
+         "0x840|GlaiveDanger.esp",
+         "0x842|GlaiveDanger.esp"
+      ],
+      "speciallysuperrare": [
+         "0x83D|GlaiveDanger.esp",
+         "0x841|GlaiveDanger.esp"
+      ],
+      "ultrarare": [
+         "0x807|GlaiveDanger.esp",
+         "0x83F|GlaiveDanger.esp"
+      ]
+   }
+}

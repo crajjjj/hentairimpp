@@ -1,0 +1,32 @@
+{
+   "int":{
+      "enableadventure":0,
+	  "usedonotdisturb":1,
+      "faintessenceperorgasm":10,
+      "getessenceevenwhenvictim":0,
+      "teammategivesessence":0,
+      "dayssincelastsexbeforecandrainessenceagain":5,
+      "npcrequestcd":300,
+      "chancefornpcrequest":8,
+      "chanceforbadrequest":0,
+      "mindistancefornpcrequest":500,
+      "maxdistancefornpcrequest":2000,
+      "enableadventurevoice":0,
+      "hoursbeforecanseduceagain":2,
+      "minfollowerarousalforrape":60,
+      "seduceseconds":8,
+      "printdebug":1
+   },
+   "Float":{
+      "seducechancemultiplier":1.0,
+      "rapechancemultiplier":1.0,
+      "globalrewardsmultiplier":1.0,
+      "masturbationrewardsmult":1.0,
+      "boobjobrewardsmult":1.2,
+      "footjobrewardsmult":1.1,
+      "handjobrewardsmult":1.0,
+      "oralrewardsmult":1.3,
+      "vaginalrewardsmult":1.7,
+      "analrewardsmult":1.9
+   }
+}

@@ -1,0 +1,93 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Perfect for mowing down foes, fields, and your chances of walking through doorways.",
+      "name": "Scythe Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "BattleScythe|BattleScythe.esp",
+         "Classic Scythe|ClassicScythe_eng.esp",
+         "Cosmo-War Scythe|war scythe.esp",
+         "Immersive Weapons|Immersive Weapons.esp",
+         "Kukatsuo Weapon -Steel Scythe|aaaKama.esp",
+         "Lilith Sickle|lilithssickle.esp",
+         "Necro Scythe|Necro Scythe.esp",
+         "Onyx's Scythe - Stormcaller's Fury Special Edition|StormcallerFury.esp",
+         "Reaper Scythes|Reaper Scythes.esp",
+         "Scythe of The Crow Mother Reborn|FGCScytheOfTheCrowMother1.esp",
+         "The Scythe of Zhoulia|TheScytheOfZhoulia.esp",
+         "The Watcher Series - Scythe and Sickle|Kanjs - The Watcher Scythe.esp",
+         "Yol'Kreh - The Infernal Scythes|Yol'Kreh Scythes.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/scythe.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x800|BattleScythe.esp",
+         "0x800|ClassicScythe_eng.esp",
+         "0x80B|BattleScythe.esp",
+         "0x819|BattleScythe.esp",
+         "0x81D|BattleScythe.esp",
+         "0x85B|BattleScythe.esp",
+         "0xD62|ClassicScythe_eng.esp",
+         "0xD63|StormcallerFury.esp"
+      ],
+      "rare": [
+         "0x00B48E|Immersive Weapons.esp",
+         "0x069173|Immersive Weapons.esp",
+         "0x800|war scythe.esp",
+         "0x802|war scythe.esp",
+         "0x808|aaaKama.esp",
+         "0x80D|BattleScythe.esp",
+         "0x811|BattleScythe.esp",
+         "0x823|BattleScythe.esp",
+         "0x851|BattleScythe.esp",
+         "0x854|BattleScythe.esp"
+      ],
+      "superrare": [
+         "0x80F|BattleScythe.esp",
+         "0x817|BattleScythe.esp",
+         "0x81B|BattleScythe.esp",
+         "0x81F|BattleScythe.esp",
+         "0x821|BattleScythe.esp",
+         "0x825|BattleScythe.esp",
+         "0x853|BattleScythe.esp",
+         "0xD63|TheScytheOfZhoulia.esp"
+      ],
+      "speciallysuperrare": [
+         "0x800|Reaper Scythes.esp",
+         "0x801|Yol'Kreh Scythes.esp",
+         "0x803|ClassicScythe_eng.esp",
+         "0x806|Yol'Kreh Scythes.esp",
+         "0x813|BattleScythe.esp",
+         "0xD62|Reaper Scythes.esp",
+         "0xD62|lilithssickle.esp",
+         "0xD63|Necro Scythe.esp"
+      ],
+      "ultrarare": [
+         "0x802|ClassicScythe_eng.esp",
+         "0x80D|lilithssickle.esp",
+         "0x815|BattleScythe.esp",
+         "0x850|BattleScythe.esp",
+         "0x852|BattleScythe.esp",
+         "0x85C|BattleScythe.esp",
+         "0xD62|FGCScytheOfTheCrowMother1.esp",
+         "0xD64|Kanjs - The Watcher Scythe.esp"
+      ]
+   }
+}

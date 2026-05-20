@@ -1,0 +1,6 @@
+IsFemale() AND
+IsFactionRankEqualTo(7, "Hentairim Director.esp" | 0x855) AND
+IsActorBase("Skyrim.esm" | 0x00000007) OR
+IsPlayerTeammate() AND
+IsEquippedLeftType(11) AND
+RANDOM(0.5)

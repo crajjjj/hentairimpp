@@ -1,0 +1,106 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Daggers: because sometimes two quick pokes are funnier than one giant swing.",
+      "name": "Dagger Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Dagger Pack Daggers|GildDaggerPack.esp",
+         "Dancing Crane Katana|DualSwords.esp",
+         "DawnGuard DLC|Dawnguard.esm",
+         "DragonBorn DLC|Dragonborn.esm",
+         "Immersive Weapons|Immersive Weapons.esp",
+         "Insanitys Celtic Katana|Insanity's Sorrow.esp",
+         "Katana Crafting|KatanaCrafting.esp",
+         "Skyrim Weapons Expansion|Skyrim Weapons Expansion.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/dagger.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x0747D5|Immersive Weapons.esp",
+         "0x0747D6|Immersive Weapons.esp",
+         "0x0747D7|Immersive Weapons.esp",
+         "0xA53|Skyrim Weapons Expansion.esp",
+         "0xA66|Skyrim Weapons Expansion.esp",
+         "0xA80|Skyrim Weapons Expansion.esp",
+         "0xAE1|Skyrim Weapons Expansion.esp",
+         "0xAE2|Skyrim Weapons Expansion.esp",
+         "0xAF7|Skyrim Weapons Expansion.esp"
+      ],
+      "rare": [
+         "0x00CFB4|Dawnguard.esm",
+         "0x00F8C0|Immersive Weapons.esp",
+         "0x010E69|Immersive Weapons.esp",
+         "0x01681F|Dawnguard.esm",
+         "0x060D70|Immersive Weapons.esp",
+         "0x080D65|Immersive Weapons.esp",
+         "0x086|KatanaCrafting.esp",
+         "0x0D7|KatanaCrafting.esp",
+         "0x48E559|Immersive Weapons.esp",
+         "0xAAE|Skyrim Weapons Expansion.esp"
+      ],
+      "superrare": [
+         "0x000922|Immersive Weapons.esp",
+         "0x001DBF|Immersive Weapons.esp",
+         "0x00435D|Immersive Weapons.esp",
+         "0x007A65|Immersive Weapons.esp",
+         "0x01CDAE|Dragonborn.esm",
+         "0x024|KatanaCrafting.esp",
+         "0x033D65|Immersive Weapons.esp",
+         "0x05B|KatanaCrafting.esp",
+         "0x060|KatanaCrafting.esp",
+         "0x064|KatanaCrafting.esp",
+         "0x0EB|KatanaCrafting.esp",
+         "0x0FF|KatanaCrafting.esp",
+         "0x320D63|Immersive Weapons.esp",
+         "0x815|Insanity's Sorrow.esp",
+         "0xA7E|Skyrim Weapons Expansion.esp"
+      ],
+      "speciallysuperrare": [
+         "0x000923|Immersive Weapons.esp",
+         "0x000928|Immersive Weapons.esp",
+         "0x03C|DualSwords.esp",
+         "0x046|KatanaCrafting.esp",
+         "0x0478CA|Immersive Weapons.esp",
+         "0x123|KatanaCrafting.esp",
+         "0x80F|Insanity's Sorrow.esp",
+         "0x813|Insanity's Sorrow.esp",
+         "0x814|Insanity's Sorrow.esp",
+         "0xD72|GildDaggerPack.esp",
+         "0xD73|GildDaggerPack.esp",
+         "0xD74|GildDaggerPack.esp",
+         "0xD75|GildDaggerPack.esp",
+         "0xD76|GildDaggerPack.esp",
+         "0xD77|GildDaggerPack.esp",
+         "0xD7E|KatanaCrafting.esp"
+      ],
+      "ultrarare": [
+         "0x013|KatanaCrafting.esp",
+         "0x014FCB|Dawnguard.esm",
+         "0x01CDB5|Dragonborn.esm",
+         "0x0478CF|Immersive Weapons.esp",
+         "0x0747D3|Immersive Weapons.esp",
+         "0x800|GildDaggerPack.esp",
+         "0xD6F|GildDaggerPack.esp",
+         "0xD70|GildDaggerPack.esp",
+         "0xD71|GildDaggerPack.esp",
+         "0xD77|KatanaCrafting.esp"
+      ]
+   }
+}

@@ -1,0 +1,29 @@
+{
+  "int": {
+    "orc": 3,
+    "nord": 1,
+    "imperial": 1,
+    "breton": 2,
+    "redguard": 2,
+    "khajiit": 3,
+    "dunmer": 3,
+    "bosmer": 3,
+    "argonian": 3,
+    "altmer": 3,
+    "insect": 3,
+    "dwarven": 3,
+    "falmer": 3,
+    "goblin": 2,
+    "canine": 1,
+    "predator": 3,
+    "nature": 1,
+    "spriggan": 4,
+    "vampire": 4,
+    "marine": 2,
+    "necro": 1,
+    "horse": 3,
+    "lycanthrope": 4,
+    "ogre": 4,
+    "daedra": 5
+  }
+}

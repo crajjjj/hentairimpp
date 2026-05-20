@@ -1,0 +1,84 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Swings in with more axes than forests, making lumberjacks and warriors equally unemployed.",
+      "name": "BattleAxe Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "DawnGuard DLC|Dawnguard.esm",
+         "DragonBorn DLC|Dragonborn.esm",
+         "Immersive Weapons|Immersive Weapons.esp",
+         "Skyrim Weapons Expansion|Skyrim Weapons Expansion.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/battleaxe.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x0022EE|Immersive Weapons.esp",
+         "0x002856|Immersive Weapons.esp",
+         "0x03ABCC|Immersive Weapons.esp",
+         "0x062D62|Immersive Weapons.esp",
+         "0x0747E0|Immersive Weapons.esp",
+         "0x096D63|Immersive Weapons.esp",
+         "0x331002|Immersive Weapons.esp",
+         "0x331008|Immersive Weapons.esp",
+         "0x33100E|Immersive Weapons.esp",
+         "0xAF2|Skyrim Weapons Expansion.esp"
+      ],
+      "rare": [
+         "0x001831|Immersive Weapons.esp",
+         "0x001832|Immersive Weapons.esp",
+         "0x003955|Immersive Weapons.esp",
+         "0x0478C8|Immersive Weapons.esp",
+         "0x0747BF|Immersive Weapons.esp",
+         "0xA89|Skyrim Weapons Expansion.esp",
+         "0xAE3|Skyrim Weapons Expansion.esp"
+      ],
+      "superrare": [
+         "0x001833|Immersive Weapons.esp",
+         "0x00AF28|Immersive Weapons.esp",
+         "0x0106A1|Immersive Weapons.esp",
+         "0x0113B7|Dawnguard.esm",
+         "0x0113B8|Dawnguard.esm",
+         "0x0113B9|Dawnguard.esm",
+         "0x0113BA|Dawnguard.esm",
+         "0x0113BB|Dawnguard.esm",
+         "0x014CA0|Dawnguard.esm",
+         "0x014FC3|Dawnguard.esm",
+         "0x01CDAD|Dragonborn.esm",
+         "0x022C9B|Immersive Weapons.esp",
+         "0x03A107|Immersive Weapons.esp",
+         "0x331004|Immersive Weapons.esp",
+         "0x331006|Immersive Weapons.esp",
+         "0x33100A|Immersive Weapons.esp",
+         "0x33100C|Immersive Weapons.esp",
+         "0x331022|Immersive Weapons.esp"
+      ],
+      "speciallysuperrare": [
+         "0x001830|Immersive Weapons.esp",
+         "0x0317D3|Dragonborn.esm",
+         "0x0404E0|Immersive Weapons.esp",
+         "0x111000|Immersive Weapons.esp",
+         "0x331020|Immersive Weapons.esp",
+         "0xACA|Skyrim Weapons Expansion.esp"
+      ],
+      "ultrarare": [
+         "0x01CDB4|Dragonborn.esm"
+      ]
+   }
+}

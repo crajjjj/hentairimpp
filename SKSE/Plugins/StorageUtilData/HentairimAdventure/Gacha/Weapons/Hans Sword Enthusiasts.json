@@ -1,0 +1,84 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Every swing whispers culture, discipline, and the promise of very expensive antique repairs.",
+      "name": "Hans Sword Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Ancient Han Sword|Fanghanjian.esp",
+         "Bou Ging Wan Sword|epicdarksword.esp",
+         "Chinese Han Sword|HanSword.esp",
+         "Dragon Jade Dao|DragonDao.esp",
+         "Hans Weapons Pack|(lilyrim)gjweapon.esp",
+         "Katana Crafting|KatanaCrafting.esp",
+         "Royal Han Jian|[Dyuz] Royal Han Sword.esp",
+         "Taichi Jian|taichiSword.esp",
+         "Traditional Chinese Han Swords Remastered|TraditionalChineseHanSwordsRemastered.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/hansword.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x800|TraditionalChineseHanSwordsRemastered.esp",
+         "0x801|taichiSword.esp",
+         "0x807|Fanghanjian.esp",
+         "0x80F|Fanghanjian.esp",
+         "0x818|(lilyrim)gjweapon.esp",
+         "0x81C|(lilyrim)gjweapon.esp",
+         "0xD62|DragonDao.esp",
+         "0xD62|TraditionalChineseHanSwordsRemastered.esp"
+      ],
+      "rare": [
+         "0x0D4|KatanaCrafting.esp",
+         "0x801|TraditionalChineseHanSwordsRemastered.esp",
+         "0x808|HanSword.esp",
+         "0x812|(lilyrim)gjweapon.esp",
+         "0x814|(lilyrim)gjweapon.esp",
+         "0x81E|(lilyrim)gjweapon.esp",
+         "0x81F|(lilyrim)gjweapon.esp",
+         "0x820|(lilyrim)gjweapon.esp",
+         "0xD63|taichiSword.esp"
+      ],
+      "superrare": [
+         "0x803|HanSword.esp",
+         "0x811|(lilyrim)gjweapon.esp",
+         "0x817|(lilyrim)gjweapon.esp",
+         "0xD63|HanSword.esp",
+         "0xD63|[Dyuz] Royal Han Sword.esp",
+         "0xD63|epicdarksword.esp"
+      ],
+      "speciallysuperrare": [
+         "0x813|(lilyrim)gjweapon.esp",
+         "0x815|(lilyrim)gjweapon.esp",
+         "0x816|(lilyrim)gjweapon.esp",
+         "0x819|(lilyrim)gjweapon.esp",
+         "0x81A|(lilyrim)gjweapon.esp",
+         "0x81B|(lilyrim)gjweapon.esp",
+         "0x81D|(lilyrim)gjweapon.esp"
+      ],
+      "ultrarare": [
+         "0x801|HanSword.esp",
+         "0x801|epicdarksword.esp",
+         "0x804|TraditionalChineseHanSwordsRemastered.esp",
+         "0x805|TraditionalChineseHanSwordsRemastered.esp",
+         "0x806|Fanghanjian.esp",
+         "0x806|TraditionalChineseHanSwordsRemastered.esp",
+         "0xD67|[Dyuz] Royal Han Sword.esp"
+      ]
+   }
+}

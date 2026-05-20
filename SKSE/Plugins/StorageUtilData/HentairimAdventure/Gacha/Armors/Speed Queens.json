@@ -1,0 +1,80 @@
+{
+   "int": {
+      "commonweight": 100,
+      "rareweight": 15,
+      "superrareweight": 10,
+      "speciallysuperrareweight": 3,
+      "ultrarareweight": 1,
+      "usepadding": 1,
+      "clevel": 1,
+      "rlevel": 1,
+      "srlevel": 1,
+      "ssrlevel": 1,
+      "urlevel": 1
+   },
+   "string": {
+      "description": "Latex shines, skirts rise, and engines aren’t the only things revving up.",
+      "name": "Speed Queens"
+   },
+   "stringList": {
+      "requirements": [
+         "Atago Race Queen|Atago Racing Cos.esl",
+         "Bikini Racing SNK|[YS]Bikini Racing SNK.esp",
+         "DOAXVV Slipstream|[BAKU]DOAXVV Slipstream.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/Race1.dds",
+         "Hentairim/Banner/Race2.dds",
+         "Hentairim/Banner/Race3.dds"
+      ]
+   },
+   "formList": {
+      "common": [],
+      "rare": [
+         "0x805|Atago Racing Cos.esl",
+         "0xD8F|[BAKU]DOAXVV Slipstream.esp"
+      ],
+      "superrare": [
+         "0x806|[BAKU]DOAXVV Slipstream.esp",
+         "0x807|Atago Racing Cos.esl",
+         "0x809|Atago Racing Cos.esl",
+         "0x809|[BAKU]DOAXVV Slipstream.esp",
+         "0x80A|[BAKU]DOAXVV Slipstream.esp",
+         "0x80B|Atago Racing Cos.esl",
+         "0x80B|[BAKU]DOAXVV Slipstream.esp",
+         "0x81D|[BAKU]DOAXVV Slipstream.esp",
+         "0x820|[BAKU]DOAXVV Slipstream.esp",
+         "0x821|[BAKU]DOAXVV Slipstream.esp",
+         "0x822|[BAKU]DOAXVV Slipstream.esp"
+      ],
+      "speciallysuperrare": [
+         "0x801|Atago Racing Cos.esl",
+         "0x803|Atago Racing Cos.esl",
+         "0x807|[BAKU]DOAXVV Slipstream.esp",
+         "0x808|[BAKU]DOAXVV Slipstream.esp",
+         "0x80D|[BAKU]DOAXVV Slipstream.esp",
+         "0x81E|[BAKU]DOAXVV Slipstream.esp",
+         "0x81E|[YS]Bikini Racing SNK.esp",
+         "0x81F|[BAKU]DOAXVV Slipstream.esp",
+         "0x81F|[YS]Bikini Racing SNK.esp",
+         "0x820|[YS]Bikini Racing SNK.esp",
+         "0x821|[YS]Bikini Racing SNK.esp",
+         "0x822|[YS]Bikini Racing SNK.esp",
+         "0x823|[BAKU]DOAXVV Slipstream.esp",
+         "0x823|[YS]Bikini Racing SNK.esp",
+         "0x824|[YS]Bikini Racing SNK.esp",
+         "0x825|[YS]Bikini Racing SNK.esp",
+         "0x826|[YS]Bikini Racing SNK.esp",
+         "0x827|[YS]Bikini Racing SNK.esp",
+         "0x82A|[YS]Bikini Racing SNK.esp",
+         "0x82B|[YS]Bikini Racing SNK.esp",
+         "0xD63|[YS]Bikini Racing SNK.esp",
+         "0xD66|[YS]Bikini Racing SNK.esp",
+         "0xD86|[BAKU]DOAXVV Slipstream.esp",
+         "0xD87|[BAKU]DOAXVV Slipstream.esp",
+         "0xD88|[BAKU]DOAXVV Slipstream.esp",
+         "0xD89|[BAKU]DOAXVV Slipstream.esp"
+      ],
+      "ultrarare": []
+   }
+}

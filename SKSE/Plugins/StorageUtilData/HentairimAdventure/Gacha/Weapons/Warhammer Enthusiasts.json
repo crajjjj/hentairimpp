@@ -1,0 +1,46 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "These warhammers are so heavy they double as mobile housing units and spine-crushing regrets.",
+      "name": "Warhammer Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "DawnGuard DLC|Dawnguard.esm",
+         "DragonBorn DLC|Dragonborn.esm"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/warhammer.dds"
+      ]
+   },
+   "formList": {
+      "common": [],
+      "rare": [
+         "0x00DD55|Dawnguard.esm",
+         "0x011BAD|Dawnguard.esm"
+      ],
+      "superrare": [
+         "0x014C9E|Dawnguard.esm",
+         "0x014FD0|Dawnguard.esm",
+         "0x01CDB3|Dragonborn.esm"
+      ],
+      "speciallysuperrare": [
+         "0x01A578|Dragonborn.esm"
+      ],
+      "ultrarare": [
+         "0x01CDBA|Dragonborn.esm"
+      ]
+   }
+}

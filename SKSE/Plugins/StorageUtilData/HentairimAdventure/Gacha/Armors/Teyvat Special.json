@@ -1,0 +1,115 @@
+{
+   "int": {
+      "commonweight": 100,
+      "rareweight": 15,
+      "superrareweight": 8,
+      "speciallysuperrareweight": 3,
+      "ultrarareweight": 1,
+      "usepadding": 1,
+      "clevel": 1,
+      "rlevel": 1,
+      "srlevel": 1,
+      "ssrlevel": 1,
+      "urlevel": 1
+   },
+   "string": {
+      "description": "Cosplay so authentic, even Paimon might mistake you for the real thing wandering Teyvat.",
+      "name": "Teyvat Special"
+   },
+   "stringList": {
+      "requirements": [
+         "Calamity Queller|[Caenarvon] Calamity Queller.esp",
+         "Kagura|[Caenarvon] Kagura.esp",
+         "Narukami|[Caenarvon] Narukami.esp",
+         "Spindrift Knight|[Caenarvon] Spindrift Knight.esp",
+         "Stargazer|[Caenarvon] Stargazer.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/Genshin1.dds",
+         "Hentairim/Banner/Genshin2.dds",
+         "Hentairim/Banner/Genshin3.dds",
+         "Hentairim/Banner/Genshin4.dds",
+         "Hentairim/Banner/Genshin5.dds"
+      ]
+   },
+   "formList": {
+      "common": [],
+      "rare": [
+         "0x80E|[Caenarvon] Stargazer.esp",
+         "0x81B|[Caenarvon] Narukami.esp",
+         "0x81D|[Caenarvon] Narukami.esp",
+         "0x81E|[Caenarvon] Stargazer.esp",
+         "0x81F|[Caenarvon] Narukami.esp",
+         "0x822|[Caenarvon] Narukami.esp",
+         "0x84C|[Caenarvon] Spindrift Knight.esp",
+         "0x84D|[Caenarvon] Spindrift Knight.esp",
+         "0x851|[Caenarvon] Spindrift Knight.esp",
+         "0x852|[Caenarvon] Spindrift Knight.esp",
+         "0x866|[Caenarvon] Narukami.esp",
+         "0x866|[Caenarvon] Spindrift Knight.esp",
+         "0x88D|[Caenarvon] Kagura.esp",
+         "0x88E|[Caenarvon] Kagura.esp",
+         "0x88F|[Caenarvon] Kagura.esp",
+         "0x890|[Caenarvon] Kagura.esp",
+         "0x912|[Caenarvon] Spindrift Knight.esp",
+         "0x914|[Caenarvon] Spindrift Knight.esp",
+         "0x915|[Caenarvon] Spindrift Knight.esp",
+         "0xDAD|[Caenarvon] Stargazer.esp",
+         "0xDB0|[Caenarvon] Calamity Queller.esp",
+         "0xDB0|[Caenarvon] Stargazer.esp",
+         "0xDDF|[Caenarvon] Calamity Queller.esp",
+         "0xDDF|[Caenarvon] Stargazer.esp"
+      ],
+      "superrare": [
+         "0x807|[Caenarvon] Spindrift Knight.esp",
+         "0x808|[Caenarvon] Spindrift Knight.esp",
+         "0x809|[Caenarvon] Spindrift Knight.esp",
+         "0x812|[Caenarvon] Spindrift Knight.esp",
+         "0x814|[Caenarvon] Stargazer.esp",
+         "0x819|[Caenarvon] Narukami.esp",
+         "0x81A|[Caenarvon] Narukami.esp",
+         "0x81C|[Caenarvon] Narukami.esp",
+         "0x81D|[Caenarvon] Calamity Queller.esp",
+         "0x81E|[Caenarvon] Calamity Queller.esp",
+         "0x81E|[Caenarvon] Narukami.esp",
+         "0x820|[Caenarvon] Spindrift Knight.esp",
+         "0x846|[Caenarvon] Spindrift Knight.esp",
+         "0x847|[Caenarvon] Spindrift Knight.esp",
+         "0x848|[Caenarvon] Spindrift Knight.esp",
+         "0x84B|[Caenarvon] Spindrift Knight.esp",
+         "0x891|[Caenarvon] Kagura.esp",
+         "0x893|[Caenarvon] Kagura.esp",
+         "0x894|[Caenarvon] Kagura.esp",
+         "0x913|[Caenarvon] Spindrift Knight.esp",
+         "0xDA5|[Caenarvon] Calamity Queller.esp",
+         "0xDA5|[Caenarvon] Stargazer.esp",
+         "0xDAD|[Caenarvon] Calamity Queller.esp",
+         "0xDC7|[Caenarvon] Calamity Queller.esp",
+         "0xDC7|[Caenarvon] Stargazer.esp",
+         "0xDE0|[Caenarvon] Calamity Queller.esp",
+         "0xDE0|[Caenarvon] Stargazer.esp"
+      ],
+      "speciallysuperrare": [
+         "0x806|[Caenarvon] Spindrift Knight.esp",
+         "0x811|[Caenarvon] Stargazer.esp",
+         "0x813|[Caenarvon] Stargazer.esp",
+         "0x818|[Caenarvon] Narukami.esp",
+         "0x818|[Caenarvon] Stargazer.esp",
+         "0x81D|[Caenarvon] Stargazer.esp",
+         "0x820|[Caenarvon] Calamity Queller.esp",
+         "0x820|[Caenarvon] Narukami.esp",
+         "0x845|[Caenarvon] Spindrift Knight.esp",
+         "0x84E|[Caenarvon] Spindrift Knight.esp",
+         "0x884|[Caenarvon] Kagura.esp",
+         "0x892|[Caenarvon] Kagura.esp",
+         "0x919|[Caenarvon] Spindrift Knight.esp"
+      ],
+      "ultrarare": [
+         "0x805|[Caenarvon] Narukami.esp",
+         "0x807|[Caenarvon] Narukami.esp",
+         "0x813|[Caenarvon] Spindrift Knight.esp",
+         "0x822|[Caenarvon] Calamity Queller.esp",
+         "0x822|[Caenarvon] Stargazer.esp"
+      ]
+   }
+}

@@ -1,0 +1,82 @@
+{
+   "int": {
+      "commonweight": 100,
+      "rareweight": 15,
+      "superrareweight": 10,
+      "speciallysuperrareweight": 3,
+      "ultrarareweight": 1,
+      "usepadding": 1,
+      "clevel": 1,
+      "rlevel": 1,
+      "srlevel": 1,
+      "ssrlevel": 1,
+      "urlevel": 1
+   },
+   "string": {
+      "description": "A Sexy collection of witchy attire, where every fold hints at forbidden spells.",
+      "name": "Mystic Whispers"
+   },
+   "stringList": {
+      "requirements": [
+         "DOAXVV Love Letter Maiden|[BAKU]DOAXVV Love Letter Maiden.esp",
+         "First Summoner Witch|[NINI] First Summoner Witch.esp",
+         "G42 Elf Winter Snow Cloth|Elf Winter Snow SE.esp",
+         "Moon Witch|[YoerkSun] Moon_Witch_Free.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/witch1.dds",
+         "Hentairim/Banner/witch2.dds"
+      ]
+   },
+   "formList": {
+      "common": [],
+      "rare": [
+         "0x80C|[YoerkSun] Moon_Witch_Free.esp",
+         "0x80D|[BAKU]DOAXVV Love Letter Maiden.esp",
+         "0x80F|[YoerkSun] Moon_Witch_Free.esp",
+         "0x810|[YoerkSun] Moon_Witch_Free.esp",
+         "0x811|Elf Winter Snow SE.esp",
+         "0x812|Elf Winter Snow SE.esp",
+         "0x813|Elf Winter Snow SE.esp",
+         "0x818|Elf Winter Snow SE.esp",
+         "0x819|Elf Winter Snow SE.esp",
+         "0x81A|Elf Winter Snow SE.esp",
+         "0x81E|Elf Winter Snow SE.esp",
+         "0x81F|Elf Winter Snow SE.esp"
+      ],
+      "superrare": [
+         "0x806|[BAKU]DOAXVV Love Letter Maiden.esp",
+         "0x807|[NINI] First Summoner Witch.esp",
+         "0x808|[NINI] First Summoner Witch.esp",
+         "0x809|[BAKU]DOAXVV Love Letter Maiden.esp",
+         "0x80A|[YoerkSun] Moon_Witch_Free.esp",
+         "0x80B|[BAKU]DOAXVV Love Letter Maiden.esp",
+         "0x80D|[YoerkSun] Moon_Witch_Free.esp",
+         "0x80E|[YoerkSun] Moon_Witch_Free.esp",
+         "0x812|[YoerkSun] Moon_Witch_Free.esp",
+         "0x814|Elf Winter Snow SE.esp",
+         "0x815|[YoerkSun] Moon_Witch_Free.esp",
+         "0x816|Elf Winter Snow SE.esp",
+         "0x81B|Elf Winter Snow SE.esp",
+         "0x81D|Elf Winter Snow SE.esp"
+      ],
+      "speciallysuperrare": [
+         "0x805|[NINI] First Summoner Witch.esp",
+         "0x806|[NINI] First Summoner Witch.esp",
+         "0x808|[BAKU]DOAXVV Love Letter Maiden.esp",
+         "0x80A|[BAKU]DOAXVV Love Letter Maiden.esp",
+         "0x80B|[YoerkSun] Moon_Witch_Free.esp",
+         "0x810|Elf Winter Snow SE.esp",
+         "0x810|[BAKU]DOAXVV Love Letter Maiden.esp",
+         "0x811|[YoerkSun] Moon_Witch_Free.esp",
+         "0x813|[YoerkSun] Moon_Witch_Free.esp",
+         "0x815|Elf Winter Snow SE.esp",
+         "0x817|Elf Winter Snow SE.esp",
+         "0x81C|Elf Winter Snow SE.esp",
+         "0xD74|[BAKU]DOAXVV Love Letter Maiden.esp"
+      ],
+      "ultrarare": [
+         "0x836|[YoerkSun] Moon_Witch_Free.esp"
+      ]
+   }
+}

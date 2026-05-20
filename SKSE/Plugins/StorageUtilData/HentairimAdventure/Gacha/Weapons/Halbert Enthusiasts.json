@@ -1,0 +1,57 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Every swing guarantees reach, power, and an immediate request for larger storage space.",
+      "name": "Halbert Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Animated Armoury|NewArmoury.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/halbert.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x167FFF|NewArmoury.esp",
+         "0x16801A|NewArmoury.esp",
+         "0x16801B|NewArmoury.esp"
+      ],
+      "rare": [
+         "0x168010|NewArmoury.esp",
+         "0x168011|NewArmoury.esp",
+         "0x16801C|NewArmoury.esp",
+         "0x16801E|NewArmoury.esp"
+      ],
+      "superrare": [
+         "0x168012|NewArmoury.esp",
+         "0x168018|NewArmoury.esp",
+         "0x168019|NewArmoury.esp",
+         "0x16801F|NewArmoury.esp"
+      ],
+      "speciallysuperrare": [
+         "0x168013|NewArmoury.esp",
+         "0x168014|NewArmoury.esp",
+         "0x168015|NewArmoury.esp",
+         "0x168017|NewArmoury.esp"
+      ],
+      "ultrarare": [
+         "0x168016|NewArmoury.esp",
+         "0x16801D|NewArmoury.esp",
+         "0x168020|NewArmoury.esp"
+      ]
+   }
+}

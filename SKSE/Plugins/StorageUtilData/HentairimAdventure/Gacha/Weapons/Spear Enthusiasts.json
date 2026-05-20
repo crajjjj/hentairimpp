@@ -1,0 +1,81 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "These pointy sticks reach further than your ex’s excuses and hurt twice as much.",
+      "name": "Spear Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Animated Armoury|NewArmoury.esp",
+         "Echizen Spear Remastered|Echizen.esp",
+         "Gae Bolg - Fate Armoury Series|Gae Bolg - Fate Armoury Series.esp",
+         "Spear of Alacrity|Spear of Alacrity.esp",
+         "Spear of Skyrim|Spear of Skyrim.esp",
+         "Spear of the Cosmos|Spear Fantasy - Ash Variant.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/spear.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x153BA6|NewArmoury.esp",
+         "0x153BAA|NewArmoury.esp",
+         "0x153BAB|NewArmoury.esp",
+         "0x153BB1|NewArmoury.esp",
+         "0x153BB4|NewArmoury.esp",
+         "0x153BB5|NewArmoury.esp",
+         "0x153BBC|NewArmoury.esp",
+         "0x800|Spear Fantasy - Ash Variant.esp"
+      ],
+      "rare": [
+         "0x153BAC|NewArmoury.esp",
+         "0x153BAE|NewArmoury.esp",
+         "0x153BB2|NewArmoury.esp",
+         "0x153BB8|NewArmoury.esp",
+         "0x153BBA|NewArmoury.esp",
+         "0x153BCD|NewArmoury.esp",
+         "0x80B|Spear of Skyrim.esp"
+      ],
+      "superrare": [
+         "0x153BAD|NewArmoury.esp",
+         "0x153BB0|NewArmoury.esp",
+         "0x153BB3|NewArmoury.esp",
+         "0x153BB6|NewArmoury.esp",
+         "0x153BBB|NewArmoury.esp",
+         "0x800|Echizen.esp",
+         "0x80C|Spear of Skyrim.esp"
+      ],
+      "speciallysuperrare": [
+         "0x153BA9|NewArmoury.esp",
+         "0x153BB7|NewArmoury.esp",
+         "0x800|Gae Bolg - Fate Armoury Series.esp",
+         "0x80D|Spear of Skyrim.esp",
+         "0x80E|Spear of Skyrim.esp",
+         "0x812|Spear of Skyrim.esp",
+         "0x813|Spear of Skyrim.esp",
+         "0x815|Spear of Skyrim.esp"
+      ],
+      "ultrarare": [
+         "0x153BB9|NewArmoury.esp",
+         "0x800|Spear of Alacrity.esp",
+         "0x804|Gae Bolg - Fate Armoury Series.esp",
+         "0x80F|Spear of Skyrim.esp",
+         "0x810|Spear of Skyrim.esp",
+         "0x811|Spear of Skyrim.esp",
+         "0x814|Spear of Skyrim.esp"
+      ]
+   }
+}

@@ -1,0 +1,63 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Blunt weapons so impractical they make anvils look sleek and aerodynamic.",
+      "name": "Mace Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "DawnGuard DLC|Dawnguard.esm",
+         "DragonBorn DLC|Dragonborn.esm",
+         "Immersive Weapons|Immersive Weapons.esp",
+         "Skyrim Weapons Expansion|Skyrim Weapons Expansion.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/mace.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x0747CB|Immersive Weapons.esp",
+         "0x0747CC|Immersive Weapons.esp",
+         "0x0747CD|Immersive Weapons.esp"
+      ],
+      "rare": [
+         "0x010E64|Immersive Weapons.esp",
+         "0x084B83|Immersive Weapons.esp",
+         "0xAB5|Skyrim Weapons Expansion.esp"
+      ],
+      "superrare": [
+         "0x01681E|Dawnguard.esm",
+         "0x01CDB0|Dragonborn.esm",
+         "0x03A103|Immersive Weapons.esp",
+         "0xAEE|Skyrim Weapons Expansion.esp"
+      ],
+      "speciallysuperrare": [
+         "0x00998C|Immersive Weapons.esp",
+         "0xA6D|Skyrim Weapons Expansion.esp"
+      ],
+      "ultrarare": [
+         "0x010900|Immersive Weapons.esp",
+         "0x012D14|Dawnguard.esm",
+         "0x014FCD|Dawnguard.esm",
+         "0x01A173|Dawnguard.esm",
+         "0x01A174|Dawnguard.esm",
+         "0x01A175|Dawnguard.esm",
+         "0x01A176|Dawnguard.esm",
+         "0x01A177|Dawnguard.esm",
+         "0x01CDB7|Dragonborn.esm"
+      ]
+   }
+}

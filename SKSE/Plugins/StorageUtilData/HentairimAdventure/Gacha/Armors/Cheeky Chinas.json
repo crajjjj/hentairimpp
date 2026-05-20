@@ -1,0 +1,104 @@
+{
+   "int": {
+      "commonweight": 100,
+      "rareweight": 15,
+      "superrareweight": 10,
+      "speciallysuperrareweight": 3,
+      "ultrarareweight": 1,
+      "usepadding": 1,
+      "clevel": 1,
+      "rlevel": 1,
+      "srlevel": 1,
+      "ssrlevel": 1,
+      "urlevel": 1
+   },
+   "string": {
+      "description": "Ancient styles, shameless charm, and bikini cuts so daring they rewrite etiquette with every step.",
+      "name": "Cheeky Chinas"
+   },
+   "stringList": {
+      "requirements": [
+         "Bloody Spell Goddess Lace Skirt|[QH]NvshenLeisi.esp",
+         "Chinese Babydoll|[Melodic] Chinese Babydoll.esp",
+         "Chinese JiangShi|JiangShi.esp",
+         "DOAXVV Reincarnation Shenmi|[BAKU]DOAXVV Reincarnation Shenmi.esp",
+         "DOAXVV Reincarnation Wisdom|[BAKU]DOAXVV Reincarnation Wisdom.esp",
+         "Lotus Dress Set|[Tec][Hirosin] Lotus Dress Set.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/china1.dds",
+         "Hentairim/Banner/china2.dds",
+         "Hentairim/Banner/china3.dds"
+      ]
+   },
+   "formList": {
+      "common": [],
+      "rare": [
+         "0x806|[BAKU]DOAXVV Reincarnation Shenmi.esp",
+         "0x807|[BAKU]DOAXVV Reincarnation Wisdom.esp",
+         "0x807|[QH]NvshenLeisi.esp",
+         "0x80B|[BAKU]DOAXVV Reincarnation Shenmi.esp",
+         "0x80B|[QH]NvshenLeisi.esp",
+         "0x80F|[BAKU]DOAXVV Reincarnation Shenmi.esp",
+         "0x811|[BAKU]DOAXVV Reincarnation Shenmi.esp",
+         "0x813|[BAKU]DOAXVV Reincarnation Shenmi.esp",
+         "0x813|[BAKU]DOAXVV Reincarnation Wisdom.esp",
+         "0xD69|JiangShi.esp",
+         "0xD6B|JiangShi.esp",
+         "0xD7F|JiangShi.esp",
+         "0xDF7|[Tec][Hirosin] Lotus Dress Set.esp"
+      ],
+      "superrare": [
+         "0x802|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0x803|[BAKU]DOAXVV Reincarnation Wisdom.esp",
+         "0x803|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0x804|[QH]NvshenLeisi.esp",
+         "0x805|[BAKU]DOAXVV Reincarnation Wisdom.esp",
+         "0x806|[QH]NvshenLeisi.esp",
+         "0x807|[BAKU]DOAXVV Reincarnation Shenmi.esp",
+         "0x808|[QH]NvshenLeisi.esp",
+         "0x809|[Melodic] Chinese Babydoll.esp",
+         "0x80D|[BAKU]DOAXVV Reincarnation Shenmi.esp",
+         "0x810|[BAKU]DOAXVV Reincarnation Wisdom.esp",
+         "0x812|[BAKU]DOAXVV Reincarnation Wisdom.esp",
+         "0xD68|[Melodic] Chinese Babydoll.esp",
+         "0xD6C|JiangShi.esp",
+         "0xD6D|JiangShi.esp",
+         "0xD6F|JiangShi.esp",
+         "0xD77|JiangShi.esp",
+         "0xD78|JiangShi.esp",
+         "0xD79|JiangShi.esp",
+         "0xD7A|JiangShi.esp",
+         "0xD7C|JiangShi.esp",
+         "0xD81|JiangShi.esp",
+         "0xDCB|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xE04|[Tec][Hirosin] Lotus Dress Set.esp"
+      ],
+      "speciallysuperrare": [
+         "0x800|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0x801|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0x804|[BAKU]DOAXVV Reincarnation Shenmi.esp",
+         "0x804|[BAKU]DOAXVV Reincarnation Wisdom.esp",
+         "0x805|[QH]NvshenLeisi.esp",
+         "0x808|[Melodic] Chinese Babydoll.esp",
+         "0x809|[QH]NvshenLeisi.esp",
+         "0x80D|[Melodic] Chinese Babydoll.esp",
+         "0x811|[BAKU]DOAXVV Reincarnation Wisdom.esp",
+         "0x81E|JiangShi.esp",
+         "0xD63|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xD69|[Melodic] Chinese Babydoll.esp",
+         "0xD69|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xD6A|[Melodic] Chinese Babydoll.esp",
+         "0xD7B|JiangShi.esp",
+         "0xD84|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xD86|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xD97|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xD98|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xDAA|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xDAB|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xDAC|[Tec][Hirosin] Lotus Dress Set.esp",
+         "0xDAD|[Tec][Hirosin] Lotus Dress Set.esp"
+      ],
+      "ultrarare": []
+   }
+}

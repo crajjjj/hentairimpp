@@ -1,0 +1,44 @@
+{
+	"stringList" : 
+	{
+		"higharousalcreature" : 
+		[
+			"The Creature Appears to be Very Aroused."
+		],
+		"higharousalfemale" : 
+		[
+			"She Appears to be Very Aroused."
+		],
+		"higharousalmale" : 
+		[
+			"He Appears to be Very Aroused."
+			
+		],
+		"lowarousalcreature" : 
+		[
+			"The Creature does not seem to be Aroused"
+			
+		],
+		"lowarousalfemale" : 
+		[
+			"She does not seem to be Aroused"
+			
+		],
+		"lowarousalmale" : 
+		[
+			"He does not seem to be Aroused"
+		],
+		"mediumarousalcreature" : 
+		[
+			"The Creature Seems To Be Somewhat Aroused"
+		],
+		"mediumarousalfemale" : 
+		[
+			"She Seems To Be Somewhat Aroused"
+		],
+		"mediumarousalmale" : 
+		[
+			"He Seems To Be Somewhat Aroused"
+		]
+	}
+}

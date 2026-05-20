@@ -1,0 +1,81 @@
+{
+   "int": {
+      "commonweight": 100,
+      "rareweight": 15,
+      "superrareweight": 10,
+      "speciallysuperrareweight": 3,
+      "ultrarareweight": 1,
+      "usepadding": 1,
+      "clevel": 1,
+      "rlevel": 1,
+      "srlevel": 1,
+      "ssrlevel": 1,
+      "urlevel": 1
+   },
+   "string": {
+      "description": "Silk gloves, sharp heels, and the kind of authority you’ll happily surrender to",
+      "name": "Mistress Touch"
+   },
+   "stringList": {
+      "requirements": [
+         "DOA Dominatrix|[BAKU]DOA Dominatrix.esp",
+         "Gothic Mistress|Gothic Mistress Armor.esp",
+         "Kaijin Hime|[YoerkSun] Kaijin Hime.esp",
+         "Lovely Latex|[RektBird] LovelyLatex.esp",
+         "Safe Latex|[YoerkSun] Safe Latex.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/bdsm1.dds",
+         "Hentairim/Banner/bdsm2.dds",
+         "Hentairim/Banner/bdsm3.dds"
+      ]
+   },
+   "formList": {
+      "common": [],
+      "rare": [
+         "0x802|[YoerkSun] Kaijin Hime.esp",
+         "0x807|[BAKU]DOA Dominatrix.esp",
+         "0xD6F|[YoerkSun] Kaijin Hime.esp",
+         "0xD70|[YoerkSun] Kaijin Hime.esp",
+         "0xD71|[YoerkSun] Kaijin Hime.esp",
+         "0xD72|[YoerkSun] Kaijin Hime.esp",
+         "0xD73|[YoerkSun] Kaijin Hime.esp",
+         "0xD74|[YoerkSun] Kaijin Hime.esp"
+      ],
+      "superrare": [
+         "0x801|Gothic Mistress Armor.esp",
+         "0x805|Gothic Mistress Armor.esp",
+         "0x805|[BAKU]DOA Dominatrix.esp",
+         "0x806|[BAKU]DOA Dominatrix.esp",
+         "0x809|[BAKU]DOA Dominatrix.esp",
+         "0x80D|[BAKU]DOA Dominatrix.esp",
+         "0x810|[YoerkSun] Safe Latex.esp",
+         "0x813|[YoerkSun] Safe Latex.esp",
+         "0x814|[YoerkSun] Safe Latex.esp",
+         "0x82E|[YoerkSun] Safe Latex.esp",
+         "0xD6C|[YoerkSun] Kaijin Hime.esp",
+         "0xD6E|[YoerkSun] Kaijin Hime.esp",
+         "0xDA6|[RektBird] LovelyLatex.esp",
+         "0xDA8|[RektBird] LovelyLatex.esp",
+         "0xDA9|[RektBird] LovelyLatex.esp"
+      ],
+      "speciallysuperrare": [
+         "0x801|[RektBird] LovelyLatex.esp",
+         "0x804|Gothic Mistress Armor.esp",
+         "0x808|[BAKU]DOA Dominatrix.esp",
+         "0x80B|[BAKU]DOA Dominatrix.esp",
+         "0x80D|[YoerkSun] Safe Latex.esp",
+         "0x80E|[YoerkSun] Safe Latex.esp",
+         "0x80F|[YoerkSun] Safe Latex.esp",
+         "0x811|[YoerkSun] Safe Latex.esp",
+         "0x812|[YoerkSun] Safe Latex.esp",
+         "0x829|[YoerkSun] Safe Latex.esp",
+         "0x82D|[YoerkSun] Safe Latex.esp",
+         "0xD63|Gothic Mistress Armor.esp",
+         "0xD6D|[YoerkSun] Kaijin Hime.esp",
+         "0xD75|[YoerkSun] Kaijin Hime.esp",
+         "0xDA4|[RektBird] LovelyLatex.esp"
+      ],
+      "ultrarare": []
+   }
+}

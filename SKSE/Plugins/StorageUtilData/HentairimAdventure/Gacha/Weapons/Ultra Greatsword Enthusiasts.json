@@ -1,0 +1,88 @@
+{
+   "int": {
+      "commonweight": 60,
+      "rareweight": 50,
+      "superrareweight": 40,
+      "speciallysuperrareweight": 30,
+      "ultrarareweight": 20,
+      "usepadding": 0,
+      "clevel": 1,
+      "rlevel": 8,
+      "srlevel": 16,
+      "ssrlevel": 28,
+      "urlevel": 36
+   },
+   "string": {
+      "description": "Ultra greatswords so massive they count as property lines, not actual functional weapons.",
+      "name": "Ultra Greatsword Enthusiasts"
+   },
+   "stringList": {
+      "requirements": [
+         "Cathedral Knight Greatsword|[TDarce] Cathedral Knight GS.esp",
+         "Crypt Colossal Sword - Ultra Greatsword|CryptColossalSword.esp",
+         "Dae's Titanblade - Standalone Dwarven Greatsword|Daes_Titanblade.esp",
+         "Dark Nova - Standalone Daedric Greatsword|Dark_Nova.esp",
+         "Ultra Weapons|Ultra Weapons.esp",
+         "commanderswords|CommanderSwords.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/ultrasword.dds"
+      ]
+   },
+   "formList": {
+      "common": [
+         "0x80B|Ultra Weapons.esp",
+         "0x80D|Ultra Weapons.esp",
+         "0x80E|Ultra Weapons.esp",
+         "0x823|Daes_Titanblade.esp",
+         "0x840|Ultra Weapons.esp"
+      ],
+      "rare": [
+         "0x807|Ultra Weapons.esp",
+         "0x809|Ultra Weapons.esp",
+         "0x80C|Ultra Weapons.esp",
+         "0x811|Ultra Weapons.esp",
+         "0x837|Ultra Weapons.esp",
+         "0xA5E|Ultra Weapons.esp",
+         "0xAD3|Ultra Weapons.esp",
+         "0xAD5|Ultra Weapons.esp",
+         "0xB15|Ultra Weapons.esp",
+         "0xB32|Ultra Weapons.esp"
+      ],
+      "superrare": [
+         "0x802|[TDarce] Cathedral Knight GS.esp",
+         "0x80A|Ultra Weapons.esp",
+         "0x83F|Ultra Weapons.esp",
+         "0xAD7|Ultra Weapons.esp",
+         "0xB34|Ultra Weapons.esp",
+         "0xB43|Ultra Weapons.esp",
+         "0xB55|Ultra Weapons.esp",
+         "0xD62|CryptColossalSword.esp",
+         "0xD63|CommanderSwords.esp"
+      ],
+      "speciallysuperrare": [
+         "0x800|Dark_Nova.esp",
+         "0x805|Ultra Weapons.esp",
+         "0x808|Ultra Weapons.esp",
+         "0x810|Ultra Weapons.esp",
+         "0x83D|Ultra Weapons.esp",
+         "0x83E|Ultra Weapons.esp",
+         "0xB18|Ultra Weapons.esp",
+         "0xB36|Ultra Weapons.esp",
+         "0xB37|Ultra Weapons.esp",
+         "0xB41|Ultra Weapons.esp",
+         "0xB44|Ultra Weapons.esp"
+      ],
+      "ultrarare": [
+         "0x80F|Ultra Weapons.esp",
+         "0x83B|Ultra Weapons.esp",
+         "0x83C|Ultra Weapons.esp",
+         "0xAF0|Ultra Weapons.esp",
+         "0xB3A|Ultra Weapons.esp",
+         "0xB3B|Ultra Weapons.esp",
+         "0xB3C|Ultra Weapons.esp",
+         "0xB42|Ultra Weapons.esp",
+         "0xB45|Ultra Weapons.esp"
+      ]
+   }
+}

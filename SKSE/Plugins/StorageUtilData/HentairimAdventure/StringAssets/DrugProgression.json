@@ -1,0 +1,26 @@
+{
+	"stringList" : 
+	{
+		"20" : 
+		[
+			"mild drug progression"	
+		],
+		"40" : 
+		[
+			"small noticeable drug progression."
+		
+		],
+		"60" : 
+		[
+			"Mid Way Drug Progression"
+		],
+		"80" : 
+		[
+			"High Drug Progression"
+		],
+		"80" : 
+		[
+			"Close to Activation Drug Progression"
+		]
+	}
+}

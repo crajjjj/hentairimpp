@@ -1,0 +1,25 @@
+{
+   "int":{
+      "enablebodyeffectsanddrugs":1,
+      "maxnumberofdrugeffects":5,
+      "lactatingdrugeffectminhours":150,
+      "lactatingdrugeffectmaxhours":300,
+      "sensitivebodydrugeffectminhours":150,
+      "sensitivebodydrugeffectmaxhours":300,
+      "sensitivebodypotencyperhour":2,
+      "sensitivebodysatiateperstage":2,
+      "sensitivebodysatiateperintensestage":3,
+      "sexaddictiondrugeffectminhours":150,
+      "sexaddictiondrugeffectmaxhours":300,
+      "sexaddictionpotencyperhour":5,
+      "sexaddictionsatiateperorgasm":5,
+      "cumaddictiondrugeffectminhours":150,
+      "cumaddictiondrugeffectmaxhours":300,
+      "cumaddictionpotencyperhour":3,
+      "cumaddictionsatiateperorgasm":5,
+      "hugeppaddictiondrugeffectminhours":150,
+      "hugeppaddictiondrugeffectmaxhours":300,
+      "hugeppaddictionpotencyperhour":3,
+      "hugeppaddictionsatiateperstage":2
+   }
+}

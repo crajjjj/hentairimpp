@@ -1,0 +1,81 @@
+{
+   "int": {
+      "commonweight": 100,
+      "rareweight": 15,
+      "superrareweight": 8,
+      "speciallysuperrareweight": 3,
+      "ultrarareweight": 1,
+      "usepadding": 1,
+      "clevel": 1,
+      "rlevel": 1,
+      "srlevel": 1,
+      "ssrlevel": 1,
+      "urlevel": 1
+   },
+   "string": {
+      "description": "Ancient dynasty outfits that looks somewhat historically inaccurate, but who cares?",
+      "name": "Oriental Elegance"
+   },
+   "stringList": {
+      "requirements": [
+         "Canghaiyanxia Outfit|Canghaiyanxia Outfit.esp",
+         "Naraka Bladepoint Mingyao Tidal Clash|lilyrim-mingyaodoulang.esp",
+         "Phoenix Soul|[Caenarvon] Phoenix Soul.esp",
+         "hanyiqinghua|hanyiqinghua.esp",
+         "manzhushahua|manzhushahua.esp"
+      ],
+      "imagepath": [
+         "Hentairim/Banner/Oriental1.dds",
+         "Hentairim/Banner/Oriental2.dds"
+      ]
+   },
+   "formList": {
+      "common": [],
+      "rare": [
+         "0x804|lilyrim-mingyaodoulang.esp",
+         "0x805|lilyrim-mingyaodoulang.esp",
+         "0x809|Canghaiyanxia Outfit.esp",
+         "0x809|manzhushahua.esp",
+         "0x80B|Canghaiyanxia Outfit.esp",
+         "0x80C|manzhushahua.esp",
+         "0x9DC|[Caenarvon] Phoenix Soul.esp",
+         "0x9DF|[Caenarvon] Phoenix Soul.esp",
+         "0x9E9|[Caenarvon] Phoenix Soul.esp",
+         "0xD8B|hanyiqinghua.esp",
+         "0xD8F|hanyiqinghua.esp"
+      ],
+      "superrare": [
+         "0x801|lilyrim-mingyaodoulang.esp",
+         "0x803|Canghaiyanxia Outfit.esp",
+         "0x805|Canghaiyanxia Outfit.esp",
+         "0x807|lilyrim-mingyaodoulang.esp",
+         "0x80A|manzhushahua.esp",
+         "0x80B|manzhushahua.esp",
+         "0x80D|manzhushahua.esp",
+         "0x80E|manzhushahua.esp",
+         "0x80F|manzhushahua.esp",
+         "0x9DB|[Caenarvon] Phoenix Soul.esp",
+         "0x9DD|[Caenarvon] Phoenix Soul.esp",
+         "0x9DE|[Caenarvon] Phoenix Soul.esp",
+         "0x9E0|[Caenarvon] Phoenix Soul.esp",
+         "0x9E1|[Caenarvon] Phoenix Soul.esp",
+         "0xD89|hanyiqinghua.esp",
+         "0xD91|hanyiqinghua.esp",
+         "0xD93|hanyiqinghua.esp"
+      ],
+      "speciallysuperrare": [
+         "0x804|Canghaiyanxia Outfit.esp",
+         "0x807|Canghaiyanxia Outfit.esp",
+         "0x808|manzhushahua.esp",
+         "0x80A|lilyrim-mingyaodoulang.esp",
+         "0x80B|lilyrim-mingyaodoulang.esp",
+         "0x88F|[Caenarvon] Phoenix Soul.esp",
+         "0x9D9|[Caenarvon] Phoenix Soul.esp",
+         "0x9DA|[Caenarvon] Phoenix Soul.esp",
+         "0xD87|hanyiqinghua.esp"
+      ],
+      "ultrarare": [
+         "0x96F|[Caenarvon] Phoenix Soul.esp"
+      ]
+   }
+}
