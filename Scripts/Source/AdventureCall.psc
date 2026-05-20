@@ -305,7 +305,7 @@ Float Function GetRapeSuccessChance(Actor Char, Actor EnemyRef ,Float ChanceModi
 	float ArousalAdditionalChance = 0.0
 
 	if PO3_SKSEFunctions.IsPluginFound("TheNewGentleman.esp")
-		Arousal = OSLArousedNative.GetArousal(EnemyRef)
+		Arousal = HentairimArousal.GetArousal(EnemyRef)
 
 		; Below 30, interpolate from -15 at 0 → 0 at 30
 		if Arousal < 30

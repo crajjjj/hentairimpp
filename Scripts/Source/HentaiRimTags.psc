@@ -116,7 +116,7 @@ string Function PenetrationLabel(string anim , int stage , Int ActorPos) Global
 	elseif HasASLTag(anim, stage+ActorPosition + "SDP")
 		return "SDP"
 	elseif HasASLTag(anim, stage+ActorPosition + "FDP")
-		return "SDP"
+		return "FDP"
 	else
 		return "LDI" ;Default lead in if no stimulating actions
 	endif
@@ -160,7 +160,7 @@ string Function PenisActionLabel(string anim , int stage , Int ActorPos) Global
 		return "FMF"
 	elseif HasASLTag(anim, stage+ActorPosition + "SFJ")
 		reTURN "SFJ"
-	elseif HasASLTag(anim, stage+ActorPosition + "SFJ")
+	elseif HasASLTag(anim, stage+ActorPosition + "FFJ")
 		returN "FFJ"
 	else
 		reTURN "LDI" ;default lead in if no stimulating actions

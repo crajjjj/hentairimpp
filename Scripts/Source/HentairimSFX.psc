@@ -1194,11 +1194,11 @@ Bool Function IsCunnilingus()
 endfunction
 
 Bool Function IsLeadIN()
-	return stringutil.find(Labelsconcat ,"1F") == -1 || stringutil.find(Labelsconcat ,"1S") == -1
-endfunction 
+	return stringutil.find(Labelsconcat ,"1F") == -1 && stringutil.find(Labelsconcat ,"1S") == -1
+endfunction
 
 Bool Function isEnding()
-	PenisActionLabel = "ENI"
+	return EndingLabel == "ENI" || EndingLabel == "ENO"
 endfunction
 
 
@@ -1288,7 +1288,7 @@ Function PlaySound(Sound theSound, Actor actorMakingSound, Bool waitForCompletio
 EndFunction
 
 Bool Function IsVictim(actor char)
-  CurrentThread.GetSubmissive(char)
+  return CurrentThread.GetSubmissive(char)
 endFunction
 
 Bool Function IsBroken()

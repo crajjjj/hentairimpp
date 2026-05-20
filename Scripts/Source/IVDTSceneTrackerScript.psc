@@ -310,7 +310,7 @@ Function PerformInitialization()
 			WritetoErrorlogs("IVDT" , "Hentairim Resistance Faction Not Found. Ensure Mod is Properly Installed and HentairimResistance.esp Plugin Enabled")
 		endif
 		
-		if !HentairimResistanceFaction
+		if !HentairimBroken
 			WritetoErrorlogs("IVDT" , "Hentairim Broken Faction Not Found. Ensure Mod is Properly Installed and HentairimResistance.esp Plugin Enabled")
 		endif
 	endif

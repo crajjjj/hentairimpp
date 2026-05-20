@@ -3226,10 +3226,10 @@ Function ProcessBodilyEffects(actor char)
 		PrintDebug("ProcessBodilyEffects: Adding Arousal (" + ArousaltoAdd + ") | Math.floor(HoursElapsed) = " + Math.floor(HoursElapsed) + ", SexAddiction = " + SexAddiction)
 		Masterscript.UpdateArousal(Playerref , math.ceiling(ArousaltoAdd))
 		
-		if MasterScript.HasOSLAroused()
+		if MasterScript.HasAnyArousalMod()
 			float LibidotoAdd = 5 * Math.floor(HoursElapsed) * (SexAddiction / 100)
-			PrintDebug("ProcessBodilyEffects: OSLAroused enabled, adding Libido = " + LibidotoAdd)
-			OSLArousedNative.ModifyLibido(PlayerRef,LibidotoAdd)
+			PrintDebug("ProcessBodilyEffects: Arousal mod enabled, adding arousal = " + LibidotoAdd)
+			HentairimArousal.ModifyArousal(PlayerRef, LibidotoAdd)
 		endif
 
 		Int PlayerArousal = math.floor(Masterscript.GetActorArousal(Playerref))

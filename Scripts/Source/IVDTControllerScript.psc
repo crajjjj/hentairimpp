@@ -290,7 +290,7 @@ Event DirectorSceneStart(string eventName, string argString, float argNum, form 
 	if isLinearScene()
     PrintDebug("EnableOrgasm - Linear scene detected. Calling DisableOrgasmAll().")
     DisableOrgasmAll()
-	elseif !CanActorSatisfyPCHugePPAddiction(actorList[1]) && !isLinearScene()
+	elseif actorList.length > 1 && !CanActorSatisfyPCHugePPAddiction(actorList[1]) && !isLinearScene()
 		PrintDebug("EnableOrgasm - Non-linear scene or HugePP addiction NOT satisfied. Disabling PC orgasm.")
 		CurrentThread.DisableOrgasm(PlayerRef, true)
 	else
@@ -664,7 +664,7 @@ Function AddTrackerToSceneIfApplicable(string argString)
 	
 	if enablesfx == 1
 		int z = 0
-		while z <= actorList.length
+		while z < actorList.length
 			if actorList[z].HasSpell(SFXSPELL) 
 				actorList[z].RemoveSpell(SFXSPELL)
 			endif
@@ -677,9 +677,9 @@ Function AddTrackerToSceneIfApplicable(string argString)
 	
 	;---------------Applying Expressions Spell to Actors------------------
 	if EnableExpressions == 1
-			
+
 		int z = 0
-		while z <= actorList.length
+		while z < actorList.length
 			if sexlab.GetGender(actorList[z]) <= 1 ;not creature
 				if actorList[z].HasSpell(ExpressionsSpell) 
 					actorList[z].RemoveSpell(ExpressionsSpell)
@@ -704,11 +704,11 @@ Function AddTrackerToSceneIfApplicable(string argString)
 	enablepcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablepcresistancedamage" ,0)
 	enablemalenpcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablemalenpcresistancedamage" ,0)
 	enablefemalenpcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablefemalenpcresistancedamage" ,0)
-	enablecreaturenpcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablefemalenpcresistancedamage" ,0)
+	enablecreaturenpcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablecreaturenpcresistancedamage" ,0)
 	if enableResistance == 1
 
 		int z = 0
-		while z <= actorList.length
+		while z < actorList.length
 			if sexlab.GetGender(actorList[z]) <= 1 ;not creature
 				if actorList[z].HasSpell(ResistanceSpell) 
 					actorList[z].RemoveSpell(ResistanceSpell)
@@ -985,7 +985,7 @@ Function InitializeDirectorConfigs()
 	enablepcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablepcresistancedamage" ,0)
 	enablemalenpcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablemalenpcresistancedamage" ,0)
 	enablefemalenpcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablefemalenpcresistancedamage" ,0)
-	enablecreaturenpcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablefemalenpcresistancedamage" ,0)
+	enablecreaturenpcresistancedamage = JsonUtil.GetIntValue(ResistanceConfigFile, "enablecreaturenpcresistancedamage" ,0)
 	
 	;Load Timers config
 	ldi = JsonUtil.GetIntValue(TimerConfigFile,"ldi",9999)
@@ -1159,9 +1159,6 @@ Function HentairimScaling()
 		float display = char.GetScale()
 		;miscutil.PrintConsole(char.GetDisplayName() + " | Stored display: " + display)
 
-		actorlistOriginalScalearr = PapyrusUtil.PushFloat(actorlistOriginalScalearr, display)
-		;miscutil.PrintConsole(char.GetDisplayName() + " | Pushed original scale to array: " + display)
-
 		char.SetScale(1.0)
 		;miscutil.PrintConsole(char.GetDisplayName() + " | SetScale to 1.0")
 		;miscutil.PrintConsole(char.GetDisplayName() + " | Scale after setting to 1.0: " + char.GetScale())
@@ -1172,19 +1169,16 @@ Function HentairimScaling()
 		float ActorScale = display / base
 		;miscutil.PrintConsole(char.GetDisplayName() + " | Calculated ActorScale: " + ActorScale)
 
-		float AnimScale = ActorScale
-		;miscutil.PrintConsole(char.GetDisplayName() + " | AnimScale initialized to ActorScale: " + AnimScale)
+		float AnimScale = 1.0 / base
+		;miscutil.PrintConsole(char.GetDisplayName() + " | AnimScale (1.0/base): " + AnimScale)
 
-		if ActorScale > 0.0 && ActorScale != 1.0
-			char.SetScale(ActorScale)
-			;miscutil.PrintConsole(char.GetDisplayName() + " | Restored ActorScale: " + ActorScale)
-		else
-			;miscutil.PrintConsole(char.GetDisplayName() + " | Skipped restoring ActorScale (value: " + ActorScale + ")")
-		endIf
+		actorlistOriginalScalearr = PapyrusUtil.PushFloat(actorlistOriginalScalearr, ActorScale)
+		;miscutil.PrintConsole(char.GetDisplayName() + " | Pushed ActorScale to array: " + ActorScale)
 
 		float finalScale = GetAnimSpecialScaleValue(z)
+		finalScale *= AnimScale
 		char.SetScale(finalScale)
-		;miscutil.PrintConsole(char.GetDisplayName() + " | Final SetScale from GetAnimSpecialScaleValue: " + finalScale)
+		;miscutil.PrintConsole(char.GetDisplayName() + " | Final SetScale from GetAnimSpecialScaleValue * AnimScale: " + finalScale)
 
 		z += 1
 	endWhile
@@ -1209,7 +1203,7 @@ float function GetAnimSpecialScaleValue(int position)
 SexLabRegistry.GetSceneName(CurrentSceneID)
 float ScaleValue = 1.0
 
-if (SexLabRegistry.IsSceneTag(CurrentSceneID, "Bigguy") || SexLabRegistry.IsSceneTag(CurrentSceneID, "Bigguy")) && position != 0
+if (SexLabRegistry.IsSceneTag(CurrentSceneID, "Bigguy") || SexLabRegistry.IsSceneTag(CurrentSceneID, "Smallguy")) && position != 0
 		scalevalue = 1.15
 elseif	SexLabRegistry.IsSceneTag(CurrentSceneID, "Shota") && Position > 0 ;there is no shota on 1st position
 	int actorcount = CurrentThread.GetPositions().length
@@ -1426,16 +1420,6 @@ elseIF GetPrimaryLabel() == "eno"
 return eno
 elseIF GetPrimaryLabel() == "eni"
 return eni
-elseIF GetPrimaryLabel() == "fmf"
-return fmf
-elseIF GetPrimaryLabel() == "sfj"
-return sfj
-elseIF GetPrimaryLabel() == "ffj"
-return ffj
-elseIF GetPrimaryLabel() == "eno"
-return eno
-elseIF GetPrimaryLabel() == "eni"
-return eni
 else
 printdebug("Label for TImer is not found. Defaulting to 15")
 return 15
@@ -1577,14 +1561,14 @@ while f < StageMakerFileNameList.length
 				printdebug("specialchar : " + specialchar)
 
 				if specialchar == "@" ;match animation name
-					String SceneNametoCheck = StringUtil.Substring(PositionTagsArr[y],1,0)
+					String SceneNametoCheck = StringUtil.Substring(PositionTagsArr[y],1)
 					printdebug("Scene Name Look up : " + SceneNametoCheck)
 					if SexlabRegistry.GetSceneName(CurrentSceneID) != SceneNametoCheck
 						ValidLineItem = false
 						y += 100
 					endif
 				elseif specialchar == "-" ;minus means it should not contain this tag
-					string tagtocheck = StringUtil.Substring(PositionTagsArr[y],1,0)
+					string tagtocheck = StringUtil.Substring(PositionTagsArr[y],1)
 					printdebug("tag to Look up : " + tagtocheck)
 					if CurrentThread.HasSceneTag(tagtocheck)
 						printdebug("Current Scene Contains excluded" + tagtocheck +" tag. skip this Line Item")
@@ -1593,7 +1577,7 @@ while f < StageMakerFileNameList.length
 					endif
 				elseif specialchar == "~" ;minus means it should not contain this tag
 					Containstilde = true
-					string tagtocheck = StringUtil.Substring(PositionTagsArr[y],1,0)
+					string tagtocheck = StringUtil.Substring(PositionTagsArr[y],1)
 					printdebug("tagtocheck : " + tagtocheck)
 					if CurrentThread.HasSceneTag(tagtocheck)
 						printdebug("Current Scene Contains tilde " +tagtocheck + " tag. tilde condition satisfied")
@@ -2084,8 +2068,12 @@ endFunction
 string function GetNextStageID(String asScene, String asStage)
 	string[] all_stages = SexlabRegistry.GetAllStages(asScene)
 	if SexlabRegistry.StageExists(asScene, asStage)
-		return all_stages[all_stages.find(asStage)+1]
+		int idx = all_stages.find(asStage)
+		if idx >= 0 && idx < all_stages.length - 1
+			return all_stages[idx + 1]
+		endif
 	endif
+	return ""
 endfunction
 
 string function GetLastStageID(String asScene)
@@ -2096,8 +2084,12 @@ endfunction
 string function GetPrevStageID(String asScene, String asStage)
 	string[] all_stages = SexlabRegistry.GetAllStages(asScene)
 	if SexlabRegistry.StageExists(asScene, asStage)
-		return all_stages[all_stages.find(asStage) - 1]
+		int idx = all_stages.find(asStage)
+		if idx > 0
+			return all_stages[idx - 1]
+		endif
 	endif
+	return ""
 endfunction
 
 ;----------------HENTAIRIM LABEL FUNCTIONs===============
@@ -2616,6 +2608,7 @@ Function DiagnoseDirector()
 	; ===== Stage Extension ===== ExtendStageChance
 	Messagestr += "\n\n===== Stage Extensions ====="
 	Messagestr += "\nExtend Stage Chance: " + linearsceneextendstagechance + "%"
+	z = 0
 	while z < Actorlist.length
 		Messagestr += "\n--" + actorList[z].getdisplayname() 
 		int ActorExtendStageChance = (ExtendStageChance(actorList[z]) * 100 ) as int
@@ -2633,7 +2626,7 @@ Function DiagnoseDirector()
 	EndWhile
 	
 	Messagestr += "\nCounter Rape Chance: " + linearscenecounterrapechance + "%"
-	
+	z = 0
 	while z < Actorlist.length
 		Messagestr += "\n--" + actorList[z].getdisplayname() 
 		int ActorCounterrapechance = (CounterRapeChance(actorList[z]) * 100) as int
@@ -3341,7 +3334,7 @@ endfunction
 
 
 bool Function PCIsInControl()
-	return ActorInControl() != playerref
+	return ActorInControl() == playerref
 endfunction
 
 int Function PositionInControl()
@@ -3548,7 +3541,11 @@ Int Function TriggerOrgasmChain(int index, Actor[] actors, int[] orgasmCount, In
 
     ; Scale wait time based on remaining orgasms
 	float baseWait = Utility.RandomFloat(1.0, 3.0)
-	float waitTime = baseWait / (orgasmCount[index] as float)
+	int orgasmDivisor = orgasmCount[index]
+	if orgasmDivisor < 1
+		orgasmDivisor = 1
+	endif
+	float waitTime = baseWait / (orgasmDivisor as float)
 
 	; Clamp to minimum so it never gets too tiny
 	if waitTime < 0.2
@@ -3821,7 +3818,7 @@ endFunction
 
 actor function FindFirstActorwithPenisPosition()
 	int z
-	while z == actorlist.length
+	while z < actorlist.length
 		if sexlab.getsex(actorList[z]) != 1 ;not female
 			return actorList[z]
 		endif
@@ -3917,8 +3914,8 @@ bool Function CounterRape()
 			endIf
 		endif
 	;flip all actor submissive Status
-	int z 
-		while z <= actorList.length
+	int z
+		while z < actorList.length
 			if CurrentThread.GetSubmissive(actorList[z]) ;is submissive
 				CurrentThread.SetIsSubmissive(actorList[z], false)
 				printdebug("Counter Rape! :" + actorList[z].getdisplayname() + " Flipped to Aggressor")
@@ -3942,10 +3939,10 @@ bool Function CounterRape()
 endfunction
 
 Float Function CounterRapeChance(actor char)
-	string charname = char.getdisplayname() || char.isplayerteammate()
-	if char == PlayerRef
+	if char == PlayerRef || char.isplayerteammate()
 		return 0
 	EndIf
+	string charname = char.getdisplayname()
 	int z 
 	while z < linearscenecounterrapechance.length
 		string[] item = stringutil.split(linearscenecounterrapechance[z],"|")
@@ -4210,9 +4207,9 @@ if char.isweapondrawn()
 endif
 Endfunction
 
-Bool Function HasOSLAroused()
-	Bool found = PO3_SKSEFunctions.IsPluginFound("OSLAroused.esp")
-	PrintDebug("HasOSLAroused: Plugin check returned " + found)
+Bool Function HasAnyArousalMod()
+	Bool found = HentairimArousal.IsPresent()
+	PrintDebug("HasAnyArousalMod: " + found)
 	return found
 EndFunction
 
@@ -4420,11 +4417,7 @@ Bool Function NPCCanBeProcessed(Actor char)
 EndFunction
 
 Float Function GetActorArousal(Actor char)
-	if HasOSLAroused()
-		return OSLArousedNative.GetArousal(char)		
-	else 
-		return char.GetFactionRank(slaArousal) as float
-	endif
+	return HentairimArousal.GetArousal(char)
 Endfunction
 String Function GetStringAsset(String ContentType , String StringListKey)
 	PrintDebug("[GetStringAsset] Called with ContentType=" + ContentType + " | Key=" + StringListKey)
@@ -4502,7 +4495,7 @@ endfunction
 
 Function RemoveDoNotDisturbSpell(Actor Char)
 	if DoNotDisturbSpell
-		if !Char.hasspell(DoNotDisturbSpell)
+		if Char.hasspell(DoNotDisturbSpell)
 			Char.Removespell(DoNotDisturbSpell)
 		EndIf
 	endif

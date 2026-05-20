@@ -21,11 +21,12 @@ Scriptname sslExpressionUtil Hidden
 
 
 Function SmoothSetModifier(Actor act, Int mod1, Int str_dest, float strModifier = 1.0) global
-	
+	Spell ExpressionsSpell = Game.GetFormFromFile(0x800, "HentairimExpressions.esp") as Spell
+	if !Act.hasspell(ExpressionsSpell)
 		mod1 = PapyrusUtil.ClampInt(mod1, 0, 13)
 		str_dest = (str_dest * strModifier) as Int
 		MfgConsoleFuncExt.SetModifier(act,mod1,str_dest, 1)
-
+	endif
 EndFunction
 
 ;Aah 0    BigAah 1

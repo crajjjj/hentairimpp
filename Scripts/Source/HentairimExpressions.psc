@@ -152,9 +152,7 @@ Event OnUpdate()
 			PhaseLookup = LabelGroup + Phase
 	
 			printdebug("Expression Looking up : " + PhaseLookup)
-			PhaseExpressionsArr = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,Phaselookup,"") ,",")
-;-----------------------------START CYCLE RUNNING EXPRESSION PHASES------------------------------	
-
+;-----------------------------START CYCLE RUNNING EXPRESSION PHASES------------------------------
 			PhaseExpressionsArr = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,Phaselookup,"") ,",")
 			variance = PhaseExpressionsArr[32] as int
 				
@@ -239,7 +237,7 @@ Event OnUpdate()
 			int modifier = PhaseExpressionsArr[ExpressionIndex + 16] as int 
 			
 			float modifierspeed 
-			if expressionindex == 8  && expressionindex == 11
+			if expressionindex == 8 || expressionindex == 11
 				modifierspeed = 0
 			else
 				modifierspeed = Speed
@@ -350,7 +348,6 @@ printdebug("------------------Initialize Hentai Expressions Configs and Forms St
 	Masks = papyrusutil.stringsplit(JsonUtil.GetStringValue(MasksFile,"masks","") ,",")
 	Maskslots = papyrusutil.stringsplit(JsonUtil.GetStringValue(MasksFile,"maskslots","") ,",")
 	exclude = papyrusutil.stringsplit(JsonUtil.GetStringValue(MasksFile,"exclude","") ,",")
-	Maskslots = papyrusutil.stringsplit(JsonUtil.GetStringValue(MasksFile,"maskslots","") ,",")
 	enabletongue =  JsonUtil.GetIntValue(ConfigFile, "enabletongue" ,0)
 	fhutonguetype = JsonUtil.GetIntValue(ConfigFile, "fhutonguetype" ,0)
 	removetongueonblowjob = JsonUtil.GetIntValue(ConfigFile, "removetongueonblowjob" ,0)
@@ -457,10 +454,7 @@ EndFunction
 
 Function RemoveTongue()
 
-if !isplayer
-return
-endif
-if HasMFEE && MFEEAddTongue 
+if HasMFEE && MFEEAddTongue
 	MFEEAddTongue = false
 else
 	if EquippedTongue()
@@ -497,7 +491,11 @@ string Maskname
 
 	while slotindex < slotlength
 		Mask = char.GetWornForm(Armor.GetMaskForSlot(Maskslots[slotindex] as int)) as armor
-		Maskname = Mask.getname()
+		if Mask
+			Maskname = Mask.getname()
+		else
+			Maskname = ""
+		endif
 		excludeindex = 0
 		maskindex = 0
 		
@@ -566,8 +564,9 @@ String Function GetPrimaryLabel()
 endfunction
 
 int function  GetFullEnjoyment()
-	CurrentThread.GetEnjoyment(actorref)
-	printdebug("Enjoyment : " + CurrentThread.GetEnjoyment(actorref))
+	int enjoyment = CurrentThread.GetEnjoyment(actorref) as int
+	printdebug("Enjoyment : " + enjoyment)
+	return enjoyment
 endfunction
 
 bool IsOrgasming
