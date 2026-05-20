@@ -43,7 +43,11 @@ Function ModifyArousal(Actor who, Float value) Global
 	if !who
 		return
 	endif
-	if SupportsSLANG()
+	Quest sla = GetFramework()
+	if !sla
+		return
+	endif
+	if (sla as slaframeworkscr).GetVersion() > 20200000
 		int handle = ModEvent.Create("slaModArousalEffect")
 		if handle
 			ModEvent.PushForm(handle, who)
@@ -53,9 +57,6 @@ Function ModifyArousal(Actor who, Float value) Global
 			ModEvent.Send(handle)
 		endif
 	else
-		Quest sla = GetFramework()
-		if sla
-			(sla as slaframeworkscr).UpdateActorExposure(who, value as int)
-		endif
+		(sla as slaframeworkscr).UpdateActorExposure(who, Math.Floor(value) as int)
 	endif
 EndFunction
