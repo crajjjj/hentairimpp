@@ -99,8 +99,10 @@ Event OnUpdate()
 		return
 	endif
 	
-	while MasterScript.isupdating() ;wait for director to finish updating
+	int failsafe = 0
+	while MasterScript.isupdating() && failsafe < 50 ;wait for director to finish updating
 		Utility.wait(0.1)
+		failsafe += 1
 		printdebug("Waiting for Director to finish Updating")
 	endwhile
 		
@@ -528,10 +530,10 @@ endfunction
 
 Bool Function HasDeviousGag(Actor char)
 	if has_MagicEffect(char, 0x2b077, "Devious Devices - Integration.esm")
-	
-			return true
-		endif
-endfunction
+		return true
+	endif
+	return false
+EndFunction
 
 bool function has_MagicEffect(actor a, int id, string filename)
 	MagicEffect ME = get_form(id, filename) as MagicEffect

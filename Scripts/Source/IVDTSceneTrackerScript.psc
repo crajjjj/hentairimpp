@@ -665,8 +665,10 @@ if actorWithSceneTrackerSpell == mainFemaleActor
 		SomeoneNeedstoOrgasm = false
 	endif
 	
-	while MasterScript.isUpdating() ;wait for director to finish updating
+	int failsafe = 0
+	while MasterScript.isUpdating() && failsafe < 50 ;wait for director to finish updating
 		Utility.wait(0.1)
+		failsafe += 1
 		printdebug("Waiting for Director to finish Updating")
 	endwhile
 	

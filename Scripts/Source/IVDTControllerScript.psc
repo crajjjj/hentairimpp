@@ -2094,22 +2094,37 @@ endfunction
 
 ;----------------HENTAIRIM LABEL FUNCTIONs===============
 string function GetStimulationlabel(actor char)
+	if !CurrentThread
+		return ""
+	endif
 	return Stimulationlabelarr[CurrentThread.GetPositionIdx(char)]
 endfunction
 
 string function GetPenisActionLabel(actor char)
+	if !CurrentThread
+		return ""
+	endif
 	return PenisActionLabelarr[CurrentThread.GetPositionIdx(char)]
 endfunction
 
 string function GetOralLabel(actor char)
+	if !CurrentThread
+		return ""
+	endif
 	return OralLabelarr[CurrentThread.GetPositionIdx(char)]
 endfunction
 
 string function GetPenetrationLabel(actor char)
+	if !CurrentThread
+		return ""
+	endif
 	return PenetrationLabelarr[CurrentThread.GetPositionIdx(char)]
 endfunction
 
 string function GetEndingLabel(actor char)
+	if !CurrentThread
+		return ""
+	endif
 	return EndingLabelarr[CurrentThread.GetPositionIdx(char)]
 endfunction
 
@@ -2178,6 +2193,9 @@ int[] Function GetActorInteractiontypes(actor char)
 	;SLPP function to find all interaction types from actor Point of view.
 	;clear array
 	int[] ActorInteractiontypes
+	if !CurrentThread
+		return ActorInteractiontypes
+	endif
 	int z = 0
 	while z < actorlist.Length
 		if actorlist[z] != char
@@ -2195,8 +2213,10 @@ int[] Function GetActorPartnerInteractiontypes(actor char)
 	;SLPP function to find all interaction types from actor's partner Point of view.
 	;clear array
 	int[] PartnerInteractiontypes
+	if !CurrentThread
+		return PartnerInteractiontypes
+	endif
 	int z = 0
-	
 	while z < actorlist.Length
 		if actorlist[z] != char
 			PartnerInteractiontypes = papyrusutil.MergeIntArray(PartnerInteractiontypes , currentthread.GetInteractionTypes(actorlist[z], char ) , true)
@@ -3989,8 +4009,8 @@ String Function GetTagsForSpecificPlay(String Type)
 	elseif Type == "Anal"
 		return "~1asap,~2asap,~3asap,~4asap,~5asap,~1afap,~2afap,~3afap,~4afap,~5afap,~6afap,~7afap"
 	endif
-
-Endfunction
+	return ""
+EndFunction
 
 bool Function StartForeplayScene()
 

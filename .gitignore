@@ -20,3 +20,5 @@ cmake-build*
 
 # Skyrim archive files
 *.bsa
+.claude
+.claude/settings.local.json

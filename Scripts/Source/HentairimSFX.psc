@@ -878,6 +878,11 @@ EndFunction
 Bool Function UpdateFuckingPartner()
     PrintDebug(actorname +" UpdateFuckingPartner - Starting partner search.")
 
+    if currentthread == None || !currentthread.IsInteractionRegistered()
+        PrintDebug(actorname + " UpdateFuckingPartner - Interaction not registered, skipping.")
+        return false
+    endif
+
     FuckingPartner = None
     FuckingPartnerInteractionType = 0
     int[] Interactionarr
