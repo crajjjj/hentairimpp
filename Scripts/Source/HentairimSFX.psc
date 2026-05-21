@@ -1267,9 +1267,8 @@ int Function GetLegacyStagesCount(String asScene)
 EndFunction
 
 float Function GetAnimationSpeed()
-return AnimSpeedHelper.GetAnimationSpeed(game.getplayer() , true)
-
-endFunction
+	return HentairimAnimSpeed.GetSpeed(game.getplayer(), true)
+EndFunction
 int soundinstance
 
 

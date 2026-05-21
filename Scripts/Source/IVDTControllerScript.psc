@@ -2737,7 +2737,7 @@ absolute: time in seconds is fixed or not, if nonzero then it takes exactly this
  /;
 
 Function SaveStageSpeed()
-	jsonutil.SetFloatValue("HentairimDirector/StageSpeed.json",SexlabRegistry.GetSceneName(CurrentSceneID) +"|"+CurrentStageNum,AnimSpeedHelper.GetAnimationSpeed(PlayerRef, false))	
+	jsonutil.SetFloatValue("HentairimDirector/StageSpeed.json",SexlabRegistry.GetSceneName(CurrentSceneID) +"|"+CurrentStageNum,HentairimAnimSpeed.GetSpeed(PlayerRef, false))	
 	Announce("Stage Speed Saved")
 endfunction
 
@@ -2748,7 +2748,7 @@ if Speed > 0
 	printdebug("Applying Stage Speed to all Actors")
 	int z = 0
 	while z < actorList.length
-		AnimSpeedHelper.SetAnimationSpeed(actorList[z], speed, 0.5, 0)
+		HentairimAnimSpeed.SetSpeed(actorList[z], speed, 0.5, 0)
 		z += 1
 	endwhile
 else
@@ -2761,7 +2761,7 @@ endfunction
 Function ResetAnimationSpeed()
 	int z = 0
 	while z < actorList.length
-		AnimSpeedHelper.SetAnimationSpeed(actorList[z], 1.0, 0.5, 0)
+		HentairimAnimSpeed.SetSpeed(actorList[z], 1.0, 0.5, 0)
 		z += 1
 	endwhile
 	
