@@ -152,6 +152,7 @@ Endfunction
 Function PerformInitialization()
 	; Register globally whenever the script is first initialized
 	RegisterForTheEventsWeNeed()
+	WarnedSexLabScalingConflict = false ;re-warn about scaling conflict once per game session
 	playerref = game.getplayer() ;player
 	;lactating spell
 	OninusLactisLactatingSpell = Game.GetFormFromFile(0x85C, "Hentairim Director.esp") as Spell
@@ -235,11 +236,14 @@ Event DirectorStageStart(string eventName, string argString, float argNum, form 
 		actorlist = currentthread.Getpositions()
 		ProcessedSpontaneousOrgasm = false ;enable spontaneous orgasm again
 		;trigger update for creatureframework
-		if currentSceneID != CurrentThread.GetActiveScene() 
+		if currentSceneID != CurrentThread.GetActiveScene()
 			IsStageOffset = false
 			DoneLinearSceneOrgasm = false
 			TriggerUpdateforCreatures()
 			utility.wait(1.5)
+		endif
+		;scaling tracks its own scene id — OnUpdate may refresh currentSceneID before this event runs
+		if enablehentairimscaling == 1 && LastScaledSceneID != CurrentThread.GetActiveScene()
 			ResolveScaling()
 		endif
 	endif
@@ -350,7 +354,8 @@ Function DirectorEndScene()
 		RestoreArmor(playerref)
 	endif
 	
-	if enablehentairimscaling == 1
+	;restore scales whenever we actually changed them, even if the toggle was turned off mid-scene
+	if actorlistOriginalScalearr.Length > 0
 		ResetScaling()
 	endif
 	if resetsexassignment == 1
@@ -367,6 +372,7 @@ Function DirectorEndScene()
 	CurrentThread = none
 	CurrentSceneID = none
 	CurrentStageID = none
+	LastScaledSceneID = ""
 	ProcessedOriginalScale = false
 	PlayerInScene = false
 	LastManualAdvancetime = 0 
@@ -614,11 +620,8 @@ Event OnUpdate()
 		updatelabelsarr(CurrentSceneID, GetLegacyStageNum(CurrentSceneID, CurrentStageID))
 		LoadStageSpeed() ;load saved speed
 		LoadSchlongAdjustment() ;load saved schlong adjustments
-		if enablehentairimscaling == 1 && currentSceneID != CurrentThread.GetActiveScene()
-			ResetScaling()
-			HentairimScaling()
-		EndIf
-		
+		;scene-change rescaling is handled in DirectorStageStart via LastScaledSceneID
+
 		LastLabelUpdateTime = CurrentThread.GetTimeTotal()
 		UpdateNow = false
 
@@ -1130,6 +1133,7 @@ Bool function VictimPCCanOrgasm()
 EndFunction
 
 Bool VictimPCCanOrgasm
+Bool WarnedSexLabScalingConflict
 ;Director's Thread Control when Player's Thread just started.
 Function RunThreadControl()
 
@@ -1140,6 +1144,10 @@ Function RunThreadControl()
 	
 	if enablehentairimscaling == 1
 		printdebug("Thread Control running Scaling")
+		if !WarnedSexLabScalingConflict && !sslSystemConfig.GetSettingBool("bDisableScale")
+			WarnedSexLabScalingConflict = true
+			Debug.Notification("Hentairim: SexLab scaling is also active! Enable 'Disable Scaling / CTD Fix' in SexLab MCM to avoid size glitches")
+		endif
 		HentairimScaling()
 	EndIf
 	
@@ -1149,7 +1157,11 @@ EndFunction
 ;--------------------------------HENTAIRIM SCALING FUNCTIONS START--------------------------------;
 Float[] actorlistOriginalScalearr
 bool ProcessedOriginalScale
+String LastScaledSceneID
 Function HentairimScaling()
+	LastScaledSceneID = CurrentThread.GetActiveScene()
+	;always rebuild from scratch — stale entries from an aborted scene would restore wrong scales
+	actorlistOriginalScalearr = PapyrusUtil.FloatArray(0)
 	int z = 0
 	while z < actorlist.Length
 
@@ -1186,28 +1198,32 @@ EndFunction
 
 
 Function ResetScaling()
+	int count = actorlistOriginalScalearr.Length
+	if actorlist.Length < count
+		count = actorlist.Length
+	endif
 	int z = 0
-	while z < actorlistOriginalScalearr.Length
-	actorlist[z].SetScale(actorlistOriginalScalearr[z])
-	
-	z += 1
+	while z < count
+		if actorlist[z] != none
+			actorlist[z].SetScale(actorlistOriginalScalearr[z])
+		endif
+		z += 1
 	EndWhile
-	
-	actorlistOriginalScalearr = new float[1]
-	actorlistOriginalScalearr = papyrusutil.RemoveFloat(actorlistOriginalScalearr,actorlistOriginalScalearr[0])
 
+	actorlistOriginalScalearr = PapyrusUtil.FloatArray(0)
 EndFunction
 
 
 float function GetAnimSpecialScaleValue(int position)
-SexLabRegistry.GetSceneName(CurrentSceneID)
+;use the live scene id — CurrentSceneID may not be refreshed yet when a stage-start rescale runs
+string SceneID = CurrentThread.GetActiveScene()
 float ScaleValue = 1.0
 
-if (SexLabRegistry.IsSceneTag(CurrentSceneID, "Bigguy") || SexLabRegistry.IsSceneTag(CurrentSceneID, "Smallguy")) && position != 0
+if (SexLabRegistry.IsSceneTag(SceneID, "Bigguy") || SexLabRegistry.IsSceneTag(SceneID, "Smallguy")) && position != 0
 		scalevalue = 1.15
-elseif	SexLabRegistry.IsSceneTag(CurrentSceneID, "Shota") && Position > 0 ;there is no shota on 1st position
+elseif	SexLabRegistry.IsSceneTag(SceneID, "Shota") && Position > 0 ;there is no shota on 1st position
 	int actorcount = CurrentThread.GetPositions().length
-	if ActorCount == 2 || (Position == 2 && SexLabRegistry.IsSceneTag(CurrentSceneID, "smff")) || (Position > 0 && SexLabRegistry.IsSceneTag(CurrentSceneID, "smsmf")) || (Position == 3 && SexLabRegistry.IsSceneTag(CurrentSceneID, "smfff")) || (Position == 1 && SexLabRegistry.IsSceneTag(CurrentSceneID, "msmf"))
+	if ActorCount == 2 || (Position == 2 && SexLabRegistry.IsSceneTag(SceneID, "smff")) || (Position > 0 && SexLabRegistry.IsSceneTag(SceneID, "smsmf")) || (Position == 3 && SexLabRegistry.IsSceneTag(SceneID, "smfff")) || (Position == 1 && SexLabRegistry.IsSceneTag(SceneID, "msmf"))
 		scalevalue = 0.8
 	endif
 endif
