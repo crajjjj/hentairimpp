@@ -4153,6 +4153,10 @@ Bool function HasOninusLactis()
 	endif
 endfunction
 
+Bool function HasMME()
+	return Game.GetModbyName("MilkModNEW.esp") != 255
+endfunction
+
 Bool Function HasLactatingSpell(actor char)
 	return char.hasspell(OninusLactisLactatingSpell)
 EndFunction
@@ -4186,6 +4190,22 @@ endif
 		lactatelevel = levelduringnonintense
 	endif
 	
+	;----- Milk Mod Economy (MME) integration -----
+	;When MME is installed, the nipple squirt is driven by the milkmaid's milk reserve:
+	;only squirt when she is at least 20% full, and drain her reserve when she squirts.
+	bool isMME = HasMME()
+	if isMME
+		float milkMax = MME_Storage.getMilkMaximum(Playerref)
+		int MMEFullness = 0
+		if milkMax > 0.0
+			MMEFullness = Math.Ceiling(MME_Storage.getMilkCurrent(Playerref) / milkMax * 100)
+		endif
+		if MMEFullness <= 20
+			PrintDebug("Hentairim Director : MME milk too low (" + MMEFullness + "%). Skipping nipple squirt.")
+			return
+		endif
+	endif
+
 	;if HasOninusLactisNG()
     OninusLactis squirtScript = OninusLactisQuest as OninusLactis
 	
@@ -4197,11 +4217,57 @@ endif
 		if adventurecall.BodyEffectsAndDrugsEnabled()
 			Adventurecall.ModBoobsSensitivity(Playerref, Adventurecall.GetSensitiveBodySatiatePerStage())
 		endif
+
+		;drain the MME milk reserve proportionally to this squirt
+		if isMME
+			DrainMMEMilkForSquirt(lactatetime, lactatelevel)
+		endif
 	else
 		printdebug("Something is Wrong! OninusLactis Script is none! ReInstall Oninus Lactis NG!")
 	endif
 	
 endfunction
+
+Function DrainMMEMilkForSquirt(int lactatetime, int lactatelevel)
+	Float curMilk = MME_Storage.getMilkCurrent(Playerref)
+
+	; percent-of-current drain, scaled by intensity and squirt duration
+	Float basePct = Utility.RandomFloat(0.20, 0.50)
+
+	; intensityScale in [0..1] : non-intense squirts drain less than intense ones
+	Float intensityScale = 1.0
+	if levelduringintense > 0
+		intensityScale = (lactatelevel as Float) / (levelduringintense as Float)
+		if intensityScale < 0.0
+			intensityScale = 0.0
+		elseif intensityScale > 1.0
+			intensityScale = 1.0
+		endif
+	endif
+
+	; timeScale in [0.25..1.0] : longer squirts drain more
+	Float timeScale = 1.0
+	if maxtimetolactate > 0
+		timeScale = (lactatetime as Float) / (maxtimetolactate as Float)
+		if timeScale < 0.25
+			timeScale = 0.25
+		elseif timeScale > 1.0
+			timeScale = 1.0
+		endif
+	endif
+
+	Float drain = curMilk * basePct * intensityScale * timeScale
+	if drain > curMilk
+		drain = curMilk
+	elseif drain < 0.0
+		drain = 0.0
+	endif
+
+	if drain > 0.0
+		MME_Storage.changeMilkCurrent(Playerref, 0.0 - drain, false)
+		PrintDebug("Hentairim Director : MME drained " + drain + " milk (was " + curMilk + ").")
+	endif
+EndFunction
 
 Function SetAnimType(actor char, Int Value)
 ; combining with OAR , set various animations by replacing GetAttention01.hkx

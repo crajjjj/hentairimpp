@@ -156,6 +156,27 @@ Event OnUpdate()
 			printdebug("Expression Looking up : " + PhaseLookup)
 ;-----------------------------START CYCLE RUNNING EXPRESSION PHASES------------------------------
 			PhaseExpressionsArr = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,Phaselookup,"") ,",")
+			;guard: if this phase's entry is missing/malformed in the json, remap to a role-valid generic moan face instead of indexing a length-1 array out of range
+			if PhaseExpressionsArr.length < 33
+				string fallbackExpr = "grunt"
+				if Isintense()
+					fallbackExpr = "intensegrunt"
+				endif
+				printdebug(" Expressions : " + Phaselookup + " missing/malformed in " + ExpressionsFile + " (" + PhaseExpressionsArr.length + " items). Falling back to generic " + fallbackExpr + " face.")
+				Phaselookup = Role + fallbackExpr + ExpressionGroup + Phase
+				PhaseExpressionsArr = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,Phaselookup,"") ,",")
+			endif
+			;final safety net: if even the fallback is missing, skip this cycle to avoid out-of-range access
+			if PhaseExpressionsArr.length < 33
+				printdebug(" Expressions : fallback " + Phaselookup + " also missing in " + ExpressionsFile + ". Skipping expression this cycle.")
+				if phase >= 5
+					phase = 1
+				else
+					phase += 1
+				endif
+				RegisterForSingleUpdate(GetExpressionUpdateSeconds())
+				return
+			endif
 			variance = PhaseExpressionsArr[32] as int
 				
 		if PhaseExpressionsArr.length < 32
