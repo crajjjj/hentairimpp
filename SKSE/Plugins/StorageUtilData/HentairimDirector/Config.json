@@ -31,7 +31,12 @@
       "foreplaytitfuckweight":15,
       "foreplayfootjobweight":7,
       "foreplayblowjobweight":15,
+      "usephysicslabels":1,
       "printdebug":0
+   },
+   "float":{
+      "physicsfastvelocity":25.0,
+      "physicsslowfactor":0.65
    },
    "string":{
       "linearscenefinalstageorgasmfactor":"skaven|1.2,riekling|1.2,goblin|1.2,gargoyle|1.3,gorilla|1.7,chimp|1.3,bear|1.4,demon|2.2,ogrim|1.8,ogre|2,ghoul|1.4,orc|1.5,horse|2.5,centurion|1.5,werebear|1.7,werewolf|1.5,troll|2.5,brute|2.5,Spider|1.5,exalted|1.5,chaurus|2,Giant|1.5,Skeever|1.2,Seeker|1.8",

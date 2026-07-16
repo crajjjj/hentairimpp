@@ -937,6 +937,7 @@ int enablestagemaker
 int chancetousecustomstage
 int usephysicslabels
 float physicsfastvelocity
+float physicsslowfactor
 ;Hentairim combatrape.json
 String CombatRapeConfigFile  = "HentairimDirector/CombatRape.json"
 
@@ -1077,6 +1078,12 @@ Function InitializeDirectorConfigs()
 	enableprintdebug = JsonUtil.GetIntValue(ControlConfigFile, "printdebug" ,0)
 	usephysicslabels = JsonUtil.GetIntValue(ControlConfigFile, "usephysicslabels" ,1)
 	physicsfastvelocity = JsonUtil.GetFloatValue(ControlConfigFile, "physicsfastvelocity" ,25.0)
+	physicsslowfactor = JsonUtil.GetFloatValue(ControlConfigFile, "physicsslowfactor" ,0.65)
+	if physicsslowfactor > 1.0
+		physicsslowfactor = 1.0
+	elseif physicsslowfactor < 0.1
+		physicsslowfactor = 0.1
+	endif
 	linearscenefinalstageorgasmfactor = papyrusutil.stringsplit(JsonUtil.GetstringValue(ControlConfigFile, "linearscenefinalstageorgasmfactor" ,0) ,",")
 	linearsceneextendstagechance = papyrusutil.stringsplit(JsonUtil.GetstringValue(ControlConfigFile, "linearsceneextendstagechance" ,0) ,",")
 	linearscenecounterrapechance = papyrusutil.stringsplit(JsonUtil.GetstringValue(ControlConfigFile, "linearscenecounterrapechance" ,0) ,",")
@@ -2041,6 +2048,13 @@ Function UpdateLabelsArr(string anim , int stage)
 	EndingLabelarr  =HentairimTags.GetEndingLabelarr(anim , stage , actorlist)
 
 	ApplyClimaxAnnotations(anim)
+
+	;snapshot the tag-derived labels so the physics overlay can revert when contact ends
+	BaseStimulationlabelarr = CopyStringArray(Stimulationlabelarr)
+	BasePenisActionLabelarr = CopyStringArray(PenisActionLabelarr)
+	BaseOralLabelarr = CopyStringArray(OralLabelarr)
+	BasePenetrationLabelarr = CopyStringArray(PenetrationLabelarr)
+
 	ApplyPhysicsLabels()
 
 	Labelsconcat = "1" +Stimulationlabelarr[0] + "1" + PenisActionLabelarr[0] + "1" + OralLabelarr[0] + "1" + PenetrationLabelarr[0] + "1" + EndingLabelarr[0]
@@ -2077,13 +2091,34 @@ endfunction
 ;where detection is unavailable. The F/S prefix comes from live contact velocity, so
 ;intensity tracks the real animation speed including user AnimSpeed overrides.
 float[] PhysVelEnvelope
+bool[] PhysVelFast
+;tag-derived baselines, snapshotted per stage in UpdateLabelsArr; the overlay always
+;derives from these so labels revert when contact ends and posture info survives
+string[] BaseStimulationlabelarr
+string[] BasePenisActionLabelarr
+string[] BaseOralLabelarr
+string[] BasePenetrationLabelarr
+
+string[] Function CopyStringArray(string[] src)
+	string[] dst = PapyrusUtil.StringArray(src.Length)
+	int i = 0
+	while i < src.Length
+		dst[i] = src[i]
+		i += 1
+	endwhile
+	return dst
+EndFunction
 
 Bool Function ApplyPhysicsLabels()
 	if usephysicslabels != 1 || CurrentThread == none || !CurrentThread.IsInteractionRegistered()
 		return false
 	endif
+	if BasePenetrationLabelarr.Length != actorlist.Length || PenetrationLabelarr.Length != actorlist.Length
+		return false
+	endif
 	if PhysVelEnvelope.Length != actorlist.Length
 		PhysVelEnvelope = PapyrusUtil.FloatArray(actorlist.Length)
+		PhysVelFast = PapyrusUtil.BoolArray(actorlist.Length)
 	endif
 
 	bool changed = false
@@ -2107,66 +2142,74 @@ Bool Function ApplyPhysicsLabels()
 			actor oralTarget = none
 			float maxVel = 0.0
 
-			int y = 0
-			while y < actorlist.Length
-				actor p = actorlist[y]
-				if p != none && p != pos
-					;interactions where pos is the acting/receiving position
-					int[] posActs = CurrentThread.GetInteractionTypes(pos, p)
-					int k = 0
-					while k < posActs.Length
-						int t = posActs[k]
-						if t == 1 ;vaginal - pos penetrated by p
-							recvVag = true
-							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, p, 1))
-						elseif t == 2 ;anal
-							recvAnal = true
-							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, p, 2))
-						elseif t == 4 ;grinding against pos
-							recvGrind = true
-							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, p, 4))
-						elseif t == 3 ;pos licking/sucking p
-							mouthOral = true
-							if oralTarget == none
-								oralTarget = p
-							endif
-							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, p, 3))
-						elseif t == 5 ;pos deepthroating p
-							mouthDeep = true
-						elseif t == 7 ;pos licking p's shaft
-							mouthShaft = true
-						elseif t == 10 ;kissing
-							mouthKis = true
-						endif
-						k += 1
-					endwhile
-					;interactions where p is the position - what pos is doing to p
-					int[] partActs = CurrentThread.GetInteractionTypes(p, pos)
-					k = 0
-					while k < partActs.Length
-						int t = partActs[k]
-						if t == 1 ;p penetrated vaginally by pos
-							givesVag = true
-							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(p, pos, 1))
-						elseif t == 2
-							givesAnal = true
-							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(p, pos, 2))
-						elseif t == 3 ;p sucking pos off
-							penisSucked = true
-							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(p, pos, 3))
-						elseif t == 5 ;p deepthroating pos
-							penisDeep = true
-						elseif t == 9 ;p handjobbing pos
-							penisHJ = true
-							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(p, pos, 9))
-						elseif t == 8 ;p footjobbing pos
-							penisFJ = true
-						endif
-						k += 1
-					endwhile
+			;one flags call per position replaces the pairwise GetInteractionTypes sweep;
+			;partner lookups and velocity reads only for the types the flags say are active
+			bool[] f = CurrentThread.GetCurrentInteractionFlags(pos)
+			if f.Length >= 28
+				recvVag = f[15] ;pVaginal
+				recvAnal = f[16] ;pAnal
+				recvGrind = f[4] ;pGrinding
+				mouthOral = f[12] ;aOral
+				mouthDeep = f[14] ;aDeepthroat
+				mouthShaft = f[13] ;aLickingShaft
+				mouthKis = f[9] ;bKissing
+				givesVag = f[26] ;aVaginal
+				givesAnal = f[27] ;aAnal
+				penisSucked = f[23] ;pOral
+				penisDeep = f[24] ;pDeepthroat
+				penisHJ = f[19] ;pHandJob
+				penisFJ = f[20] ;pFootJob
+
+				actor prt
+				if recvVag
+					prt = CurrentThread.GetPartnerByTypeRev(pos, 1) ;whoever penetrates pos
+					if prt != none
+						maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, prt, 1))
+					endif
 				endif
-				y += 1
-			endwhile
+				if recvAnal
+					prt = CurrentThread.GetPartnerByTypeRev(pos, 2)
+					if prt != none
+						maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, prt, 2))
+					endif
+				endif
+				if recvGrind
+					prt = CurrentThread.GetPartnerByTypeRev(pos, 4)
+					if prt != none
+						maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, prt, 4))
+					endif
+				endif
+				if mouthOral
+					oralTarget = CurrentThread.GetPartnerByTypeRev(pos, 3) ;whom pos licks/sucks
+					if oralTarget != none
+						maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, oralTarget, 3))
+					endif
+				endif
+				if givesVag
+					prt = CurrentThread.GetPartnerByType(pos, 1) ;receiver pos penetrates
+					if prt != none
+						maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(prt, pos, 1))
+					endif
+				endif
+				if givesAnal
+					prt = CurrentThread.GetPartnerByType(pos, 2)
+					if prt != none
+						maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(prt, pos, 2))
+					endif
+				endif
+				if penisSucked
+					prt = CurrentThread.GetPartnerByType(pos, 3) ;whoever sucks pos off
+					if prt != none
+						maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(prt, pos, 3))
+					endif
+				endif
+				if penisHJ
+					prt = CurrentThread.GetPartnerByType(pos, 9)
+					if prt != none
+						maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(prt, pos, 9))
+					endif
+				endif
+			endif
 
 			;velocity envelope: a single sample can land on a thrust reversal (~0),
 			;so decay the previous peak instead of trusting the instantaneous value
@@ -2175,37 +2218,47 @@ Bool Function ApplyPhysicsLabels()
 				env = maxVel
 			endif
 			PhysVelEnvelope[z] = env
+			;hysteresis: rise to F at the threshold, fall back to S only well below it,
+			;so a sub-second thrust cycle sampled at 0.5s does not flap the prefix
+			if !PhysVelFast[z] && env >= physicsfastvelocity
+				PhysVelFast[z] = true
+			elseif PhysVelFast[z] && env < physicsfastvelocity * physicsslowfactor
+				PhysVelFast[z] = false
+			endif
 			string sp = "S"
-			if env >= physicsfastvelocity
+			if PhysVelFast[z]
 				sp = "F"
 			endif
 
+			;each label derives from the immutable tag baseline: overlays apply on top,
+			;and when contact ends newlbl falls back to the baseline, reverting the array
+
 			;Penetration label (receiver view)
-			string cur = PenetrationLabelarr[z]
-			string newlbl = cur
+			string base = BasePenetrationLabelarr[z]
+			string newlbl = base
 			if recvVag && recvAnal
 				newlbl = sp + "DP"
 			elseif recvVag
-				if cur == "SCG" || cur == "FCG"
+				if base == "SCG" || base == "FCG"
 					newlbl = sp + "CG" ;keep cowgirl posture from tags
 				else
 					newlbl = sp + "VP"
 				endif
 			elseif recvAnal
-				if cur == "SAC" || cur == "FAC"
+				if base == "SAC" || base == "FAC"
 					newlbl = sp + "AC"
 				else
 					newlbl = sp + "AP"
 				endif
 			endif
-			if newlbl != cur
+			if newlbl != PenetrationLabelarr[z]
 				PenetrationLabelarr[z] = newlbl
 				changed = true
 			endif
 
 			;Penis action label (giver view)
-			cur = PenisActionLabelarr[z]
-			newlbl = cur
+			base = BasePenisActionLabelarr[z]
+			newlbl = base
 			if givesVag
 				newlbl = sp + "DV"
 			elseif givesAnal
@@ -2219,14 +2272,14 @@ Bool Function ApplyPhysicsLabels()
 			elseif penisFJ
 				newlbl = sp + "FJ"
 			endif
-			if newlbl != cur
+			if newlbl != PenisActionLabelarr[z]
 				PenisActionLabelarr[z] = newlbl
 				changed = true
 			endif
 
 			;Oral label (mouth view) - same priority order as the tag version
-			cur = OralLabelarr[z]
-			newlbl = cur
+			base = BaseOralLabelarr[z]
+			newlbl = base
 			if mouthKis
 				newlbl = "KIS"
 			elseif mouthDeep
@@ -2242,18 +2295,18 @@ Bool Function ApplyPhysicsLabels()
 			elseif mouthShaft
 				newlbl = "SBJ"
 			endif
-			if newlbl != cur
+			if newlbl != OralLabelarr[z]
 				OralLabelarr[z] = newlbl
 				changed = true
 			endif
 
 			;Stimulation label - grinding is the only physical signal for it
-			cur = Stimulationlabelarr[z]
-			newlbl = cur
-			if recvGrind && cur != "BST"
+			base = BaseStimulationlabelarr[z]
+			newlbl = base
+			if recvGrind && base != "BST"
 				newlbl = sp + "ST"
 			endif
-			if newlbl != cur
+			if newlbl != Stimulationlabelarr[z]
 				Stimulationlabelarr[z] = newlbl
 				changed = true
 			endif
