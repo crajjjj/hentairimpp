@@ -2116,7 +2116,7 @@ Bool Function ApplyPhysicsLabels()
 	if BasePenetrationLabelarr.Length != actorlist.Length || PenetrationLabelarr.Length != actorlist.Length
 		return false
 	endif
-	if PhysVelEnvelope.Length != actorlist.Length
+	if PhysVelEnvelope.Length != actorlist.Length || PhysVelFast.Length != actorlist.Length
 		PhysVelEnvelope = PapyrusUtil.FloatArray(actorlist.Length)
 		PhysVelFast = PapyrusUtil.BoolArray(actorlist.Length)
 	endif
