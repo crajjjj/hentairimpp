@@ -222,6 +222,8 @@ Sound GapeHuge
 int usevelocity
 int useadaptivevelocity
 int usecontactsfx
+int usecontactvictimreactions
+int victiminsertiontrauma
 int timestosearch
 
 Bool SearchingFoundVelocity
@@ -230,6 +232,8 @@ volume = JsonUtil.GetIntValue(ConfigFile, "volume" ,100) as float /100
 usevelocity = JsonUtil.GetIntValue(ConfigFile, "usevelocity" ,0)
 useadaptivevelocity = JsonUtil.GetIntValue(ConfigFile, "useadaptivevelocity" ,0)
 usecontactsfx = JsonUtil.GetIntValue(ConfigFile, "usecontactsfx" ,1)
+usecontactvictimreactions = JsonUtil.GetIntValue(ConfigFile, "usecontactvictimreactions" ,1)
+victiminsertiontrauma = JsonUtil.GetIntValue(ConfigFile, "victiminsertiontrauma" ,5)
 timestosearch = JsonUtil.GetIntValue(ConfigFile, "timestosearch" ,0)
 enableprintdebug = JsonUtil.GetIntValue(ConfigFile, "printdebug" ,0)
 
@@ -1001,6 +1005,13 @@ Function ProcessContactEdges()
 			if LastPenReceiver == none
 				LastPenReceiver = CurrentThread.GetPartnerByType(actorref, 2)
 			endif
+			;forced entry on a victim: deposit a trauma hit through the resistance
+			;debt channel; the receiver's resistance instance applies it with its
+			;victim and HugePP multipliers on its next tick
+			if usecontactvictimreactions == 1 && victiminsertiontrauma > 0 && LastPenReceiver != none && IsVictim(LastPenReceiver)
+				printdebug("Contact edge: forced insertion on victim, trauma debt +" + victiminsertiontrauma)
+				StorageUtil.SetFloatValue(LastPenReceiver, "ActorResistanceDebt", StorageUtil.GetFloatValue(LastPenReceiver, "ActorResistanceDebt", 0) + victiminsertiontrauma)
+			endif
 			;insertion one-shot only when the label system hasn't classified this as penetration yet
 			if LastPenReceiver != none && !IsGivingVaginalPenetration() && !IsGivingAnalPenetration()
 				printdebug("Contact edge: insertion detected")
@@ -1033,8 +1044,14 @@ Function ProcessContactEdges()
 			if !IsKissing()
 				Actor kisPartner = CurrentThread.GetPartnerByTypeRev(actorref, 10)
 				if kisPartner != none && CurrentThread.GetPositionIdx(kisPartner) < position && Kissing != none
-					printdebug("Contact edge: kissing started")
-					PlayContactSound(Kissing, actorref)
+					;no tender kiss cue when either side is a victim - aggressive
+					;animations bring faces together without it being romantic
+					if usecontactvictimreactions == 1 && (IsVictim || IsVictim(kisPartner))
+						printdebug("Contact edge: kissing suppressed, victim in pair")
+					else
+						printdebug("Contact edge: kissing started")
+						PlayContactSound(Kissing, actorref)
+					endif
 				endif
 			endif
 		endif

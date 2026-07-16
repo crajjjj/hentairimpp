@@ -3,6 +3,8 @@
       "enablesfx":1,
       "usevelocity":1,
       "usecontactsfx":1,
+      "usecontactvictimreactions":1,
+      "victiminsertiontrauma":5,
 	  "useadaptivevelocity":1,
 	  "timestosearch":3,
       "volume":60,
