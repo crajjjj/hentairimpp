@@ -967,16 +967,21 @@ Function PlaySound(Sound theSound, Actor actorMakingSound, Int requiredChemistry
 		WritetoErrorlogs("IVDT","Sound Name :" + debugtext + " is None")
 		Return
 	EndIf
+	If TrackerRemoved ;scene is over - don't start queued voice lines
+		Return
+	EndIf
 	; male or other playing sound
-	if actorMakingSound != mainFemaleActor && (currentlyPlayingSoundCountMale == 0 || soundpriority > 1) ;others playing sound. 
+	if actorMakingSound != mainFemaleActor && (currentlyPlayingSoundCountMale == 0 || soundpriority > 1) ;others playing sound.
 		Printdebug("Non PC Playing voice : " + debugtext)
 		currentlyPlayingSoundCountMale = currentlyPlayingSoundCountMale + 1
-		
+
 		;lower down voice of female moan when male says something
-	
-		
-		MasterScript.PlaySound(soundToPlay, actorMakingSound, waitForCompletion)
-	
+
+
+		if !TrackerRemoved
+			MasterScript.PlaySound(soundToPlay, actorMakingSound, waitForCompletion)
+		endif
+
 		currentlyPlayingSoundCountMale = currentlyPlayingSoundCountMale - 1
 		
 
@@ -1006,9 +1011,11 @@ Function PlaySound(Sound theSound, Actor actorMakingSound, Int requiredChemistry
 			LowPrioritySounds.mute()
 			HighPrioritySounds.mute()
 		endif
-		
-		MasterScript.PlaySound(soundToPlay, actorMakingSound, waitForCompletion)
-	
+
+		if !TrackerRemoved ;re-check: the scene may have ended during the pre-delay wait
+			MasterScript.PlaySound(soundToPlay, actorMakingSound, waitForCompletion)
+		endif
+
 		currentlyPlayingSoundCount = currentlyPlayingSoundCount - 1
 
 		if currentlyPlayingSoundCount ==0
