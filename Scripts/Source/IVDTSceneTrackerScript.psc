@@ -230,8 +230,12 @@ Function PerformInitialization()
 
 	ShouldInitialize = false
 
+	;unmute all four categories - self-heal in case a previous scene's end
+	;was interrupted between its mute and its delayed unmute
 	LowPrioritySounds.UnMute()
+	HighPrioritySounds.UnMute()
 	LowPrioritySoundsMale.UnMute()
+	HighPrioritySoundsMale.UnMute()
 	CurrentThread = Sexlab.GetThreadByActor(actorWithSceneTrackerSpell)
 	ThreadID = CurrentThread.GetThreadID()
 
@@ -893,18 +897,32 @@ RegisterForSingleUpdate(nextUpdateInterval)
 ;miscutil.PrintConsole ("-----------------End CYCLE-------------------- " )
 EndEvent
 
+bool TrackerRemoved = false
 Function RemoveTracker()
 	; Debug.Notification("Removing IVDT tracker from " + mainFemaleActor.GetActorBase().GetName())
 
+	TrackerRemoved = true
 	StorageUtil.unSetStringvalue(None, "Scenario")
+	;silence voice lines still playing or about to start behind a pre-delay -
+	;instances are never tracked, so a moan fired just before the end would
+	;otherwise keep playing after the actors have dressed up
+	LowPrioritySounds.Mute()
+	HighPrioritySounds.Mute()
+	LowPrioritySoundsMale.Mute()
+	HighPrioritySoundsMale.Mute()
 	ASLRemoveOrgasmSSquirt()
 	ASLRemoveThickCumleak()
 	ASLRemoveCumPool()
 	;Perform needed clean up first
 	UnregisterForUpdate()
-	LowPrioritySounds.UnMute()
 	StorageUtil.Unsetintvalue(MainFemaleActor ,"HandlingMaleOrgasm")
 	StorageUtil.Unsetintvalue(MainFemaleActor ,"Orgasming")
+	;let in-flight descriptors run out silenced, then restore the categories
+	Utility.Wait(4.0)
+	LowPrioritySounds.UnMute()
+	HighPrioritySounds.UnMute()
+	LowPrioritySoundsMale.UnMute()
+	HighPrioritySoundsMale.UnMute()
 	;Do this very last, but make sure to do it (it's what actually removes the tracker)
 	actorWithSceneTrackerSpell.RemoveSpell(SceneTrackerSpell)
 	
@@ -992,9 +1010,10 @@ Function PlaySound(Sound theSound, Actor actorMakingSound, Int requiredChemistry
 		MasterScript.PlaySound(soundToPlay, actorMakingSound, waitForCompletion)
 	
 		currentlyPlayingSoundCount = currentlyPlayingSoundCount - 1
-		
+
 		if currentlyPlayingSoundCount ==0
-			if !IsUnconcious()
+			;TrackerRemoved: don't undo RemoveTracker's end-of-scene silence window
+			if !IsUnconcious() && !TrackerRemoved
 				LowPrioritySounds.unmute()
 				HighPrioritySounds.unmute()
 			endif
