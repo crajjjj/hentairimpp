@@ -134,11 +134,9 @@ Event OnUpdate()
 		else
 			PlayHentairimSFX()
 		endif
-		if Isintense
-			updateRate = 0.05
-		else
-			updateRate = 0.1
-		endif
+		;0.1s for intense too (was 0.05): 20Hz polling doubled the busiest
+		;script's load for no audible gain - thrust detection works at 10Hz
+		updateRate = 0.1
 	else
 		updateRate = 3
 	endif
