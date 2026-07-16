@@ -2,6 +2,7 @@
    "int":{
       "enablesfx":1,
       "usevelocity":1,
+      "usecontactsfx":1,
 	  "useadaptivevelocity":1,
 	  "timestosearch":3,
       "volume":60,

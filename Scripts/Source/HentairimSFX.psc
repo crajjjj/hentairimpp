@@ -962,21 +962,41 @@ Bool PrevContactPenetrating
 Bool PrevContactKissing
 Bool PrevContactSucked
 Float ContactPenStartTime
-Int ContactPenMissPolls
+Float ContactPenLastSeen
+Float ContactKisLastSeen
+Float ContactSuckLastSeen
 Actor LastPenReceiver
+int contactsoundinstance
+
+;edge one-shots get their own instance slot: PlaySound()'s soundinstance is the
+;channel for the continuous body SFX, and sharing it would cut those off
+Function PlayContactSound(Sound theSound, Actor actorMakingSound)
+	if contactsoundinstance != 0
+		Sound.StopInstance(contactsoundinstance)
+	endif
+	contactsoundinstance = theSound.Play(actorMakingSound)
+EndFunction
 
 Function ProcessContactEdges()
 	if usecontactsfx != 1 || position <= 0 || CurrentThread == none || !CurrentThread.IsInteractionRegistered()
 		return
 	endif
+	bool[] f = CurrentThread.GetCurrentInteractionFlags(actorref)
+	if f.Length < 28
+		return
+	endif
+	;falling edges are debounced by elapsed scene time, not poll count - callers
+	;poll anywhere between 0.05s and 3s, so counting polls made the window wildly
+	;inconsistent; 0.5s tolerates brief detection dropouts at every cadence
+	float now = CurrentThread.GetTimeTotal()
 
 	;--- penetration edges (actorref as giver) ---
-	bool pen = CurrentThread.HasInteractionType(1, none, actorref) || CurrentThread.HasInteractionType(2, none, actorref)
+	bool pen = f[26] || f[27] ;aVaginal / aAnal
 	if pen
-		ContactPenMissPolls = 0
+		ContactPenLastSeen = now
 		if !PrevContactPenetrating
 			PrevContactPenetrating = true
-			ContactPenStartTime = CurrentThread.GetTimeTotal()
+			ContactPenStartTime = now
 			LastPenReceiver = CurrentThread.GetPartnerByType(actorref, 1)
 			if LastPenReceiver == none
 				LastPenReceiver = CurrentThread.GetPartnerByType(actorref, 2)
@@ -986,55 +1006,67 @@ Function ProcessContactEdges()
 				printdebug("Contact edge: insertion detected")
 				Sound InsertionSFX = GetSlushSoundToPlay(1, 0.5)
 				if InsertionSFX != none
-					InsertionSFX.Play(LastPenReceiver)
+					PlayContactSound(InsertionSFX, LastPenReceiver)
 				endif
 			endif
 		endif
-	elseif PrevContactPenetrating
-		ContactPenMissPolls += 1
-		if ContactPenMissPolls >= 3 ;debounce brief detection dropouts
-			PrevContactPenetrating = false
-			;pull-out gape after sustained penetration
-			if LastPenReceiver != none && CurrentThread.GetTimeTotal() - ContactPenStartTime >= 4.0
-				printdebug("Contact edge: pull-out detected, playing gape")
-				if IsHugePP && GapeHuge != none
-					GapeHuge.Play(LastPenReceiver)
-				elseif GapeAverage != none
-					GapeAverage.Play(LastPenReceiver)
-				endif
+	elseif PrevContactPenetrating && now - ContactPenLastSeen >= 0.5
+		PrevContactPenetrating = false
+		;pull-out gape after sustained penetration, measured to the last confirmed
+		;contact so the debounce window doesn't inflate the requirement
+		if LastPenReceiver != none && ContactPenLastSeen - ContactPenStartTime >= 4.0
+			printdebug("Contact edge: pull-out detected, playing gape")
+			if IsHugePP && GapeHuge != none
+				PlayContactSound(GapeHuge, LastPenReceiver)
+			elseif GapeAverage != none
+				PlayContactSound(GapeAverage, LastPenReceiver)
 			endif
 		endif
 	endif
 
 	;--- kissing start (fire from the higher position of the pair so it plays once) ---
-	bool kis = CurrentThread.HasInteractionType(10, actorref, none)
-	if kis && !PrevContactKissing && !IsKissing()
-		Actor kisPartner = CurrentThread.GetPartnerByTypeRev(actorref, 10)
-		if kisPartner != none && CurrentThread.GetPositionIdx(kisPartner) < position && Kissing != none
-			printdebug("Contact edge: kissing started")
-			Kissing.Play(actorref)
-		endif
-	endif
-	PrevContactKissing = kis
-
-	;--- blowjob/deepthroat start (actorref getting sucked) ---
-	bool deep = CurrentThread.HasInteractionType(5, none, actorref)
-	bool suck = deep || CurrentThread.HasInteractionType(3, none, actorref)
-	if suck && !PrevContactSucked && !IsGettingSuckedoff()
-		Actor sucker = CurrentThread.GetPartnerByType(actorref, 3)
-		if sucker == none
-			sucker = CurrentThread.GetPartnerByType(actorref, 5)
-		endif
-		if sucker != none
-			printdebug("Contact edge: oral started")
-			if deep && FastBlowjob != none
-				FastBlowjob.Play(sucker)
-			elseif SlowBlowjob != none
-				SlowBlowjob.Play(sucker)
+	bool kis = f[9] ;bKissing
+	if kis
+		ContactKisLastSeen = now
+		if !PrevContactKissing
+			PrevContactKissing = true
+			if !IsKissing()
+				Actor kisPartner = CurrentThread.GetPartnerByTypeRev(actorref, 10)
+				if kisPartner != none && CurrentThread.GetPositionIdx(kisPartner) < position && Kissing != none
+					printdebug("Contact edge: kissing started")
+					PlayContactSound(Kissing, actorref)
+				endif
 			endif
 		endif
+	elseif PrevContactKissing && now - ContactKisLastSeen >= 0.5
+		PrevContactKissing = false
 	endif
-	PrevContactSucked = suck
+
+	;--- blowjob/deepthroat start (actorref getting sucked) ---
+	bool deep = f[24] ;pDeepthroat
+	bool suck = deep || f[23] ;pOral
+	if suck
+		ContactSuckLastSeen = now
+		if !PrevContactSucked
+			PrevContactSucked = true
+			if !IsGettingSuckedoff()
+				Actor sucker = CurrentThread.GetPartnerByType(actorref, 3)
+				if sucker == none
+					sucker = CurrentThread.GetPartnerByType(actorref, 5)
+				endif
+				if sucker != none
+					printdebug("Contact edge: oral started")
+					if deep && FastBlowjob != none
+						PlayContactSound(FastBlowjob, sucker)
+					elseif SlowBlowjob != none
+						PlayContactSound(SlowBlowjob, sucker)
+					endif
+				endif
+			endif
+		endif
+	elseif PrevContactSucked && now - ContactSuckLastSeen >= 0.5
+		PrevContactSucked = false
+	endif
 EndFunction
 ;-------------------------------Contact Edge SFX END---------------------------------
 
