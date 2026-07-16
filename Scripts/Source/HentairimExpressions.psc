@@ -791,6 +791,7 @@ Int ThreadID = -1
 Faction HentairimBroken
 bool IsVictim
 float DirectorLastLabelTime
+float DirectorLastPhysicsLabelTime
 
 Function HentairimPrepare()
 	printdebug("--------------------Hentairim Prepare Initial Data START-----------------")
@@ -812,8 +813,8 @@ Function HentairimUpdateStageData()
 	printdebug("Updating Labels")
 
 	printdebug("DirectorLastLabelTimeCheck: local=" + DirectorLastLabelTime + " master=" + MasterScript.GetDirectorLastLabelTime())
-	if DirectorLastLabelTime != MasterScript.GetDirectorLastLabelTime()	
-		printdebug("Animation or Stage is Different. Updating Stage Data")
+	if DirectorLastLabelTime != MasterScript.GetDirectorLastLabelTime() || DirectorLastPhysicsLabelTime != MasterScript.GetDirectorLastPhysicsLabelTime()
+		printdebug("Animation, Stage or Physics Labels Different. Updating Stage Data")
 		CurrentSceneID = CurrentThread.GetActiveScene()
 		currentStageID = CurrentThread.GetActiveStage()
 		currentstage = GetLegacyStageNum(CurrentSceneID, currentStageID)
@@ -851,6 +852,7 @@ Function HentairimUpdateStageData()
 			unequipmask(actorref)
 		endif
 		DirectorLastLabelTime = MasterScript.GetDirectorLastLabelTime()
+		DirectorLastPhysicsLabelTime = MasterScript.GetDirectorLastPhysicsLabelTime()
 	endif
 
 endfunction

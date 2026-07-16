@@ -113,10 +113,12 @@ Event OnUpdate()
 	HentairimUpdateStageData()
 	;Ends if player is no longer in scene but magic stuck for some reason
 	if Masterscript.AnimationisEnding()
-		PrintDebug("Ending Animation. remove Hentairim SFX")	
+		PrintDebug("Ending Animation. remove Hentairim SFX")
 		RemoveSFX()
 	endif
-	
+
+	ProcessContactEdges()
+
 	if position > 0
 		;p
 		
@@ -219,6 +221,7 @@ Sound GapeHuge
 
 int usevelocity
 int useadaptivevelocity
+int usecontactsfx
 int timestosearch
 
 Bool SearchingFoundVelocity
@@ -226,6 +229,7 @@ Function InitializeConfigandForms()
 volume = JsonUtil.GetIntValue(ConfigFile, "volume" ,100) as float /100
 usevelocity = JsonUtil.GetIntValue(ConfigFile, "usevelocity" ,0)
 useadaptivevelocity = JsonUtil.GetIntValue(ConfigFile, "useadaptivevelocity" ,0)
+usecontactsfx = JsonUtil.GetIntValue(ConfigFile, "usecontactsfx" ,1)
 timestosearch = JsonUtil.GetIntValue(ConfigFile, "timestosearch" ,0)
 enableprintdebug = JsonUtil.GetIntValue(ConfigFile, "printdebug" ,0)
 
@@ -615,9 +619,10 @@ Function CalculateAndPlayVelocitySFX()
 					TimetoThrust += updateRate
 				endif
 			endif
-			
+
+			ProcessContactEdges()
 			Utility.wait(updateRate)
-			
+
 			LastVelocity = velocity
 	endwhile
 
@@ -866,9 +871,10 @@ Function RunAdaptiveVelocitySFX()
 					TimetoThrust += updateRate
 				endif
 			endif
-			
+
+			ProcessContactEdges()
 			Utility.wait(updateRate)
-			
+
 			LastVelocity = velocity
 	endwhile
 
@@ -941,12 +947,96 @@ EndFunction
 
 Function PlayHentairimSFX()
 	printdebug("Playing Normal Hentairim SFX")
-	while !Masterscript.AnimationisEnding() && DirectorLastLabelTime == MasterScript.GetDirectorLastLabelTime() && SFXtoPlay
-		
+	while !Masterscript.AnimationisEnding() && DirectorLastLabelTime == MasterScript.GetDirectorLastLabelTime() && DirectorLastPhysicsLabelTime == MasterScript.GetDirectorLastPhysicsLabelTime() && SFXtoPlay
+		ProcessContactEdges()
 		PlaySound( SFXtoPlay , actorlist[0] , true)
 		utility.wait(0.1)
 	endwhile
 EndFunction
+
+;-------------------------------Contact Edge SFX START---------------------------------
+;One-shot sounds fired the moment SLPP node collision starts or stops a contact,
+;instead of waiting for the next stage/label refresh. Labels and velocity loops
+;handle the steady state; this covers the transitions they cannot see.
+Bool PrevContactPenetrating
+Bool PrevContactKissing
+Bool PrevContactSucked
+Float ContactPenStartTime
+Int ContactPenMissPolls
+Actor LastPenReceiver
+
+Function ProcessContactEdges()
+	if usecontactsfx != 1 || position <= 0 || CurrentThread == none || !CurrentThread.IsInteractionRegistered()
+		return
+	endif
+
+	;--- penetration edges (actorref as giver) ---
+	bool pen = CurrentThread.HasInteractionType(1, none, actorref) || CurrentThread.HasInteractionType(2, none, actorref)
+	if pen
+		ContactPenMissPolls = 0
+		if !PrevContactPenetrating
+			PrevContactPenetrating = true
+			ContactPenStartTime = CurrentThread.GetTimeTotal()
+			LastPenReceiver = CurrentThread.GetPartnerByType(actorref, 1)
+			if LastPenReceiver == none
+				LastPenReceiver = CurrentThread.GetPartnerByType(actorref, 2)
+			endif
+			;insertion one-shot only when the label system hasn't classified this as penetration yet
+			if LastPenReceiver != none && !IsGivingVaginalPenetration() && !IsGivingAnalPenetration()
+				printdebug("Contact edge: insertion detected")
+				Sound InsertionSFX = GetSlushSoundToPlay(1, 0.5)
+				if InsertionSFX != none
+					InsertionSFX.Play(LastPenReceiver)
+				endif
+			endif
+		endif
+	elseif PrevContactPenetrating
+		ContactPenMissPolls += 1
+		if ContactPenMissPolls >= 3 ;debounce brief detection dropouts
+			PrevContactPenetrating = false
+			;pull-out gape after sustained penetration
+			if LastPenReceiver != none && CurrentThread.GetTimeTotal() - ContactPenStartTime >= 4.0
+				printdebug("Contact edge: pull-out detected, playing gape")
+				if IsHugePP && GapeHuge != none
+					GapeHuge.Play(LastPenReceiver)
+				elseif GapeAverage != none
+					GapeAverage.Play(LastPenReceiver)
+				endif
+			endif
+		endif
+	endif
+
+	;--- kissing start (fire from the higher position of the pair so it plays once) ---
+	bool kis = CurrentThread.HasInteractionType(10, actorref, none)
+	if kis && !PrevContactKissing && !IsKissing()
+		Actor kisPartner = CurrentThread.GetPartnerByTypeRev(actorref, 10)
+		if kisPartner != none && CurrentThread.GetPositionIdx(kisPartner) < position && Kissing != none
+			printdebug("Contact edge: kissing started")
+			Kissing.Play(actorref)
+		endif
+	endif
+	PrevContactKissing = kis
+
+	;--- blowjob/deepthroat start (actorref getting sucked) ---
+	bool deep = CurrentThread.HasInteractionType(5, none, actorref)
+	bool suck = deep || CurrentThread.HasInteractionType(3, none, actorref)
+	if suck && !PrevContactSucked && !IsGettingSuckedoff()
+		Actor sucker = CurrentThread.GetPartnerByType(actorref, 3)
+		if sucker == none
+			sucker = CurrentThread.GetPartnerByType(actorref, 5)
+		endif
+		if sucker != none
+			printdebug("Contact edge: oral started")
+			if deep && FastBlowjob != none
+				FastBlowjob.Play(sucker)
+			elseif SlowBlowjob != none
+				SlowBlowjob.Play(sucker)
+			endif
+		endif
+	endif
+	PrevContactSucked = suck
+EndFunction
+;-------------------------------Contact Edge SFX END---------------------------------
 
 Function HentairimSFXRefreshSound()
 ;refreshing
@@ -1074,17 +1164,23 @@ bool isintense
 string PrevPenisActionLabel
 Function HentairimUpdateStageData()
 
-	if DirectorLastLabelTime != MasterScript.GetDirectorLastLabelTime() || UpdateNow
-		printdebug("Animation or Stage is Different. Updating Stage Data")
-		
+	bool stagechanged = DirectorLastLabelTime != MasterScript.GetDirectorLastLabelTime() || UpdateNow
+	bool physicschanged = DirectorLastPhysicsLabelTime != MasterScript.GetDirectorLastPhysicsLabelTime()
+	if stagechanged || physicschanged
+		printdebug("Animation, Stage or Physics Labels Different. Updating Stage Data")
+
 		CurrentSceneID = CurrentThread.GetActiveScene()
 		currentStageID = CurrentThread.GetActiveStage()
 		currentstage = GetLegacyStageNum(CurrentSceneID, currentStageID)
 
 		UpdateLabels(actorref)
 		isintense = Isintense()
-		StopPenisVelocitySearch = false
-		SearchingFoundVelocity = false
+		if stagechanged
+			;only a real stage change may re-arm the SOSBend calibration search;
+			;physics label changes would otherwise re-trigger it constantly
+			StopPenisVelocitySearch = false
+			SearchingFoundVelocity = false
+		endif
 		if isintense
 			CanPlayReverseIn = false
 		else
@@ -1101,6 +1197,7 @@ Function HentairimUpdateStageData()
 		
 		UpdateNow = false
 		DirectorLastLabelTime = MasterScript.GetDirectorLastLabelTime()
+		DirectorLastPhysicsLabelTime = MasterScript.GetDirectorLastPhysicsLabelTime()
 		PrintDebug("Stage Should play Impact : " + StageShouldplayClap)
 		
 	endif
@@ -1118,6 +1215,7 @@ string Labelsconcat
 
 
 float DirectorLastLabelTime
+float DirectorLastPhysicsLabelTime
 Function UpdateLabels(actor char)
  printdebug("Updating Labels")
  PrevPenisActionLabel = PenisActionLabel

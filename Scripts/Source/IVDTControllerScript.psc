@@ -37,6 +37,7 @@ string EndingLabel
 string PenetrationLabel
 float TotalSecondsFucked
 Float LastLabelUpdateTime
+Float LastPhysicsLabelTime ;mid-stage physics label changes; separate from the stage-change latch above
 Bool GotFucked
 Idle IdleAttention ;main idle to be used for Seduce to Replace with OAR
 Faction AnimType
@@ -289,6 +290,7 @@ Event DirectorSceneStart(string eventName, string argString, float argNum, form 
 	isAlmostFinalStage = isAlmostFinalStage()
 	IsFinalStage = IsFinalStage()
 	LastLabelUpdateTime = CurrentThread.GetTimeTotal()
+	LastPhysicsLabelTime = 0
 	actorList = CurrentThread.GetPositions()
 	PCPosition =  CurrentThread.GetPositionIdx(Playerref)
 	if isLinearScene()
@@ -365,6 +367,7 @@ Function DirectorEndScene()
 	isEnding = true
 	PCInSex = false
 	LastLabelUpdateTime = 0
+	LastPhysicsLabelTime = 0
 	StorageUtil.SetIntValue(None, "DirectorAdvanceStage", 0)
 	
 	;unset Hentairim Director Custom Scene Variable
@@ -629,6 +632,13 @@ Event OnUpdate()
 			printdebug("SMP reset triggered.")
 			consoleutil.executecommand("SMP Reset")
 		endif
+	elseif usephysicslabels == 1 && CurrentThread.GetStatus() == 3 && CurrentThread.IsInteractionRegistered()
+		;contacts and thrust speed change mid-stage - refresh labels from physics and
+		;signal opted-in consumers through the physics-time bump; the stage latch
+		;(LastLabelUpdateTime) must only move on real stage changes
+		if ApplyPhysicsLabels()
+			LastPhysicsLabelTime = CurrentThread.GetTimeTotal()
+		endif
 	endif
 
 	;=== Continue Scene or End ===
@@ -643,6 +653,10 @@ endfunction
 
 float function GetDirectorLastLabelTime()
 	return LastLabelUpdateTime
+endfunction
+
+float function GetDirectorLastPhysicsLabelTime()
+	return LastPhysicsLabelTime
 endfunction
 Function AddTrackerToSceneIfApplicable(string argString)
 	
@@ -921,6 +935,8 @@ int enableprintdebug
 
 int enablestagemaker
 int chancetousecustomstage
+int usephysicslabels
+float physicsfastvelocity
 ;Hentairim combatrape.json
 String CombatRapeConfigFile  = "HentairimDirector/CombatRape.json"
 
@@ -1059,6 +1075,8 @@ Function InitializeDirectorConfigs()
 	foreplayfootjobweight = JsonUtil.GetIntValue(ControlConfigFile, "foreplayfootjobweight" ,0)
 	foreplayblowjobweight = JsonUtil.GetIntValue(ControlConfigFile, "foreplayblowjobweight" ,0)
 	enableprintdebug = JsonUtil.GetIntValue(ControlConfigFile, "printdebug" ,0)
+	usephysicslabels = JsonUtil.GetIntValue(ControlConfigFile, "usephysicslabels" ,1)
+	physicsfastvelocity = JsonUtil.GetFloatValue(ControlConfigFile, "physicsfastvelocity" ,25.0)
 	linearscenefinalstageorgasmfactor = papyrusutil.stringsplit(JsonUtil.GetstringValue(ControlConfigFile, "linearscenefinalstageorgasmfactor" ,0) ,",")
 	linearsceneextendstagechance = papyrusutil.stringsplit(JsonUtil.GetstringValue(ControlConfigFile, "linearsceneextendstagechance" ,0) ,",")
 	linearscenecounterrapechance = papyrusutil.stringsplit(JsonUtil.GetstringValue(ControlConfigFile, "linearscenecounterrapechance" ,0) ,",")
@@ -2021,15 +2039,243 @@ Function UpdateLabelsArr(string anim , int stage)
 	OralLabelarr  = HentairimTags.GetOralLabelarr(anim , stage , actorlist)
 	PenetrationLabelarr = HentairimTags.GetPenetrationLabelarr(anim , stage , actorlist)
 	EndingLabelarr  =HentairimTags.GetEndingLabelarr(anim , stage , actorlist)
-	
+
+	ApplyClimaxAnnotations(anim)
+	ApplyPhysicsLabels()
+
 	Labelsconcat = "1" +Stimulationlabelarr[0] + "1" + PenisActionLabelarr[0] + "1" + OralLabelarr[0] + "1" + PenetrationLabelarr[0] + "1" + EndingLabelarr[0]
- 
+
 	printdebug("Stimulationlabelarr : " + Stimulationlabelarr)
 	printdebug("PenisActionLabelarr : " + PenisActionLabelarr)
 	printdebug("OralLabelarr : " + OralLabelarr)
 	printdebug("PenetrationLabelarr : " + PenetrationLabelarr)
 	printdebug("EndingLabelarr : " + EndingLabelarr)
 endfunction
+
+Function ApplyClimaxAnnotations(string anim)
+	;SLSB climax annotations fill EN labels for stages the Hentairim tags don't cover
+	if CurrentStageID == ""
+		return
+	endif
+	int[] climaxers = SexlabRegistry.GetClimaxingActors(anim, CurrentStageID)
+	if !climaxers || climaxers.Length == 0
+		return
+	endif
+	int z = 0
+	while z < EndingLabelarr.Length
+		if EndingLabelarr[z] == "LDI" && climaxers.Find(z) > -1
+			EndingLabelarr[z] = "ENI" ;registry doesn't distinguish inside/outside; ENI is the common case
+		endif
+		z += 1
+	endwhile
+endfunction
+
+;--------------------------------PHYSICS LABEL BRIDGE START--------------------------------;
+;When SLPP node-collision detection is registered for the thread, overlay the tag-derived
+;labels with what is physically happening. Tags stay as fallback for anything physics
+;cannot see (titfuck, posture nuance like cowgirl, ending inside/outside) and for scenes
+;where detection is unavailable. The F/S prefix comes from live contact velocity, so
+;intensity tracks the real animation speed including user AnimSpeed overrides.
+float[] PhysVelEnvelope
+
+Bool Function ApplyPhysicsLabels()
+	if usephysicslabels != 1 || CurrentThread == none || !CurrentThread.IsInteractionRegistered()
+		return false
+	endif
+	if PhysVelEnvelope.Length != actorlist.Length
+		PhysVelEnvelope = PapyrusUtil.FloatArray(actorlist.Length)
+	endif
+
+	bool changed = false
+	int z = 0
+	while z < actorlist.Length
+		actor pos = actorlist[z]
+		if pos != none
+			bool recvVag = false
+			bool recvAnal = false
+			bool recvGrind = false
+			bool givesVag = false
+			bool givesAnal = false
+			bool penisSucked = false
+			bool penisDeep = false
+			bool penisHJ = false
+			bool penisFJ = false
+			bool mouthKis = false
+			bool mouthDeep = false
+			bool mouthOral = false
+			bool mouthShaft = false
+			actor oralTarget = none
+			float maxVel = 0.0
+
+			int y = 0
+			while y < actorlist.Length
+				actor p = actorlist[y]
+				if p != none && p != pos
+					;interactions where pos is the acting/receiving position
+					int[] posActs = CurrentThread.GetInteractionTypes(pos, p)
+					int k = 0
+					while k < posActs.Length
+						int t = posActs[k]
+						if t == 1 ;vaginal - pos penetrated by p
+							recvVag = true
+							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, p, 1))
+						elseif t == 2 ;anal
+							recvAnal = true
+							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, p, 2))
+						elseif t == 4 ;grinding against pos
+							recvGrind = true
+							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, p, 4))
+						elseif t == 3 ;pos licking/sucking p
+							mouthOral = true
+							if oralTarget == none
+								oralTarget = p
+							endif
+							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(pos, p, 3))
+						elseif t == 5 ;pos deepthroating p
+							mouthDeep = true
+						elseif t == 7 ;pos licking p's shaft
+							mouthShaft = true
+						elseif t == 10 ;kissing
+							mouthKis = true
+						endif
+						k += 1
+					endwhile
+					;interactions where p is the position - what pos is doing to p
+					int[] partActs = CurrentThread.GetInteractionTypes(p, pos)
+					k = 0
+					while k < partActs.Length
+						int t = partActs[k]
+						if t == 1 ;p penetrated vaginally by pos
+							givesVag = true
+							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(p, pos, 1))
+						elseif t == 2
+							givesAnal = true
+							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(p, pos, 2))
+						elseif t == 3 ;p sucking pos off
+							penisSucked = true
+							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(p, pos, 3))
+						elseif t == 5 ;p deepthroating pos
+							penisDeep = true
+						elseif t == 9 ;p handjobbing pos
+							penisHJ = true
+							maxVel = MaxAbsVelocity(maxVel, CurrentThread.GetVelocity(p, pos, 9))
+						elseif t == 8 ;p footjobbing pos
+							penisFJ = true
+						endif
+						k += 1
+					endwhile
+				endif
+				y += 1
+			endwhile
+
+			;velocity envelope: a single sample can land on a thrust reversal (~0),
+			;so decay the previous peak instead of trusting the instantaneous value
+			float env = PhysVelEnvelope[z] * 0.7
+			if maxVel > env
+				env = maxVel
+			endif
+			PhysVelEnvelope[z] = env
+			string sp = "S"
+			if env >= physicsfastvelocity
+				sp = "F"
+			endif
+
+			;Penetration label (receiver view)
+			string cur = PenetrationLabelarr[z]
+			string newlbl = cur
+			if recvVag && recvAnal
+				newlbl = sp + "DP"
+			elseif recvVag
+				if cur == "SCG" || cur == "FCG"
+					newlbl = sp + "CG" ;keep cowgirl posture from tags
+				else
+					newlbl = sp + "VP"
+				endif
+			elseif recvAnal
+				if cur == "SAC" || cur == "FAC"
+					newlbl = sp + "AC"
+				else
+					newlbl = sp + "AP"
+				endif
+			endif
+			if newlbl != cur
+				PenetrationLabelarr[z] = newlbl
+				changed = true
+			endif
+
+			;Penis action label (giver view)
+			cur = PenisActionLabelarr[z]
+			newlbl = cur
+			if givesVag
+				newlbl = sp + "DV"
+			elseif givesAnal
+				newlbl = sp + "DA"
+			elseif penisDeep
+				newlbl = "FMF"
+			elseif penisSucked
+				newlbl = sp + "MF"
+			elseif penisHJ
+				newlbl = sp + "HJ"
+			elseif penisFJ
+				newlbl = sp + "FJ"
+			endif
+			if newlbl != cur
+				PenisActionLabelarr[z] = newlbl
+				changed = true
+			endif
+
+			;Oral label (mouth view) - same priority order as the tag version
+			cur = OralLabelarr[z]
+			newlbl = cur
+			if mouthKis
+				newlbl = "KIS"
+			elseif mouthDeep
+				newlbl = "FBJ"
+			elseif mouthOral
+				if oralTarget != none && Sexlab.GetGender(oralTarget) % 2 == 1
+					newlbl = "CUN"
+				elseif sp == "F"
+					newlbl = "FBJ"
+				else
+					newlbl = "SBJ"
+				endif
+			elseif mouthShaft
+				newlbl = "SBJ"
+			endif
+			if newlbl != cur
+				OralLabelarr[z] = newlbl
+				changed = true
+			endif
+
+			;Stimulation label - grinding is the only physical signal for it
+			cur = Stimulationlabelarr[z]
+			newlbl = cur
+			if recvGrind && cur != "BST"
+				newlbl = sp + "ST"
+			endif
+			if newlbl != cur
+				Stimulationlabelarr[z] = newlbl
+				changed = true
+			endif
+		endif
+		z += 1
+	endwhile
+
+	if changed
+		Labelsconcat = "1" +Stimulationlabelarr[0] + "1" + PenisActionLabelarr[0] + "1" + OralLabelarr[0] + "1" + PenetrationLabelarr[0] + "1" + EndingLabelarr[0]
+		printdebug("Physics labels applied - Stim: " + Stimulationlabelarr + " PenisAction: " + PenisActionLabelarr + " Oral: " + OralLabelarr + " Penetration: " + PenetrationLabelarr)
+	endif
+	return changed
+EndFunction
+
+float Function MaxAbsVelocity(float current, float candidate)
+	float a = Math.abs(candidate)
+	if a > current
+		return a
+	endif
+	return current
+EndFunction
+;--------------------------------PHYSICS LABEL BRIDGE END--------------------------------;
 
 bool Function SceneisIntense()
 	return stringutil.find(Labelsconcat ,"1F") > -1
@@ -2302,7 +2548,7 @@ int Function GetFinalStageNum()
 		;look for ending
 		
 		Bool Foundending
-		int FinalStageNum = AllStages.length 
+		int FinalStageNum = AllStages.length
 		int z = AllStages.length
 		while z > 0 && !Foundending
 			string tmpendinglabel = HentairimTags.EndingLabel(CurrentSceneid , z , 0)
@@ -2312,6 +2558,25 @@ int Function GetFinalStageNum()
 			endif
 			z -= 1
 		endwhile
+
+		if !Foundending
+			;no EN tags - fall back to SLSB climax annotations from the registry
+			string[] climaxstages = SexlabRegistry.GetClimaxStages(currentsceneid, -1)
+			if climaxstages && climaxstages.Length > 0
+				int maxidx = -1
+				int c = 0
+				while c < climaxstages.Length
+					int idx = AllStages.Find(climaxstages[c])
+					if idx > maxidx
+						maxidx = idx
+					endif
+					c += 1
+				endwhile
+				if maxidx > -1
+					FinalStageNum = maxidx + 1
+				endif
+			endif
+		endif
 
 		return FinalStageNum
 	endIf

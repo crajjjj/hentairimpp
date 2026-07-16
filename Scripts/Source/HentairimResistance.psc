@@ -450,11 +450,12 @@ Function HentairimPrepare()
 
 endfunction
 float DirectorLastLabelTime
+float DirectorLastPhysicsLabelTime
 Function HentairimUpdateStageData()
 	printdebug("Hentairim Update Stage Data ")
 
-	if DirectorLastLabelTime != MasterScript.GetDirectorLastLabelTime()	
-		printdebug("Animation or Stage is Different. Updating Stage Data")
+	if DirectorLastLabelTime != MasterScript.GetDirectorLastLabelTime() || DirectorLastPhysicsLabelTime != MasterScript.GetDirectorLastPhysicsLabelTime()
+		printdebug("Animation, Stage or Physics Labels Different. Updating Stage Data")
 		CurrentSceneID = CurrentThread.GetActiveScene()
 		currentStageID = CurrentThread.GetActiveStage()
 		currentstage = GetLegacyStageNum(CurrentSceneID, currentStageID)
@@ -466,6 +467,7 @@ Function HentairimUpdateStageData()
 		printdebug("current StageID : " + currentStageID)
 		printdebug("current stage number: " + currentstage)
 		DirectorLastLabelTime = MasterScript.GetDirectorLastLabelTime()
+		DirectorLastPhysicsLabelTime = MasterScript.GetDirectorLastPhysicsLabelTime()
 	endif
 	
 endfunction
