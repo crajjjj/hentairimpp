@@ -24,7 +24,10 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-
+	;last-resort cleanup: fires whenever the spell is removed, even if the
+	;OnUpdate chain died and RemoveExpressions never ran for this instance
+	resetexpressions()
+	RemoveTongue()
 EndEvent
 
 Function PerformInitialization()
@@ -68,8 +71,14 @@ Function RegisterForTheEventsWeNeed()
 
 EndFunction
 
-Event ExpressionsSceneEnd(string eventName, string argString, float argNum, form sender);
-
+bool SceneEnded = false
+Event ExpressionsSceneEnd(string eventName, string argString, float argNum, form sender)
+	;event-driven cleanup: don't depend on the OnUpdate chain surviving to its
+	;next tick - a dropped update used to leave face and tongue stuck forever
+	if threadid == argstring
+		SceneEnded = true
+		RemoveExpressions()
+	endif
 EndEvent
 
 
@@ -94,7 +103,7 @@ Event OnUpdate()
 
 	;Ends if actor is no longer in scene but magic stuck for some reason
 
-	if MasterScript.AnimationisEnding() || !Sexlab.GetThreadByActor(actorref)
+	if SceneEnded || MasterScript.AnimationisEnding() || !Sexlab.GetThreadByActor(actorref)
 		RemoveExpressions()
 		return
 	endif
@@ -303,10 +312,16 @@ Event OnUpdate()
 		phase = 1
 	else
 		phase += 1
-	endif	
+	endif
 
+	if SceneEnded
+		;the scene ended while this cycle was mid-application - the event
+		;handler's reset already ran, so re-clean the frame we just applied
+		RemoveExpressions()
+		return
+	endif
 	RegisterForSingleUpdate(GetExpressionUpdateSeconds())
-	
+
 EndEvent
 
 
