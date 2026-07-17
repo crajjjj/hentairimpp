@@ -28,9 +28,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	;OnUpdate chain died and RemoveExpressions never ran for this instance
 	resetexpressions()
 	RemoveTongue()
-	;double-tap after any in-flight smooth transition has finished
-	Utility.Wait(1.2)
-	resetexpressions()
 EndEvent
 
 Function PerformInitialization()
@@ -332,11 +329,6 @@ EndEvent
 function RemoveExpressions()
 	resetexpressions()
 	RemoveTongue()
-	;ApplyExpressionPresetSmooth interpolates asynchronously in the MFG DLL -
-	;a transition still in flight can finish AFTER the reset and re-stick the
-	;face. Wait it out and reset a second time so the final state is neutral.
-	Utility.Wait(1.2)
-	resetexpressions()
 	Spell ExpressionsSpell = Game.GetFormFromFile(0x800, "HentairimExpressions.esp") as Spell
 	actorref.RemoveSpell(ExpressionsSpell)
 EndFunction
