@@ -1,12 +1,15 @@
 {
    "float":{
-      "pcnonintenseexpressionupdateinseconds":0.7,
-      "pcintenseexpressionupdateinseconds":0.4,
-      "npcnonintenseexpressionupdateinseconds":0.7,
-      "npcintenseexpressionupdateinseconds":0.4
+      "pcnonintenseexpressionupdateinseconds":2.1,
+      "pcintenseexpressionupdateinseconds":1.6,
+      "npcnonintenseexpressionupdateinseconds":2.1,
+      "npcintenseexpressionupdateinseconds":1.6,
+      "breathingupdateinseconds":0.55,
+      "tonguemouthopenthreshold":0.4
    },
    "int":{
       "enableexpressions":1,
+      "enablebreathing":1,
       "enablepc":1,
       "enablefemalenpc":1,
       "enablemalenpc":1,

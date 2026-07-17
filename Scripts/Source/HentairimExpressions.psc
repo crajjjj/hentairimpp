@@ -7,12 +7,8 @@ actor Actorref
 actor[] actorlist
 int position
 string role = "c"
-String[] PhaseExpressionsArr
-string PhaseLookup 
 int Phase = 1
 int ExpressionPhase
-int variance 
-float speed = 0.50
 string LabelGroup
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
@@ -99,42 +95,108 @@ Event ExpressionsOrgasm(Form akactor, Int thread)
 
 EndEvent
 
+;-----------------------Breathing micro-pass + preset cache state-----------------------
+int TicksUntilFull = 0
+int BreathBase0 = 0
+bool BreathingAllowed = false
+int enablebreathing = 1
+float breathingupdateinseconds = 0.55
+float tonguemouthopenthreshold = 0.4
+
+string CachedLabelGroup = ""
+float[] CachedPhase1
+float[] CachedPhase2
+float[] CachedPhase3
+float[] CachedPhase4
+float[] CachedPhase5
+int[] CachedVariance
+bool CacheLoadedIntense = false
+bool CacheUsedFallback = false
+float[] BlowjobOverrideF
+float[] BrokenOverrideF
+float[] TongueOutOverrideF
+float[] KisOverrideF
+float[] CunOverrideF
+
 Event OnUpdate()
 
-	;Ends if actor is no longer in scene but magic stuck for some reason
-
-	if SceneEnded || MasterScript.AnimationisEnding() || !Sexlab.GetThreadByActor(actorref)
+	if SceneEnded
 		RemoveExpressions()
 		return
 	endif
-	
+
+	bool breathingon = enablebreathing == 1 && breathingupdateinseconds > 0.0
+
+	if !breathingon || TicksUntilFull <= 0
+		FullExpressionPass()
+
+		if SceneEnded
+			;the scene ended while this cycle was mid-application - the event
+			;handler's reset already ran, so re-clean the frame we just applied
+			RemoveExpressions()
+			return
+		endif
+
+		float fullinterval = GetExpressionUpdateSeconds()
+		int fullticks = 0
+		if breathingon
+			fullticks = ((fullinterval / breathingupdateinseconds) + 0.5) as int
+		endif
+		if fullticks <= 1
+			TicksUntilFull = 0
+			RegisterForSingleUpdate(fullinterval)
+		else
+			TicksUntilFull = fullticks - 1
+			RegisterForSingleUpdate(breathingupdateinseconds)
+		endif
+	else
+		TicksUntilFull -= 1
+		BreathePass()
+
+		if SceneEnded
+			RemoveExpressions()
+			return
+		endif
+		RegisterForSingleUpdate(breathingupdateinseconds)
+	endif
+
+EndEvent
+
+Function FullExpressionPass()
+
+	;Ends if actor is no longer in scene but magic stuck for some reason
+	if MasterScript.AnimationisEnding() || !Sexlab.GetThreadByActor(actorref)
+		SceneEnded = true
+		RemoveExpressions()
+		return
+	endif
+
 	int failsafe = 0
 	while MasterScript.isupdating() && failsafe < 50 ;wait for director to finish updating
 		Utility.wait(0.1)
 		failsafe += 1
 		printdebug("Waiting for Director to finish Updating")
 	endwhile
-		
+
 	HentairimUpdateStageData()
-	
+
 	;if still orgasming, maintain orgasm face
 	if GetSecondsSinceLastOrgasm() > 4
 		IsOrgasming = false
 	endif
-	
+
 	;set Role
 	if IsVictim && !isbroken()
 		Role = "v"
 	else
 		Role = "c"
 	endif
-	
-	;Check if should add tongue or ahegao
 
+	;Check if should add tongue or ahegao
 	if !IsBroken() && HasMFEE && EnabledMFEEAhegao == 1
 		MFEEAddAhegao = false
 	endif
-		
+
 	if IsSuckingoffOther() && removetongueonblowjob == 1
 		RemoveTongue()
 		printdebug("Removing Tongue during  blowjob")
@@ -143,186 +205,351 @@ Event OnUpdate()
 		MFEEAddAhegao = true
 		printdebug("Starting MFEE Ahegao")
 	endif
-	
-	;------------------START RUNNING EXPRESSIONS--------------------
-	;-----------------------------START Looking Up Expression Array------------------------------			
+
+	;jaw gate: retry a suppressed tongue, or drop an active one whose mouth stayed closed
+	UpdateTongueJawGate()
+
 	if IsUnconcious()
-			MfgConsoleFunc.SetModifier(actorref, 0, 100) ;left blink
-			MfgConsoleFunc.SetModifier(actorref, 1, 100) ;right blink
-			MfgConsoleFunc.SetPhoneme(actorref,0,60) ; aah
-	else
-	
-			LabelGroup = Role + GetHentaiExpression() + ExpressionGroup
-	 
-			int ExpressionIndex = 0
-
-			;printdebug(ActorName + " : " + OralTagGroup + " - " + PenetrationTagGroup + " - " + PenisActionTagGroup + " - " + StimulationTagGroup + " - " + EndingTagGroup
-	
-			Speed = ExpressionSpeed()
-
-			PhaseLookup = LabelGroup + Phase
-	
-			printdebug("Expression Looking up : " + PhaseLookup)
-;-----------------------------START CYCLE RUNNING EXPRESSION PHASES------------------------------
-			PhaseExpressionsArr = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,Phaselookup,"") ,",")
-			;guard: if this phase's entry is missing/malformed in the json, remap to a role-valid generic moan face instead of indexing a length-1 array out of range
-			if PhaseExpressionsArr.length < 33
-				string fallbackExpr = "grunt"
-				if Isintense()
-					fallbackExpr = "intensegrunt"
-				endif
-				printdebug(" Expressions : " + Phaselookup + " missing/malformed in " + ExpressionsFile + " (" + PhaseExpressionsArr.length + " items). Falling back to generic " + fallbackExpr + " face.")
-				Phaselookup = Role + fallbackExpr + ExpressionGroup + Phase
-				PhaseExpressionsArr = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,Phaselookup,"") ,",")
-			endif
-			;final safety net: if even the fallback is missing, skip this cycle to avoid out-of-range access
-			if PhaseExpressionsArr.length < 33
-				printdebug(" Expressions : fallback " + Phaselookup + " also missing in " + ExpressionsFile + ". Skipping expression this cycle.")
-				if phase >= 5
-					phase = 1
-				else
-					phase += 1
-				endif
-				RegisterForSingleUpdate(GetExpressionUpdateSeconds())
-				return
-			endif
-			variance = PhaseExpressionsArr[32] as int
-				
-		if PhaseExpressionsArr.length < 32
-			miscutil.printconsole(" Expressions :" + phaselookup +" only has " +phaseExpressionsArr.length+ "items . it is either incorrectly formatted or missing in the json file.")		
-		endif
-					
-				;begin updating expressions
-	;-----------------------------------------Set EXPRESSION-----------------------------------------
-			;MFEE is applied differently from the array for MFG values, and overrides the MFG array if have Ahegao and tongue out phoneme for Erin
-		if MFEEAddAhegao ;MFEE ahegao also includes broken condition. uses array's expression for variety of face movements
-				
-			if MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,0,1) != 100
-				MuFacialExpressionExtended.SetExpressionByNumber(actorref,0,0,100) ;ahegao 1
-			endif
-				
-				;make sure tongue out and tongue down is not applied to as ahegao already has tongue out and down
-			if MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,8,0) != 0 || MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,2,0) != 0
-				MuFacialExpressionExtended.SetExpressionByNumber(actorref,8,0,0) ;tongueout
-				MuFacialExpressionExtended.SetExpressionByNumber(actorref,8,2,0) ;tongue down
-			endif
-				
-		elseif IsBroken()
-			PhaseExpressionsArr[31] = BrokenOverride[31]
-
-		endif	
-
-	;------------------------------------------------Set PHONEME-------------------------------------------------
-		while ExpressionIndex <= 15 && (!IsUnconcious() ||  EquippedTongue()) 
-			int upperlimit = PhaseExpressionsArr[ExpressionIndex] as int*(100+variance)/100
-			int lowerlimit = PhaseExpressionsArr[ExpressionIndex] as int*(100-variance)/100
-			;avoid out of bounds
-			if upperlimit > 100
-					upperlimit = 100
-			endif
-			if lowerlimit < 0
-					lowerlimit = 0
-			endif
-			if MFEEAddAhegao
-				if ExpressionIndex != 1 ;&& MfgConsoleFunc.GetPhoneme(actorref, ExpressionIndex) != 0	
-					PhaseExpressionsArr[ExpressionIndex] = 0  ;non big aah default to 0
-				else
-					PhaseExpressionsArr[ExpressionIndex] = ahegaophonemebigaah ; phoneme 1 big aah
-				endif
-			elseif IsSuckingoffOther() || HasDeviousGag(actorref)
-				PhaseExpressionsArr[ExpressionIndex] = Blowjoboverride[ExpressionIndex]
-
-			elseIf MFEEAddTongue
-				if ExpressionIndex != 1 && ExpressionIndex != 11
-					PhaseExpressionsArr[ExpressionIndex] = 0
-				elseif ExpressionIndex == 1
-					PhaseExpressionsArr[ExpressionIndex] = tonguephonemebigaah
-				elseif ExpressionIndex == 11
-					PhaseExpressionsArr[ExpressionIndex] = tonguephonemeoh
-				endif
-					; apply MFEE tongue out and down 
-					if MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,8,0) != 100 || MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,2,0) != 100
-						MuFacialExpressionExtended.SetExpressionByNumber(actorref,8,0,100) ;tongueout
-						MuFacialExpressionExtended.SetExpressionByNumber(actorref,8,2,100) ;tongue down
-					endif
-			elseif EquippedTongue()
-				PhaseExpressionsArr[ExpressionIndex] = TongueoutOverride[ExpressionIndex]
-			elseif IsKissing()
-				PhaseExpressionsArr[ExpressionIndex] = kisOverride[ExpressionIndex]
-
-			elseif IsCunnilingus()
-				PhaseExpressionsArr[ExpressionIndex] = cunOverride[ExpressionIndex]
-
-			elseif !IsUnconcious()
-				PhaseExpressionsArr[ExpressionIndex] = Utility.Randomint(lowerlimit, upperlimit)
-
-			endif	
-
-			ExpressionIndex = ExpressionIndex + 1
-		endwhile
-			ExpressionIndex = 0
-	
-	;----------------------------------------------Set MODIFIERS-----------------------------------------
-
-		while ExpressionIndex <= 13 && !IsUnconcious() ;&& !MFEEAddAhegao
-				;avoid out of bounds
-			int modifier = PhaseExpressionsArr[ExpressionIndex + 16] as int 
-			
-			float modifierspeed 
-			if expressionindex == 8 || expressionindex == 11
-				modifierspeed = 0
-			else
-				modifierspeed = Speed
-			endif
-	
-		;run modifiers
-			if MFEEAddAhegao
-				if ExpressionIndex != 11 ;&& MfgConsoleFunc.GetModifier(actorref, ExpressionIndex) != 0
-					PhaseExpressionsArr[ExpressionIndex + 16] = 0 
-				endif
-				
-				if MfgConsoleFunc.GetModifier(actorref, 11) != 50
-					MfgConsoleFunc.SetModifier(actorref, 11, ahegaolookupmodifier) ;look up 50
-				endif 
-				
-			elseif enableahegao == 1 && (ishugepp && (IsGettingAnallyPenetrated() || IsGettingVaginallyPenetrated())) || ((IsBroken() && (PenisActionlabel != "LDI" || Penetrationlabel != "LDI" || StimulationLabel != "LDI" || OralLabel != "LDI" )))
-				PhaseExpressionsArr[ExpressionIndex + 16] = BrokenOverride[ExpressionIndex + 16] as int
-				if MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,0,0) != 100 && HasMFEEVanillaRace
-				
-					MuFacialExpressionExtended.SetExpressionByNumber(actorref,0,0,100) ;ahegao 1
-					
-				endif
-				ExpressionIndex = ExpressionIndex + 1
-			elseif IsCowgirl() && expressionindex == 8 ;look downwards if riding override
-				PhaseExpressionsArr[24] = 100
-				ExpressionIndex = 12	
-				
-			elseif (CurrentThread.HasSceneTag("Doggy") || CurrentThread.HasSceneTag("Doggystyle") || CurrentThread.HasSceneTag("Doggy Style")) && (IsGettingAnallyPenetrated() || IsGettingVaginallyPenetrated()) && expressionindex == 8
-				PhaseExpressionsArr[lookdirection + 16] = 100
-				ExpressionIndex = 12
-			else
-				ExpressionIndex = ExpressionIndex + 1
-			endif
-			
-		endwhile
-		MfgConsoleFuncExt.ApplyExpressionPresetSmooth(actorref, StringArrayToMFGNGArray(PhaseExpressionsArr), false)		
+		MfgConsoleFunc.SetModifier(actorref, 0, 100) ;left blink
+		MfgConsoleFunc.SetModifier(actorref, 1, 100) ;right blink
+		MfgConsoleFunc.SetPhoneme(actorref,0,60) ; aah
+		BreathingAllowed = false
+		AdvancePhase()
+		return
 	endif
-		
+
+	if !BlowjobOverrideF
+		;stale save with an older script version mid-scene - reload config and presets
+		InitializeConfigandForms()
+	endif
+
+	LabelGroup = Role + GetHentaiExpression() + ExpressionGroup
+	string PhaseLookup = LabelGroup + Phase
+	printdebug("Expression Looking up : " + PhaseLookup)
+
+	EnsurePhaseCache()
+
+	int varPct = CachedVariance[Phase - 1]
+	if varPct < 0
+		printdebug(" Expressions : " + PhaseLookup + " missing in " + ExpressionsFile + " even after fallback. Skipping expression this cycle.")
+		BreathingAllowed = false
+		AdvancePhase()
+		return
+	endif
+
+	bool mouthblowjob = IsSuckingoffOther() || HasDeviousGag(actorref)
+	;enableahegao gates only the hugePP arm; a broken actor always gets the broken face (pre-existing behavior, parens made explicit)
+	bool brokenface = (enableahegao == 1 && ishugepp && (IsGettingAnallyPenetrated() || IsGettingVaginallyPenetrated())) || (IsBroken() && (PenisActionlabel != "LDI" || Penetrationlabel != "LDI" || StimulationLabel != "LDI" || OralLabel != "LDI"))
+
+	float[] result = BuildTickPreset(GetCachedPhase(Phase), varPct, mouthblowjob, brokenface)
+
+	;MFEE side effects, hoisted out of the per-cell loops so they run once per cycle
+	if MFEEAddAhegao
+		if MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,0,1) != 100
+			MuFacialExpressionExtended.SetExpressionByNumber(actorref,0,0,100) ;ahegao 1
+		endif
+		;make sure tongue out and tongue down is not applied as ahegao already has tongue out and down
+		if MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,8,0) != 0 || MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,2,0) != 0
+			MuFacialExpressionExtended.SetExpressionByNumber(actorref,8,0,0) ;tongueout
+			MuFacialExpressionExtended.SetExpressionByNumber(actorref,8,2,0) ;tongue down
+		endif
+		if MfgConsoleFunc.GetModifier(actorref, 11) != 50
+			MfgConsoleFunc.SetModifier(actorref, 11, ahegaolookupmodifier) ;look up 50
+		endif
+	else
+		if !mouthblowjob && MFEEAddTongue
+			;apply MFEE tongue out and down
+			if MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,8,0) != 100 || MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,2,0) != 100
+				MuFacialExpressionExtended.SetExpressionByNumber(actorref,8,0,100) ;tongueout
+				MuFacialExpressionExtended.SetExpressionByNumber(actorref,8,2,100) ;tongue down
+			endif
+		endif
+		if brokenface && HasMFEEVanillaRace && MuFacialExpressionExtended.GetExpressionValueByNumber(actorref,0,0) != 100
+			MuFacialExpressionExtended.SetExpressionByNumber(actorref,0,0,100) ;ahegao 1
+		endif
+	endif
+
+	MfgConsoleFuncExt.ApplyExpressionPresetSmooth(actorref, result, false)
+
+	;baseline for the cheap breathing ticks between full passes
+	BreathBase0 = (result[0] * 100.0) as int
+	BreathingAllowed = !(mouthblowjob || MFEEAddTongue || MFEEAddAhegao || EquippedTongue() || IsKissing() || IsCunnilingus())
+
+	AdvancePhase()
+
+EndFunction
+
+Function AdvancePhase()
 	if phase >= 5
 		phase = 1
 	else
 		phase += 1
 	endif
+EndFunction
 
-	if SceneEnded
-		;the scene ended while this cycle was mid-application - the event
-		;handler's reset already ran, so re-clean the frame we just applied
-		RemoveExpressions()
+Function BreathePass()
+	;cheap sub-tick: no MasterScript/SexLab/Json calls, just a mouth nudge around the last applied face
+	if !BreathingAllowed
 		return
 	endif
-	RegisterForSingleUpdate(GetExpressionUpdateSeconds())
 
-EndEvent
+	int amp = 8
+	if Isintense()
+		amp = 15
+	endif
+
+	int v = BreathBase0 + Utility.RandomInt(0 - amp, amp)
+	if v < 0
+		v = 0
+	elseif v > 100
+		v = 100
+	endif
+
+	MfgConsoleFuncExt.SetPhoneme(actorref, 0, v, 0.4)
+EndFunction
+
+Float[] Function BuildTickPreset(float[] base, int varPct, bool mouthblowjob, bool brokenface)
+	;build a fresh preset from the cached base - the cached arrays are shared and must never be written to
+	float[] result = new float[32]
+
+	bool mouthtongueout = EquippedTongue()
+	bool mouthkis = IsKissing()
+	bool mouthcun = IsCunnilingus()
+	bool cowgirl = IsCowgirl()
+	bool doggy = false
+	if !MFEEAddAhegao && !brokenface && !cowgirl
+		doggy = (CurrentThread.HasSceneTag("Doggy") || CurrentThread.HasSceneTag("Doggystyle") || CurrentThread.HasSceneTag("Doggy Style")) && IsgettingPenetrated()
+	endif
+
+	;phonemes 0-15
+	int i = 0
+	while i <= 15
+		if MFEEAddAhegao
+			if i == 1
+				result[i] = ahegaophonemebigaah / 100.0 ;phoneme 1 big aah
+			else
+				result[i] = 0.0
+			endif
+		elseif mouthblowjob
+			result[i] = BlowjobOverrideF[i]
+		elseif MFEEAddTongue
+			if i == 1
+				result[i] = tonguephonemebigaah / 100.0
+			elseif i == 11
+				result[i] = tonguephonemeoh / 100.0
+			else
+				result[i] = 0.0
+			endif
+		elseif mouthtongueout
+			result[i] = TongueOutOverrideF[i]
+		elseif mouthkis
+			result[i] = KisOverrideF[i]
+		elseif mouthcun
+			result[i] = CunOverrideF[i]
+		else
+			float lo = base[i] * (100 - varPct) / 100.0
+			float hi = base[i] * (100 + varPct) / 100.0
+			if lo < 0.0
+				lo = 0.0
+			endif
+			if hi > 1.0
+				hi = 1.0
+			endif
+			result[i] = Utility.RandomFloat(lo, hi)
+		endif
+		i += 1
+	endwhile
+
+	;modifiers 16-29 (base values pass through unless an override claims them)
+	i = 16
+	while i <= 29
+		if MFEEAddAhegao
+			if i == 27
+				result[i] = base[i] ;look up is driven separately via SetModifier
+			else
+				result[i] = 0.0
+			endif
+			i += 1
+		elseif brokenface
+			result[i] = BrokenOverrideF[i]
+			i += 1
+		elseif cowgirl && i == 24
+			result[24] = 1.0 ;look downwards if riding
+			result[25] = base[25]
+			result[26] = base[26]
+			result[27] = base[27]
+			i = 28
+		elseif doggy && i == 24
+			result[24] = base[24]
+			result[25] = base[25]
+			result[26] = base[26]
+			result[27] = base[27]
+			result[lookdirection + 16] = 1.0
+			i = 28
+		else
+			result[i] = base[i]
+			i += 1
+		endif
+	endwhile
+
+	result[30] = base[30]
+	if !MFEEAddAhegao && IsBroken()
+		result[31] = BrokenOverrideF[31]
+	else
+		result[31] = base[31]
+	endif
+
+	return result
+EndFunction
+
+Function EnsurePhaseCache()
+	if CachedLabelGroup == LabelGroup && CachedVariance
+		if !CacheUsedFallback || CacheLoadedIntense == Isintense()
+			return
+		endif
+	endif
+
+	CacheUsedFallback = false
+	CacheLoadedIntense = Isintense()
+	if !CachedVariance
+		CachedVariance = new int[5]
+	endif
+
+	string fallbackExpr = "grunt"
+	if CacheLoadedIntense
+		fallbackExpr = "intensegrunt"
+	endif
+
+	int p = 1
+	while p <= 5
+		string lookupkey = LabelGroup + p
+		string[] arr = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile, lookupkey, ""), ",")
+		if arr.length < 33
+			printdebug(" Expressions : " + lookupkey + " missing/malformed in " + ExpressionsFile + " (" + arr.length + " items). Falling back to generic " + fallbackExpr + " face.")
+			lookupkey = Role + fallbackExpr + ExpressionGroup + p
+			arr = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile, lookupkey, ""), ",")
+			CacheUsedFallback = true
+		endif
+		if arr.length < 33
+			printdebug(" Expressions : fallback " + lookupkey + " also missing in " + ExpressionsFile + ".")
+			CachedVariance[p - 1] = -1
+		else
+			CachedVariance[p - 1] = arr[32] as int
+			if p == 1
+				CachedPhase1 = ConvertPresetToFloats(arr)
+			elseif p == 2
+				CachedPhase2 = ConvertPresetToFloats(arr)
+			elseif p == 3
+				CachedPhase3 = ConvertPresetToFloats(arr)
+			elseif p == 4
+				CachedPhase4 = ConvertPresetToFloats(arr)
+			else
+				CachedPhase5 = ConvertPresetToFloats(arr)
+			endif
+		endif
+		p += 1
+	endwhile
+
+	CachedLabelGroup = LabelGroup
+EndFunction
+
+Float[] Function GetCachedPhase(int p)
+	;read-only: callers must never write into the returned array
+	if p == 1
+		return CachedPhase1
+	elseif p == 2
+		return CachedPhase2
+	elseif p == 3
+		return CachedPhase3
+	elseif p == 4
+		return CachedPhase4
+	endif
+	return CachedPhase5
+EndFunction
+
+Float[] Function ConvertPresetToFloats(String[] values)
+	float[] result = new float[32]
+	int srclen = values.length
+	int i = 0
+	while i < 32
+		if i >= srclen || !values[i]
+			result[i] = 0.0
+		elseif i == 30
+			result[i] = values[i] as float
+		else
+			result[i] = (values[i] as float) / 100.0
+		endif
+		i += 1
+	endwhile
+	return result
+EndFunction
+
+Float Function GetMeasuredMouthOpen()
+	;max of the mouth-opening phonemes, 0.0-1.0, or -1.0 when unreadable: an
+	;all-zero reading is indistinguishable from a failed native read, so 0 is
+	;treated as unknown too - callers must fail open on -1.0
+	int best = MfgConsoleFunc.GetPhoneme(actorref, 0)
+	int p = MfgConsoleFunc.GetPhoneme(actorref, 1)
+	if p > best
+		best = p
+	endif
+	p = MfgConsoleFunc.GetPhoneme(actorref, 5)
+	if p > best
+		best = p
+	endif
+	p = MfgConsoleFunc.GetPhoneme(actorref, 6)
+	if p > best
+		best = p
+	endif
+	p = MfgConsoleFunc.GetPhoneme(actorref, 7)
+	if p > best
+		best = p
+	endif
+	p = MfgConsoleFunc.GetPhoneme(actorref, 9)
+	if p > best
+		best = p
+	endif
+	if best <= 0
+		return -1.0
+	endif
+	if best > 100
+		best = 100
+	endif
+	return best / 100.0
+EndFunction
+
+int TongueClosedTicks = 0
+bool TongueGateBlocked = false
+
+Function UpdateTongueJawGate()
+	if TongueGateBlocked
+		;a tongue roll was suppressed by the jaw gate - the labels (and the
+		;winning chance roll) still stand, so retry now that the face moved on
+		TongueGateBlocked = false
+		printdebug("Tongue jaw gate: retrying suppressed tongue")
+		AddTongue()
+		return
+	endif
+
+	if !(MFEEAddTongue || EquippedTongue())
+		TongueClosedTicks = 0
+		return
+	endif
+
+	float openness = GetMeasuredMouthOpen()
+	if openness >= 0.0 && openness < tonguemouthopenthreshold
+		;require two consecutive confident readings (~2s apart, past any smooth
+		;transition) before stripping the tongue, to avoid churn on a stale read
+		TongueClosedTicks += 1
+		if TongueClosedTicks >= 2
+			printdebug("Tongue jaw gate: mouth measured closed twice (" + openness + "), removing tongue.")
+			RemoveTongue()
+			TongueClosedTicks = 0
+		endif
+	else
+		TongueClosedTicks = 0
+	endif
+EndFunction
 
 
 ;-------------------------------Hentairim Expressions Functions START---------------------------------
@@ -338,11 +565,6 @@ String MasksFile  = "HentairimExpressions/Masks.json"
 String ExpressionsFile = ""
 string ConfigFile = "HentairimExpressions/Config.json"
 
-String[] kisoverride
-String[] cunoverride
-String[] Blowjoboverride
-String[] BrokenOverride
-String[] TongueOutOverride
 String[] Masks
 String[] Maskslots
 string[] exclude
@@ -378,11 +600,12 @@ printdebug("------------------Initialize Hentai Expressions Configs and Forms St
 		ExpressionsFile ="HentairimExpressions/FemaleExpressions.json"	
 	endif
 
-	Blowjoboverride = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"blowjobphonemeoverride","") ,",")
-	BrokenOverride = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"brokenmodifieroverride","") ,",")
-	TongueOutOverride = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"tongueoutphonemeoverride","") ,",")
-	kisoverride = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"kisphonemeoverride","") ,",")
-	cunoverride = papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"cunphonemeoverride","") ,",")
+	BlowjobOverrideF = ConvertPresetToFloats(papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"blowjobphonemeoverride","") ,","))
+	BrokenOverrideF = ConvertPresetToFloats(papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"brokenmodifieroverride","") ,","))
+	TongueOutOverrideF = ConvertPresetToFloats(papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"tongueoutphonemeoverride","") ,","))
+	KisOverrideF = ConvertPresetToFloats(papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"kisphonemeoverride","") ,","))
+	CunOverrideF = ConvertPresetToFloats(papyrusutil.stringsplit(JsonUtil.GetStringValue(ExpressionsFile,"cunphonemeoverride","") ,","))
+	CachedLabelGroup = "" ;presets may have changed - force a phase cache reload
 	Masks = papyrusutil.stringsplit(JsonUtil.GetStringValue(MasksFile,"masks","") ,",")
 	Maskslots = papyrusutil.stringsplit(JsonUtil.GetStringValue(MasksFile,"maskslots","") ,",")
 	exclude = papyrusutil.stringsplit(JsonUtil.GetStringValue(MasksFile,"exclude","") ,",")
@@ -395,6 +618,9 @@ printdebug("------------------Initialize Hentai Expressions Configs and Forms St
 	chancetostickouttongueduringattacking = JsonUtil.GetIntValue(ConfigFile, "chancetostickouttongueduringattacking" ,0)
 	enableprintdebug = JsonUtil.GetIntValue(ConfigFile, "printdebug" ,0)
 	
+	enablebreathing = JsonUtil.GetIntValue(ConfigFile, "enablebreathing" ,1)
+	breathingupdateinseconds = JsonUtil.GetFloatValue(ConfigFile, "breathingupdateinseconds" ,0.55)
+	tonguemouthopenthreshold = JsonUtil.GetFloatValue(ConfigFile, "tonguemouthopenthreshold" ,0.4)
 	pcnonintenseexpressionupdateinseconds = JsonUtil.GetFloatValue(ConfigFile, "pcnonintenseexpressionupdateinseconds" ,3.0)
 	pcintenseexpressionupdateinseconds = JsonUtil.GetFloatValue(ConfigFile, "pcintenseexpressionupdateinseconds" ,3.0)
 	npcnonintenseexpressionupdateinseconds = JsonUtil.GetFloatValue(ConfigFile, "npcnonintenseexpressionupdateinseconds" ,3.0)
@@ -408,6 +634,9 @@ printdebug("------------------Initialize Hentai Expressions Configs and Forms St
 	printdebug("chancetostickouttongueduringintense : "+chancetostickouttongueduringintense)
 	printdebug("chancetostickouttongueduringattacking : "+chancetostickouttongueduringattacking)
 	printdebug("enableprintdebug : "+enableprintdebug)
+	printdebug("enablebreathing : "+enablebreathing)
+	printdebug("breathingupdateinseconds : "+breathingupdateinseconds)
+	printdebug("tonguemouthopenthreshold : "+tonguemouthopenthreshold)
 	printdebug("pcnonintenseexpressionupdateinseconds : "+pcnonintenseexpressionupdateinseconds)
 	printdebug("pcintenseexpressionupdateinseconds : "+pcintenseexpressionupdateinseconds)
 	printdebug("npcnonintenseexpressionupdateinseconds : "+npcnonintenseexpressionupdateinseconds)
@@ -427,16 +656,9 @@ int type
 	elseif type == 3
 		ExpressionGroup = "c"
 	endif
-	
-	lookdirection = utility.Randomint(8,10)
-endfunction
 
-float function ExpressionSpeed()
-	if Isintense()
-		return 0.2
-	else
-		return 0.4
-	endif
+	lookdirection = utility.Randomint(8,10)
+	CachedLabelGroup = "" ;group letter is part of the cache key - force reload
 endfunction
 
 string Function GetExpressionLabel()
@@ -468,6 +690,16 @@ Function AddTongue()
 
 	if MFEEAddAhegao || WearingMask(actorref) != none || IsSuckingoffOther() || EnableTongue != 1 || HasDeviousGag(actorref) || IsUnconcious() || EquippedTongue()
 		printdebug("AddTongue: Conditions blocked tongue, exiting early.")
+		return
+	endif
+
+	;jaw gate: don't show a tongue through closed lips. Only a confidently-low
+	;nonzero reading blocks (unreadable/zero fails open); a blocked roll is
+	;retried by UpdateTongueJawGate on the next full pass
+	float openness = GetMeasuredMouthOpen()
+	if openness >= 0.0 && openness < tonguemouthopenthreshold
+		printdebug("AddTongue: mouth not open enough (" + openness + "), deferring tongue.")
+		TongueGateBlocked = true
 		return
 	endif
 
@@ -724,25 +956,6 @@ Bool function isDependencyReady(String modname)
   endif
 endfunction
 
-Float[] function StringArrayToMFGNGArray(String[] values)
-  float[] result = new float[32]
-  if values.length < 32
-    printdebug("Expressions array only has " + values.length + "items. it is either incorrectly formatted or missing in the json file")
-  endif
-  Int i = 0
-  while i < 32
-    if i == 30 && values[i]
-      result[i] = values[i] as float
-    elseif values[i]
-      result[i] = (values[i] as float) / 100
-    else
-      result[i] = 0
-    endif
-    i = i + 1
-  endwhile
-  return result
-endfunction
-
 string NPCTongueFile  = "HentairimExpressions/NPCTongue.json"
 int enablenpctongue = 0
 
@@ -832,6 +1045,7 @@ Function HentairimUpdateStageData()
 	printdebug("DirectorLastLabelTimeCheck: local=" + DirectorLastLabelTime + " master=" + MasterScript.GetDirectorLastLabelTime())
 	if DirectorLastLabelTime != MasterScript.GetDirectorLastLabelTime() || DirectorLastPhysicsLabelTime != MasterScript.GetDirectorLastPhysicsLabelTime()
 		printdebug("Animation, Stage or Physics Labels Different. Updating Stage Data")
+		TongueGateBlocked = false ;stale gate-deferred rolls don't survive a label change
 		CurrentSceneID = CurrentThread.GetActiveScene()
 		currentStageID = CurrentThread.GetActiveStage()
 		currentstage = GetLegacyStageNum(CurrentSceneID, currentStageID)
