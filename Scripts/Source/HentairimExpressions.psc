@@ -62,10 +62,32 @@ EndFunction
 Function RegisterForTheEventsWeNeed()
 	printdebug("Registering Event")
 	RegisterForModEvent("AnimationEnd", "ExpressionsSceneEnd")
-	RegisterForModEvent("SexLabOrgasmSeparate", "ExpressionsOrgasm") 
+	RegisterForModEvent("SexLabOrgasmSeparate", "ExpressionsOrgasm")
 	RegisterForModEvent("StageStart", "ExpressionsOnStageStart")
+	;SexLab Survival drives the player's face during its ahegao - yield to it while it's on
+	RegisterForModEvent("_SLS_AhegaoStateChange", "OnSLSAhegaoStateChange")
 
 EndFunction
+
+;-----------------------SLS ahegao yield-----------------------
+bool SLSAhegaoActive = false
+
+Event OnSLSAhegaoStateChange(string eventName, string argString, float argNum, form sender)
+	;SLS ahegao is a player-only face; ignore for NPC instances
+	if !IsPlayer
+		return
+	endif
+	if argNum >= 0.5
+		SLSAhegaoActive = true
+		printdebug("SLS ahegao started - pausing Hentairim expressions")
+		;drop our own tongue so it doesn't clash with the ahegao face SLS applies
+		RemoveTongue()
+	else
+		SLSAhegaoActive = false
+		printdebug("SLS ahegao ended - resuming Hentairim expressions")
+		CachedLabelGroup = "" ;force a fresh full pass on resume
+	endif
+EndEvent
 
 bool SceneEnded = false
 Event ExpressionsSceneEnd(string eventName, string argString, float argNum, form sender)
@@ -122,6 +144,17 @@ Event OnUpdate()
 
 	if SceneEnded
 		RemoveExpressions()
+		return
+	endif
+
+	if SLSAhegaoActive
+		;SLS owns the player's face right now - don't fight it. Keep the loop
+		;ticking so we pick straight back up once the ahegao ends.
+		float idleinterval = breathingupdateinseconds
+		if idleinterval <= 0.0
+			idleinterval = 0.5
+		endif
+		RegisterForSingleUpdate(idleinterval)
 		return
 	endif
 
@@ -591,6 +624,11 @@ printdebug("------------------Initialize Hentai Expressions Configs and Forms St
 	playerref = game.getplayer()
 	IsPlayer = actorref == playerref
 	Gender = sexlab.GetGender(ActorRef)
+
+	;seed the SLS ahegao state in case it's already active when this instance starts
+	if IsPlayer
+		SLSAhegaoActive = StorageUtil.GetIntValue(None, "_SLS_IsAhegaoing", 0) == 1
+	endif
 	
 	if IsPlayer
 		ExpressionsFile = "HentairimExpressions/PCExpressions.json"
@@ -885,6 +923,12 @@ return HentaiScenario
 EndFunction
 
 function resetexpressions()
+
+;SLS owns the player's face during its ahegao and wants it to persist past the
+;scene end - don't wipe it. SLS clears its own face when its ahegao finishes.
+if SLSAhegaoActive
+	return
+endif
 
 ;0.1 = near-instant: the default 0.75 makes the reset itself a slow smooth
 ;transition that a concurrently-interpolating apply can win against
