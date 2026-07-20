@@ -22,6 +22,12 @@ Keyword Property ClearableKeyword Auto
 Actor actorWithSceneTrackerSpell = None
 Actor mainFemaleActor = None
 Actor mainMaleActor = None
+;--- voice-all-actors: every male in the scene may speak with his own AudioUtil slot
+Actor[] sceneMales                 ;all non-PC males (incl. schlonged females)
+Actor lastMaleOrgasmActor = None   ;who climaxed last - post-nut lines come from him
+Float lastSecondaryLineTime        ;scene time a non-lead male last spoke
+Float secondaryLineCooldown        ;randomized pause between non-lead lines
+Int voiceAllActors = 1             ;IVDTHentai/Config.json "voiceallactors"
 Actor playerCharacter = None
 
 IVDTVoiceFemaleScript mainFemaleVoice = None
@@ -374,10 +380,68 @@ Function FindActorsAndVoices()
 			mainMaleActor = actorList[0]
 		endif
 	endif
-	
+
+	;collect every non-PC male so PickSpeakingMale() can rotate voice lines
+	;between them (each resolves his own AudioUtil slot by voicetype/race)
+	voiceAllActors = JsonUtil.GetIntValue(ConfigFile, "voiceallactors", 1)
+	int maleCount = 0
+	actorIndex = 0
+	While actorIndex < actorCount
+		If (MasterScript.IsMale(actorList[actorIndex]) || hasSchlong(actorList[actorIndex])) && actorList[actorIndex] != playerCharacter
+			maleCount += 1
+		EndIf
+		actorIndex += 1
+	EndWhile
+	sceneMales = PapyrusUtil.ActorArray(maleCount)
+	int maleIndex = 0
+	actorIndex = 0
+	While actorIndex < actorCount
+		If (MasterScript.IsMale(actorList[actorIndex]) || hasSchlong(actorList[actorIndex])) && actorList[actorIndex] != playerCharacter
+			sceneMales[maleIndex] = actorList[actorIndex]
+			maleIndex += 1
+		EndIf
+		actorIndex += 1
+	EndWhile
+	lastMaleOrgasmActor = None
+	lastSecondaryLineTime = 0.0
+	secondaryLineCooldown = Utility.RandomFloat(6.0, 14.0)
+
 	printdebug("mainfemaleactor :" + mainFemaleActor.getleveledactorbase().GetName())
 	printdebug("mainfemaleactor Voice Variation:" + VoiceVariation)
 	printdebug("mainmaleactor :" + mainMaleActor.getleveledactorbase().GetName())
+	printdebug("scene males voiced: " + sceneMales.length + " | voiceAllActors=" + voiceAllActors)
+EndFunction
+
+;Weighted rotation for regular male lines: the lead speaks most of the time, other
+;males chime in occasionally. The randomized cooldown keeps secondary chatter
+;spaced out, but it is soft - now and then a secondary line lands inside it
+;anyway, so voices can occasionally overlap like a real group would
+Actor Function PickSpeakingMale()
+	if voiceAllActors != 1 || sceneMales.length <= 1
+		return mainMaleActor
+	endif
+	if Utility.RandomInt(1, 100) <= 60
+		return mainMaleActor
+	endif
+	Float now = CurrentThread.GetTimeTotal()
+	if now - lastSecondaryLineTime < secondaryLineCooldown && Utility.RandomInt(1, 100) > 25
+		return mainMaleActor
+	endif
+	Actor pick = sceneMales[Utility.RandomInt(0, sceneMales.length - 1)]
+	if pick == None || pick == mainMaleActor
+		return mainMaleActor
+	endif
+	lastSecondaryLineTime = now
+	secondaryLineCooldown = Utility.RandomFloat(6.0, 14.0)
+	return pick
+EndFunction
+
+;Post-nut lines belong to whoever actually climaxed
+Actor Function LastOrgasmedMale()
+	if lastMaleOrgasmActor != None
+		return lastMaleOrgasmActor
+	endif
+	return mainMaleActor
 EndFunction
 
 Function RegisterForTheEventsWeNeed()
@@ -417,6 +481,9 @@ Event IVDTOnOrgasm(Form actorRef, Int thread)
 	MasterScript.IVDTAllowsAdvance(false)
 	Actor actorHavingOrgasm = actorRef as Actor
 	printdebug("Actor having orgasm: " + actorHavingOrgasm)
+	if actorHavingOrgasm != mainFemaleActor
+		lastMaleOrgasmActor = actorHavingOrgasm ;post-nut lines resolve from his voice slot
+	endif
 
 	if isLinearScene() && Masterscript.IsfinalStage()
 		printdebug("Processing in Linear Scene branch.")
@@ -1349,7 +1416,7 @@ Function PlayMaleComments()
 	
 	if (Primarystagelabel == "LDI" || IsGettingStimulated()) && !IsgettingPenetrated() && Currentstage < 3
 	
-		PlaySound(mainMaleVoice.sAroused, mainFemaleActor, requiredChemistry = 0, soundPriority = 2  , voiceActor = mainMaleActor)
+		PlaySound(mainMaleVoice.sAroused, mainFemaleActor, requiredChemistry = 0, soundPriority = 2  , voiceActor = PickSpeakingMale())
 
 		if	ASLisBroken()
 			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")	
@@ -1379,7 +1446,7 @@ Function PlayMaleComments()
 	elseif MaleIsVictim() || IsFemdom()
 		;miscutil.PrintConsole ("Playing Male Comments male victim On the attack")
 		;male say something
-		PlaySound(mainMaleVoice.sTeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False  , voiceActor = mainMaleActor)
+		PlaySound(mainMaleVoice.sTeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False  , voiceActor = PickSpeakingMale())
 		;female background moaning
 		if IsUnconcious()
 			return
@@ -1399,7 +1466,7 @@ Function PlayMaleComments()
 		if IsUnconcious()
 			return
 		elseif femaleisvictim()
-			PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False  , debugtext="Aggressive" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False  , debugtext="Aggressive" , voiceActor = PickSpeakingMale())
 		else
 			PlaySound(mainMaleVoice.sStrugglingSubtle, mainMaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False  , debugtext="StrugglingSubtle")
 		endif
@@ -1410,7 +1477,7 @@ Function PlayMaleComments()
 	elseif	CurrentPenetrationLvl() >= 2 && !ASLCurrentlyintense 
 		;miscutil.PrintConsole ("Playing Male Comments non Intense Penetration")
 				;female background moaning
-		PlaySound(mainMaleVoice.sStrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False , debugtext = "StrugglingEarly" , voiceActor = mainMaleActor)
+		PlaySound(mainMaleVoice.sStrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False , debugtext = "StrugglingEarly" , voiceActor = PickSpeakingMale())
 
 		if IsUnconcious()
 			return
@@ -2168,9 +2235,9 @@ endif
 	if AllowMaleVoice() 
 		;miscutil.PrintConsole ("Playing Male Comments EN stage")
 		if MaleIsVictim()
-			PlaySound(mainMaleVoice.sTeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False ,debugtext = "TeaseAggressivePartner" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sTeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False ,debugtext = "TeaseAggressivePartner" , voiceActor = LastOrgasmedMale())
 		else
-			PlaySound(mainMaleVoice.sPostNutRemark, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = false ,debugtext = "PostNutRemark" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sPostNutRemark, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = false ,debugtext = "PostNutRemark" , voiceActor = LastOrgasmedMale())
 			if	CurrentPenetrationLvl() == 1
 				PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
 			else
@@ -2215,9 +2282,9 @@ endif
 
 	if AllowMaleVoice() 
 		if MaleIsVictim()
-			PlaySound(mainMaleVoice.sTeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False ,debugtext = "TeaseAggressivePartner" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sTeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False ,debugtext = "TeaseAggressivePartner" , voiceActor = LastOrgasmedMale())
 		else
-			PlaySound(mainMaleVoice.sPostNutRemark, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = false ,debugtext = "PostNutRemark" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sPostNutRemark, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = false ,debugtext = "PostNutRemark" , voiceActor = LastOrgasmedMale())
 		endif
 		PlayMoanonlyVarB()
 	endif
@@ -2430,7 +2497,7 @@ function ASLHandlemaleOrgasmreaction()
 	if CurrentPenetrationLvl() == 1
 					
 		if AllowMaleVoice()
-			PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2, waitForCompletion = false , debugtext = "JokeAfterOrgasm" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2, waitForCompletion = false , debugtext = "JokeAfterOrgasm" , voiceActor = LastOrgasmedMale())
 		endif	
 				
 		PlaySound(mainFemaleVoice.sCameInMouth, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "CameInMouth")
@@ -2444,7 +2511,7 @@ function ASLHandlemaleOrgasmreaction()
 		;Chance for male comments	
 		if AllowMaleVoice()
 
-			PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "JokeAfterOrgasm" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "JokeAfterOrgasm" , voiceActor = LastOrgasmedMale())
 			Utility.Wait(Utility.RandomFloat(0.5, 1.0))
 		endif
 		
@@ -2454,7 +2521,7 @@ function ASLHandlemaleOrgasmreaction()
 
 	Elseif IsgettingPenetrated()
 		if AllowMaleVoice()
-			PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1,waitForCompletion = False , debugtext = "JokeAfterOrgasm" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1,waitForCompletion = False , debugtext = "JokeAfterOrgasm" , voiceActor = LastOrgasmedMale())
 			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterOrgasmExclamations")
 			Utility.Wait(Utility.RandomFloat(0.5, 2.0))
 		endif
@@ -2481,7 +2548,7 @@ function ASLHandlemaleOrgasmreactionVarB()
 
 	;Chance for male comments	
 	if AllowMaleVoice() && !MaleIsVictim()
-		PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "JokeAfterOrgasm" ,waitForCompletion = False , voiceActor = mainMaleActor)
+		PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "JokeAfterOrgasm" ,waitForCompletion = False , voiceActor = LastOrgasmedMale())
 	endif
 	
 	;Female Panting First 
@@ -2671,7 +2738,7 @@ endif
 
 		
 		if AllowMaleVoice()
-			PlaySound(mainMaleVoice.sStrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, debugtext="StrugglingEarly" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sStrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, debugtext="StrugglingEarly" , voiceActor = PickSpeakingMale())
 		endif
 		
 		IF !IsSuckingoffOther() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
@@ -2701,7 +2768,7 @@ endif
 		printdebug(" Stage Transition - Maintain Intensity")
 		
 			if AllowMaleVoice()
-				PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, soundPriority = 2, debugtext="Aggressive"  , voiceActor = mainMaleActor)
+				PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, soundPriority = 2, debugtext="Aggressive"  , voiceActor = PickSpeakingMale())
 			endif
 			
 			if  !Femaleisvictim() && !IsSuckingoffOther() && IsgettingPenetrated() && Utility.randomfloat(0.0,1.0) < chancetocommentonintensestage
@@ -2711,7 +2778,7 @@ endif
 	elseif !ASLpreviouslyintense && PreviousStageHasPenetration() && ASLcurrentlyintense && IsgettingPenetrated()
 		
 		if AllowMaleVoice() 
-				PlaySound(mainMaleVoice.sStrugglingSubtle, mainFemaleActor, soundPriority = 2 , waitForCompletion = false, debugtext="StrugglingSubtle"  , voiceActor = mainMaleActor)
+				PlaySound(mainMaleVoice.sStrugglingSubtle, mainFemaleActor, soundPriority = 2 , waitForCompletion = false, debugtext="StrugglingSubtle"  , voiceActor = PickSpeakingMale())
 				
 		endif		
 
@@ -2728,7 +2795,7 @@ endif
 		else
 
 			if AllowMaleVoice() 
-				PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, soundPriority = 2 , debugtext = "Aggressive" , voiceActor = mainMaleActor)
+				PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, soundPriority = 2 , debugtext = "Aggressive" , voiceActor = PickSpeakingMale())
 			endif
 			
 			IF Utility.randomfloat(0.0,1.0) < chancetocommentonintensestage
@@ -2801,7 +2868,7 @@ endif
 		endif
 
 		if AllowMaleVoice()
-			PlaySound(mainMaleVoice.sStrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, debugtext="StrugglingEarly" , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sStrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, debugtext="StrugglingEarly" , voiceActor = PickSpeakingMale())
 		endif
 		
 		IF !IsSuckingoffOther() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
@@ -2831,7 +2898,7 @@ endif
 	elseif !ASLpreviouslyintense && PreviousStageHasPenetration() && ASLcurrentlyintense && IsgettingPenetrated()
 		
 		if AllowMaleVoice() 
-			PlaySound(mainMaleVoice.sStrugglingSubtle, mainFemaleActor, soundPriority = 2 , waitForCompletion = false, debugtext="StrugglingSubtle"  , voiceActor = mainMaleActor)
+			PlaySound(mainMaleVoice.sStrugglingSubtle, mainFemaleActor, soundPriority = 2 , waitForCompletion = false, debugtext="StrugglingSubtle"  , voiceActor = PickSpeakingMale())
 		endif		
 
 		if ishugepp || IsGettingDoublePenetrated()
@@ -2843,7 +2910,7 @@ endif
 		if !IsSuckingoffOther() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
 			
 			if AllowMaleVoice() 
-				PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, soundPriority = 2 ,waitForCompletion = false, debugtext = "Aggressive" , voiceActor = mainMaleActor)
+				PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, soundPriority = 2 ,waitForCompletion = false, debugtext = "Aggressive" , voiceActor = PickSpeakingMale())
 				PlayMoanonlyVarB()
 			endif
 			
