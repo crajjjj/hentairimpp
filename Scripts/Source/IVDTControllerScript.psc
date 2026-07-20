@@ -762,13 +762,9 @@ Function RegisterThatSceneIsEnding(Bool maleOnlyScene)
 	;EndIf
 EndFunction
 
-Function PlaySound(Sound theSound, Actor actorMakingSound, Bool waitForCompletion = True)
-
-	If waitForCompletion
-		theSound.PlayAndWait(actorMakingSound)
-	Else
-		theSound.Play(actorMakingSound)
-	EndIf
+Function PlaySound(String theSound, Actor actorMakingSound, Bool waitForCompletion = True, String group = "", String channel = "")
+	;theSound is a AudioUtil category name; slot is resolved from the actor by the DLL
+	AudioUtil.Play(theSound, actorMakingSound, waitForCompletion, 1.0, group, channel)
 EndFunction
 
 bool function IsMale(actor char)
@@ -804,8 +800,11 @@ EndFunction
 
 
 IVDTVoiceFemaleScript Function GetVoiceForActress(Actor actressToVoice)
-	
-	return GetOwningQuest().GetAliasByName("Slot" + 1) as IVDTVoiceFemaleScript
+	IVDTVoiceFemaleScript herVoice = GetOwningQuest().GetAliasByName("Slot" + 1) as IVDTVoiceFemaleScript
+	if herVoice
+		herVoice.VoiceSlot = "F1"
+	endif
+	return herVoice
 EndFunction
 
 IVDTVoiceMaleScript Function GetVoiceForActor(Actor actorToVoice)
@@ -849,27 +848,37 @@ if EnableReassigningMaleVoice == 1
 endif	
 
 
+;NOTE: playback slot selection now lives in AudioUtil.toml ([voicetype_map] /
+;[voicetype_remap] / [npc_overrides]) — the DLL resolves the folder from the actor at
+;play time. This alias lookup only remains for script-side state (mainMaleVoice etc.).
+int slotNumber = 0
 if actorVoiceType == "MaleEvenToned"
-	hisVoiceSlot = GetOwningQuest().GetAliasByName("Slot" + 1) as IVDTVoiceMaleScript
-elseif actorVoiceType == "MaleArgonian"	
-	hisVoiceSlot = GetOwningQuest().GetAliasByName("Slot" + 2) as IVDTVoiceMaleScript
-elseif actorVoiceType == "MaleBrute"	
-	hisVoiceSlot = GetOwningQuest().GetAliasByName("Slot" + 3) as IVDTVoiceMaleScript	
-elseif actorVoiceType == "MaleNord"	
-	hisVoiceSlot = GetOwningQuest().GetAliasByName("Slot" + 4) as IVDTVoiceMaleScript
-elseif actorVoiceType == "MaleCondescending"	
-	hisVoiceSlot = GetOwningQuest().GetAliasByName("Slot" + 5) as IVDTVoiceMaleScript
-elseif actorVoiceType == "MaleDarkElf"	
-	hisVoiceSlot = GetOwningQuest().GetAliasByName("Slot" + 6) as IVDTVoiceMaleScript
-elseif actorVoiceType == "MaleKhajitt"	
-	hisVoiceSlot = GetOwningQuest().GetAliasByName("Slot" + 7) as IVDTVoiceMaleScript
-elseif actorVoiceType == "MaleOrc"	
-	hisVoiceSlot = GetOwningQuest().GetAliasByName("Slot" + 8) as IVDTVoiceMaleScript
+	slotNumber = 1
+elseif actorVoiceType == "MaleArgonian"
+	slotNumber = 2
+elseif actorVoiceType == "MaleBrute"
+	slotNumber = 3
+elseif actorVoiceType == "MaleNord"
+	slotNumber = 4
+elseif actorVoiceType == "MaleCondescending"
+	slotNumber = 5
+elseif actorVoiceType == "MaleDarkElf"
+	slotNumber = 6
+elseif actorVoiceType == "MaleKhajitt"
+	slotNumber = 7
+elseif actorVoiceType == "MaleOrc"
+	slotNumber = 8
+endif
+
+if slotNumber > 0
+	hisVoiceSlot = GetOwningQuest().GetAliasByName("Slot" + slotNumber) as IVDTVoiceMaleScript
+	if hisVoiceSlot
+		hisVoiceSlot.VoiceSlot = "M" + slotNumber
+	endif
 else
 	hisVoiceSlot = none
 endif
 
-	
 	Return hisVoiceSlot
 EndFunction
 

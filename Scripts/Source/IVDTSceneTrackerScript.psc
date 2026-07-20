@@ -76,7 +76,7 @@ Int attackStage = 0 ;0 - not currently attacking, 1 - currently attacking, 2 - c
 Bool inRefractoryPeriod = False ;When satisfied after the male orgasm (not left demanding more), the female actor may be in temporary limbo remarking on the orgasm, unsure if the male wants more
 Int currentlyPlayingSoundCount = 0
 Int currentlyPlayingSoundCountMale = 0
-Sound queuedSound = None ;Sounds attempting to play with a priority of 1 when another sound is playing will be queued up to play afterwards
+String queuedSound = "" ;Sounds attempting to play with a priority of 1 when another sound is playing will be queued up to play afterwards
 Float timeSoundWasQueued = 0.0 ;The timestamp at which queuedSound originally attempted to play
 Float queuedSoundMaxWait = 0.0 ;The longest the queuedSound can sit in the queue before we give up on trying to play it
 bool inserted = false
@@ -96,7 +96,7 @@ Bool ReacttoFemaleOrgasmNext = false
 Bool ReacttoMaleOrgasmNext = false
 Float Volume
 
-Sound PreviousSound = none
+String PreviousSound = ""
 	
 Actor[] ActorsInPlay
 ;JSONUtil configs
@@ -230,12 +230,12 @@ Function PerformInitialization()
 
 	ShouldInitialize = false
 
-	;unmute all four categories - self-heal in case a previous scene's end
-	;was interrupted between its mute and its delayed unmute
-	LowPrioritySounds.UnMute()
-	HighPrioritySounds.UnMute()
-	LowPrioritySoundsMale.UnMute()
-	HighPrioritySoundsMale.UnMute()
+	;unduck all four voice groups - self-heal in case a previous scene's end
+	;was interrupted between its duck and its delayed unduck
+	AudioUtil.UnduckGroup("pc_low")
+	AudioUtil.UnduckGroup("pc_high")
+	AudioUtil.UnduckGroup("partner_low")
+	AudioUtil.UnduckGroup("partner_high")
 	CurrentThread = Sexlab.GetThreadByActor(actorWithSceneTrackerSpell)
 	ThreadID = CurrentThread.GetThreadID()
 
@@ -256,11 +256,11 @@ Function PerformInitialization()
 	endif
 
 	;set volume
-	
-	LowPrioritySoundsMale.setvolume(partnervolume)
-	HighPrioritySoundsMale.setvolume(partnervolume)
-	LowPrioritySounds.setvolume(pcvolume)
-	HighPrioritySounds.setvolume(pcvolume)
+
+	AudioUtil.SetGroupVolume("partner_low", partnervolume)
+	AudioUtil.SetGroupVolume("partner_high", partnervolume)
+	AudioUtil.SetGroupVolume("pc_low", pcvolume)
+	AudioUtil.SetGroupVolume("pc_high", pcvolume)
 	
 	
 	CurrentSceneid = CurrentThread.GetActiveScene()
@@ -435,23 +435,23 @@ Event IVDTOnOrgasm(Form actorRef, Int thread)
 				printdebug("Playing MaleOrgasmOral sound for female context.")
 				if VoiceVariation == "B"
 					;Male Orgasmed Inside Mouth
-					PlaySound(mainFemaleVoice.MaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Male Orgasmed Inside Mouth")
+					PlaySound(mainFemaleVoice.sMaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Male Orgasmed Inside Mouth")
 				else
-					PlaySound(mainFemaleVoice.MaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmOral")
+					PlaySound(mainFemaleVoice.sMaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmOral")
 				endif
 			else
 				printdebug("Playing simple 'Oh' for female context.")
 				if VoiceVariation == "B"
 					if femaleisvictim() || IshugePP
 						;kneejerk intense
-						PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
+						PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
 						
 					else
 						;KneeJerk
-						PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "KneeJerk")
+						PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "KneeJerk")
 					endif
 				else
-					PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Oh")
+					PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Oh")
 				endif
 			endif
 			StorageUtil.setintvalue(MainFemaleActor ,"HandlingMaleOrgasm", 0)
@@ -465,27 +465,27 @@ Event IVDTOnOrgasm(Form actorRef, Int thread)
 				printdebug("Playing MaleOrgasmOral sound.")
 				if VoiceVariation == "B"
 					;Blowjob Forced
-					PlaySound(mainFemaleVoice.AskForAnal, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Blowjob Forced")
+					PlaySound(mainFemaleVoice.sAskForAnal, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Blowjob Forced")
 				else
-					PlaySound(mainFemaleVoice.MaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmOral")
+					PlaySound(mainFemaleVoice.sMaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmOral")
 				endif
 			elseif !IsUnconcious()
 				if moanonly == 1
 					printdebug("Playing simple 'Oh' for female orgasm.")
-					PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Oh")
+					PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Oh")
 				else
 					printdebug("Playing FemaleOrgasm sound.")
 					RecordFemaleOrgasm()
 					if VoiceVariation == "B"
 						if (IsHugePP && (IsGettingVaginallyPenetrated() || IsGettingAnallyPenetrated())) || IsGettingDoublePenetrated()
 							;Orgasm Over The Top
-							PlaySound(mainFemaleVoice.WantToBeLover, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, debugtext ="Orgasm Over The Top")
+							PlaySound(mainFemaleVoice.sWantToBeLover, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, debugtext ="Orgasm Over The Top")
 						else
 							;Orgasm
-							PlaySound(mainFemaleVoice.Orgasm, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, debugtext ="FemaleOrgasm")
+							PlaySound(mainFemaleVoice.sOrgasm, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, debugtext ="FemaleOrgasm")
 						endif
 					else
-						PlaySound(mainFemaleVoice.Orgasm, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, debugtext ="FemaleOrgasm")
+						PlaySound(mainFemaleVoice.sOrgasm, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, debugtext ="FemaleOrgasm")
 					endif
 				endif
 			endif
@@ -505,7 +505,7 @@ Event IVDTOnOrgasm(Form actorRef, Int thread)
 			
 			if IsSuckingoffOther() || IsgettingPenetrated()
 				printdebug("Playing DefaultMaleOrgasm sound.")
-				PlaySound(DefaultMaleVoice.Orgasm, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, waitForCompletion = False, debugtext ="DefaultMaleOrgasm")
+				PlaySound(DefaultMaleVoice.sOrgasm, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, waitForCompletion = False, debugtext ="DefaultMaleOrgasm", voiceActor = actorHavingOrgasm)
 			endif
 			
 			if StorageUtil.GetIntValue(MainFemaleActor, "HandlingMaleOrgasm", 0) != 0
@@ -525,9 +525,9 @@ Event IVDTOnOrgasm(Form actorRef, Int thread)
 					if ishugepp && (actorHavingOrgasm == mainMaleActor || SexLab.getsex(actorHavingOrgasm) > 2)
 						if voicevariation == "B"
 							;Insertion Over The Top
-							PlaySound(mainFemaleVoice.InsertionAnalExcited, mainFemaleActor, requiredChemistry = 0 , debugtext="Insertion Over The Top")
+							PlaySound(mainFemaleVoice.sInsertionAnalExcited, mainFemaleActor, requiredChemistry = 0 , debugtext="Insertion Over The Top")
 						else
-							PlaySound(mainFemaleVoice.SurprisedByMaleOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 3 , debugtext ="SurprisedByMaleOrgasm")
+							PlaySound(mainFemaleVoice.sSurprisedByMaleOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 3 , debugtext ="SurprisedByMaleOrgasm")
 						endif
 						ASLAddThickCumleak()
 						if Utility.randomint(1,5) == 1
@@ -536,9 +536,9 @@ Event IVDTOnOrgasm(Form actorRef, Int thread)
 					else
 						if voicevariation == "B" && femaleisvictim()
 							;kneejerk intense
-							PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
+							PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
 						else
-							PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "KneeJerk")
+							PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "KneeJerk")
 						endif
 					endif
 
@@ -546,26 +546,26 @@ Event IVDTOnOrgasm(Form actorRef, Int thread)
 					printdebug("Playing kneejerk sound.")
 					if voicevariation == "B"
 						;KneeJerk
-						PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "KneeJerk")
+						PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "KneeJerk")
 					else
-						PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmNonOral")
+						PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmNonOral")
 					endif
 				ElseIf IsSuckingoffOther()
 					Utility.Wait(Utility.RandomFloat(0.5, 1.5))
 					printdebug("Playing MaleOrgasmOral sound.")
 					if voicevariation == "B"
 						;Male Orgasmed Inside Mouth
-						PlaySound(mainFemaleVoice.MaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Male Orgasmed Inside Mouth")
+						PlaySound(mainFemaleVoice.sMaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Male Orgasmed Inside Mouth")
 					else
-						PlaySound(mainFemaleVoice.MaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmOral")
+						PlaySound(mainFemaleVoice.sMaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmOral")
 					endif
 				elseif ishugepp
 					printdebug("Playing SurprisedByMaleOrgasm sound.")
 					if voicevariation == "B"
 						;Insertion Over The Top
-						PlaySound(mainFemaleVoice.InsertionAnalExcited, mainFemaleActor, requiredChemistry = 0 , debugtext="Insertion Over The Top")
+						PlaySound(mainFemaleVoice.sInsertionAnalExcited, mainFemaleActor, requiredChemistry = 0 , debugtext="Insertion Over The Top")
 					else
-						PlaySound(mainFemaleVoice.SurprisedByMaleOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 3 , debugtext ="SurprisedByMaleOrgasm")
+						PlaySound(mainFemaleVoice.sSurprisedByMaleOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 3 , debugtext ="SurprisedByMaleOrgasm")
 					endif
 				EndIf
 			endif
@@ -596,16 +596,16 @@ Event IVDTOnOrgasm(Form actorRef, Int thread)
 					printdebug("Playing MaleOrgasmOral sound")
 					if VoiceVariation == "B"
 						;Male Orgasmed Inside Mouth
-						PlaySound(mainFemaleVoice.MaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Male Orgasmed Inside Mouth")
+						PlaySound(mainFemaleVoice.sMaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Male Orgasmed Inside Mouth")
 					else
-						PlaySound(mainFemaleVoice.MaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmOral")
+						PlaySound(mainFemaleVoice.sMaleOrgasmOral, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "MaleOrgasmOral")
 					endif
 				elseif moanonly == 1
 					printdebug("Playing simple 'Oh' for female orgasm.")
-					PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Oh")
+					PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0, soundPriority = 3 , debugtext= "Oh")
 				else
 					printdebug("Playing FemaleOrgasm sound.")
-					PlaySound(mainFemaleVoice.Orgasm, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, debugtext ="FemaleOrgasm")
+					PlaySound(mainFemaleVoice.sOrgasm, mainFemaleActor, requiredChemistry = 0, soundPriority = 3, debugtext ="FemaleOrgasm")
 				endif
 			endif
 
@@ -903,13 +903,18 @@ Function RemoveTracker()
 
 	TrackerRemoved = true
 	StorageUtil.unSetStringvalue(None, "Scenario")
-	;silence voice lines still playing or about to start behind a pre-delay -
-	;instances are never tracked, so a moan fired just before the end would
-	;otherwise keep playing after the actors have dressed up
-	LowPrioritySounds.Mute()
-	HighPrioritySounds.Mute()
-	LowPrioritySoundsMale.Mute()
-	HighPrioritySoundsMale.Mute()
+	;silence voice lines still playing or about to start behind a pre-delay.
+	;Instances are tracked natively now, so in-flight lines can simply be stopped;
+	;the groups stay ducked for a moment so a line that slips past the
+	;TrackerRemoved check plays silent, then everything is restored
+	AudioUtil.DuckGroup("pc_low")
+	AudioUtil.DuckGroup("pc_high")
+	AudioUtil.DuckGroup("partner_low")
+	AudioUtil.DuckGroup("partner_high")
+	AudioUtil.StopGroup("pc_low")
+	AudioUtil.StopGroup("pc_high")
+	AudioUtil.StopGroup("partner_low")
+	AudioUtil.StopGroup("partner_high")
 	ASLRemoveOrgasmSSquirt()
 	ASLRemoveThickCumleak()
 	ASLRemoveCumPool()
@@ -917,12 +922,12 @@ Function RemoveTracker()
 	UnregisterForUpdate()
 	StorageUtil.Unsetintvalue(MainFemaleActor ,"HandlingMaleOrgasm")
 	StorageUtil.Unsetintvalue(MainFemaleActor ,"Orgasming")
-	;let in-flight descriptors run out silenced, then restore the categories
+	;keep the silence window briefly for stragglers, then restore the groups
 	Utility.Wait(4.0)
-	LowPrioritySounds.UnMute()
-	HighPrioritySounds.UnMute()
-	LowPrioritySoundsMale.UnMute()
-	HighPrioritySoundsMale.UnMute()
+	AudioUtil.UnduckGroup("pc_low")
+	AudioUtil.UnduckGroup("pc_high")
+	AudioUtil.UnduckGroup("partner_low")
+	AudioUtil.UnduckGroup("partner_high")
 	;Do this very last, but make sure to do it (it's what actually removes the tracker)
 	actorWithSceneTrackerSpell.RemoveSpell(SceneTrackerSpell)
 	
@@ -959,14 +964,22 @@ Int Function GetActorEnjoyment(Actor actorInQuestion)
 	EndIf
 EndFunction
 
-Function PlaySound(Sound theSound, Actor actorMakingSound, Int requiredChemistry = 0, Int soundPriority = 0, Float maxQueueDuration = 5.0, Bool waitForCompletion = True , string debugtext = "None" , Bool Force = false , Bool SkipWait = false)
+Function PlaySound(String theSound, Actor actorMakingSound, Int requiredChemistry = 0, Int soundPriority = 0, Float maxQueueDuration = 5.0, Bool waitForCompletion = True , string debugtext = "None" , Bool Force = false , Bool SkipWait = false , Actor voiceActor = None)
 
-	Sound soundToPlay = thesound
+	String soundToPlay = thesound
 
-	If soundToPlay == None
+	If soundToPlay == ""
 		WritetoErrorlogs("IVDT","Sound Name :" + debugtext + " is None")
 		Return
 	EndIf
+	;AudioUtil resolves the voice slot from the actor it is handed. Male lines are
+	;routed through the female branch on purpose (actorMakingSound = mainFemaleActor,
+	;the shipped gating/expression behavior), so voiceActor carries whose voice
+	;folders the category resolves against when that differs from the routing actor
+	Actor audioActor = voiceActor
+	if audioActor == None
+		audioActor = actorMakingSound
+	endif
 	If TrackerRemoved ;scene is over - don't start queued voice lines
 		Return
 	EndIf
@@ -979,7 +992,11 @@ Function PlaySound(Sound theSound, Actor actorMakingSound, Int requiredChemistry
 
 
 		if !TrackerRemoved
-			MasterScript.PlaySound(soundToPlay, actorMakingSound, waitForCompletion)
+			String partnerGroup = "partner_low"
+			if soundPriority > 1
+				partnerGroup = "partner_high"
+			endif
+			MasterScript.PlaySound(soundToPlay, audioActor, waitForCompletion, partnerGroup)
 		endif
 
 		currentlyPlayingSoundCountMale = currentlyPlayingSoundCountMale - 1
@@ -1003,17 +1020,21 @@ Function PlaySound(Sound theSound, Actor actorMakingSound, Int requiredChemistry
 		;track previous sound
 		PreviousSound = soundToPlay
 
-		if soundPriority >2 
-			LowPrioritySounds.mute()
+		if soundPriority >2
+			AudioUtil.DuckGroup("pc_low")
 		endif
-		
+
 		if IsUnconcious()
-			LowPrioritySounds.mute()
-			HighPrioritySounds.mute()
+			AudioUtil.DuckGroup("pc_low")
+			AudioUtil.DuckGroup("pc_high")
 		endif
 
 		if !TrackerRemoved ;re-check: the scene may have ended during the pre-delay wait
-			MasterScript.PlaySound(soundToPlay, actorMakingSound, waitForCompletion)
+			String pcGroup = "pc_low"
+			if soundPriority > 1
+				pcGroup = "pc_high"
+			endif
+			MasterScript.PlaySound(soundToPlay, audioActor, waitForCompletion, pcGroup)
 		endif
 
 		currentlyPlayingSoundCount = currentlyPlayingSoundCount - 1
@@ -1021,8 +1042,8 @@ Function PlaySound(Sound theSound, Actor actorMakingSound, Int requiredChemistry
 		if currentlyPlayingSoundCount ==0
 			;TrackerRemoved: don't undo RemoveTracker's end-of-scene silence window
 			if !IsUnconcious() && !TrackerRemoved
-				LowPrioritySounds.unmute()
-				HighPrioritySounds.unmute()
+				AudioUtil.UnduckGroup("pc_low")
+				AudioUtil.UnduckGroup("pc_high")
 			endif
 		endif
 	else
@@ -1051,7 +1072,7 @@ EndFunction
 ;make romantic comment
 Function MakeRomanticCommentIfRightTime(Bool forceComment = False)
 
-	PlaySound(mainFemaleVoice.LoveyDovey, mainFemaleActor, requiredChemistry = 0, debugtext="LoveyDovey")
+	PlaySound(mainFemaleVoice.sLoveyDovey, mainFemaleActor, requiredChemistry = 0, debugtext="LoveyDovey")
 	
 	timeOfLastRomanticRemark = CurrentThread.GetTimeTotal()
 	
@@ -1085,17 +1106,17 @@ Bool Function PossiblyAskForCumInSpecificLocation()
 
 	if IsGettingDoublePenetrated()
 		if Utility.RandomFloat(0.0, 1.0) < 0.3
-			PlaySound(mainFemaleVoice.AskForAnalCum, mainFemaleActor, requiredChemistry = 3 , debugtext = "AskForAnalCum")
+			PlaySound(mainFemaleVoice.sAskForAnalCum, mainFemaleActor, requiredChemistry = 3 , debugtext = "AskForAnalCum")
 		else	
-			PlaySound(mainFemaleVoice.AskForVaginalCum, mainFemaleActor, requiredChemistry = 4 , debugtext = "AskForVaginalCum")
+			PlaySound(mainFemaleVoice.sAskForVaginalCum, mainFemaleActor, requiredChemistry = 4 , debugtext = "AskForVaginalCum")
 		endif
 	elseif IsGettingVaginallyPenetrated()
-		PlaySound(mainFemaleVoice.AskForVaginalCum, mainFemaleActor, requiredChemistry = 4 , debugtext = "AskForVaginalCum")
+		PlaySound(mainFemaleVoice.sAskForVaginalCum, mainFemaleActor, requiredChemistry = 4 , debugtext = "AskForVaginalCum")
 	elseif IsGettingAnallyPenetrated()
-		PlaySound(mainFemaleVoice.AskForAnalCum, mainFemaleActor, requiredChemistry = 3 , debugtext = "AskForAnalCum")
+		PlaySound(mainFemaleVoice.sAskForAnalCum, mainFemaleActor, requiredChemistry = 3 , debugtext = "AskForAnalCum")
    
 	elseif IsSuckingoffOther()
-		PlaySound(mainFemaleVoice.AskForOralCum, mainFemaleActor, requiredChemistry = 2 , debugtext = "AskForOralCum")	
+		PlaySound(mainFemaleVoice.sAskForOralCum, mainFemaleActor, requiredChemistry = 2 , debugtext = "AskForOralCum")	
 	endif
 
 
@@ -1104,15 +1125,15 @@ EndFunction
 Function PossiblyRemarkOnCumLocation()
 	;Go ahead with remark
 	If locationOfLastMaleOrgasm == 1
-		PlaySound(mainFemaleVoice.CameInMouth, mainFemaleActor, requiredChemistry = 0 , debugtext = "CameInMouth")
+		PlaySound(mainFemaleVoice.sCameInMouth, mainFemaleActor, requiredChemistry = 0 , debugtext = "CameInMouth")
 		Utility.Wait(Utility.RandomFloat(0.75, 1.75))
 		
 	ElseIf locationOfLastMaleOrgasm == 2 
-		PlaySound(mainFemaleVoice.CameInPussy, mainFemaleActor, requiredChemistry = 0 , debugtext = "CameInPussy")
+		PlaySound(mainFemaleVoice.sCameInPussy, mainFemaleActor, requiredChemistry = 0 , debugtext = "CameInPussy")
 		Utility.Wait(Utility.RandomFloat(0.75, 1.75))
 
 	ElseIf locationOfLastMaleOrgasm == 3 
-		PlaySound(mainFemaleVoice.CameInAss, mainFemaleActor, requiredChemistry = 0 , debugtext = "CameInAss")
+		PlaySound(mainFemaleVoice.sCameInAss, mainFemaleActor, requiredChemistry = 0 , debugtext = "CameInAss")
 		Utility.Wait(Utility.RandomFloat(0.75, 1.75))
 
 	EndIf
@@ -1122,17 +1143,17 @@ Function PossiblyRemarkOnCumLocationVarB()
 	;Go ahead with remark
 	If locationOfLastMaleOrgasm == 1
 		;Ending Orgasmed Inside Mouth
-		PlaySound(mainFemaleVoice.CameInMouth, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ending Orgasmed Inside Mouth")
+		PlaySound(mainFemaleVoice.sCameInMouth, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ending Orgasmed Inside Mouth")
 		Utility.Wait(Utility.RandomFloat(0.75, 1.75))
 		
 	ElseIf locationOfLastMaleOrgasm == 2 
 		;Ending Orgasmed Inside Pussy
-		PlaySound(mainFemaleVoice.CameInPussy, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ending Orgasmed Inside Pussy")
+		PlaySound(mainFemaleVoice.sCameInPussy, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ending Orgasmed Inside Pussy")
 		Utility.Wait(Utility.RandomFloat(0.75, 1.75))
 
 	ElseIf locationOfLastMaleOrgasm == 3 
 		;Ending Orgasmed Inside Ass
-		PlaySound(mainFemaleVoice.CameInAss, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ending Orgasmed Inside Ass")
+		PlaySound(mainFemaleVoice.sCameInAss, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ending Orgasmed Inside Ass")
 		Utility.Wait(Utility.RandomFloat(0.75, 1.75))
 
 	EndIf
@@ -1255,7 +1276,7 @@ if currentstage < 3 && !femaleisvictim() ;greets only on first 2 stages
 	if  ShouldMakeRomanticComment()
 		MakeRomanticCommentIfRightTime()
 	elseif ishugepp && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonLeadinStage
-		PlaySound(mainFemaleVoice.GreetLoadedFamiliar, mainFemaleActor, requiredChemistry = 1, debugtext = "GreetLoadedFamiliar")
+		PlaySound(mainFemaleVoice.sGreetLoadedFamiliar, mainFemaleActor, requiredChemistry = 1, debugtext = "GreetLoadedFamiliar")
 	;make greeting at 7% chance at 1st stage
 	elseif Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonLeadinStage && Currentstage == 1
 		ASLMakeGreetingToMalePartner()
@@ -1263,9 +1284,9 @@ if currentstage < 3 && !femaleisvictim() ;greets only on first 2 stages
 endif	
 	
 	if PrevEndingLabel == "ENO" || PrevEndingLabel == "ENI"; for some reason if the EN stage was extended into LI	
-		PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , debugtext = "AfterOrgasmExclamations")
+		PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , debugtext = "AfterOrgasmExclamations")
 	elseif Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonLeadinStage * 2 && mainFemaleEnjoyment >= 50 && !FemaleIsVictim()
-		PlaySound(mainFemaleVoice.ReadyToGetGoing, mainFemaleActor, requiredChemistry = 0 , debugtext = "ReadyToGetGoing")	
+		PlaySound(mainFemaleVoice.sReadyToGetGoing, mainFemaleActor, requiredChemistry = 0 , debugtext = "ReadyToGetGoing")	
 	else
 		
 		PlayBreathyorforeplaysound()
@@ -1279,7 +1300,7 @@ printdebug("Play Lead In")
 
 if ASLisBroken()
 	;Broken Begging
-	PlaySound(mainFemaleVoice.GreetLover, mainFemaleActor, requiredChemistry = 0 , debugtext = "Broken Begging")
+	PlaySound(mainFemaleVoice.sGreetLover, mainFemaleActor, requiredChemistry = 0 , debugtext = "Broken Begging")
 else
 	PlayMoanonlyVarB()
 endif	
@@ -1294,7 +1315,7 @@ if  ShouldMakeRomanticComment()
 else		
 ;dont say make any noise while kissing. let Enjoyment make the kissing sound
 if useblowjobsoundforkissing == 1
-	PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
+	PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
 else
 	Utility.wait(3)
 endif
@@ -1307,20 +1328,20 @@ endfunction
 Function PlayKissingVarB()
 printdebug("Play Kissing")
 ;Kissing
-PlaySound(mainFemaleVoice.MaleOrgasmReactionLover, mainFemaleActor, requiredChemistry = 0 , debugtext = "Kissing")
+PlaySound(mainFemaleVoice.sMaleOrgasmReactionLover, mainFemaleActor, requiredChemistry = 0 , debugtext = "Kissing")
 endfunction
 
 Function PlayCunnilingus()
 printdebug("Play Cunnilingus")
 
-	PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
+	PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
 
 endfunction
 
 Function PlayCunnilingusVarB()
 printdebug("Play Cunnilingus")
 
-	PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
+	PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
 
 endfunction
 
@@ -1328,44 +1349,44 @@ Function PlayMaleComments()
 	
 	if (Primarystagelabel == "LDI" || IsGettingStimulated()) && !IsgettingPenetrated() && Currentstage < 3
 	
-		PlaySound(mainMaleVoice.Aroused, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 ) 		
+		PlaySound(mainMaleVoice.sAroused, mainFemaleActor, requiredChemistry = 0, soundPriority = 2  , voiceActor = mainMaleActor)
 
 		if	ASLisBroken()
-			PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")	
+			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")	
 		else
-			PlaySound(mainFemaleVoice.Foreplaysoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplaysoft")
+			PlaySound(mainFemaleVoice.sForeplaysoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplaysoft")
 		endif	
 
 	elseif ShouldPlayMaleOrgasmHype() 
 
 		
-		PlaySound(mainMaleVoice.AboutToCum, mainFemaleActor, requiredChemistry = 0,  soundPriority = 2 , waitForCompletion = False , debugtext = "AboutToCum")
+		PlaySound(mainMaleVoice.sAboutToCum, mainFemaleActor, requiredChemistry = 0,  soundPriority = 2 , waitForCompletion = False , debugtext = "AboutToCum" , voiceActor = mainMaleActor)
 		;female background moaning
 		
 		if IsUnconcious()
 			return
 		elseif ASLisBroken()
-			PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")	
+			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")	
 		else
 			if ASLCurrentlyintense 
 
-				PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmNoises")
+				PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmNoises")
 				else
-				PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 1 , debugtext = "PenetrativeGrunts")
+				PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 1 , debugtext = "PenetrativeGrunts")
 			endif	
 		endif
 		
 	elseif MaleIsVictim() || IsFemdom()
 		;miscutil.PrintConsole ("Playing Male Comments male victim On the attack")
 		;male say something
-		PlaySound(mainMaleVoice.TeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False )
+		PlaySound(mainMaleVoice.sTeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False  , voiceActor = mainMaleActor)
 		;female background moaning
 		if IsUnconcious()
 			return
 		elseif ASLisBroken()
-			PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")	
+			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")	
 		else
-			PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 1 , debugtext = "PenetrativeGrunts")
+			PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 1 , debugtext = "PenetrativeGrunts")
 			
 		endif
 		
@@ -1378,25 +1399,25 @@ Function PlayMaleComments()
 		if IsUnconcious()
 			return
 		elseif femaleisvictim()
-			PlaySound(mainMaleVoice.Aggressive, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False  , debugtext="Aggressive")
+			PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False  , debugtext="Aggressive" , voiceActor = mainMaleActor)
 		else
-			PlaySound(mainMaleVoice.StrugglingSubtle, mainMaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False  , debugtext="StrugglingSubtle")
+			PlaySound(mainMaleVoice.sStrugglingSubtle, mainMaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False  , debugtext="StrugglingSubtle")
 		endif
 		;female background moaning
 		
-		PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmNoises")
+		PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmNoises")
 	
 	elseif	CurrentPenetrationLvl() >= 2 && !ASLCurrentlyintense 
 		;miscutil.PrintConsole ("Playing Male Comments non Intense Penetration")
 				;female background moaning
-		PlaySound(mainMaleVoice.StrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False , debugtext = "StrugglingEarly")
+		PlaySound(mainMaleVoice.sStrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = False , debugtext = "StrugglingEarly" , voiceActor = mainMaleActor)
 
 		if IsUnconcious()
 			return
 		elseif ASLisBroken()
-			PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations" )	
+			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations" )	
 		else
-			PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 1 , debugtext = "PenetrativeGrunts")
+			PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 1 , debugtext = "PenetrativeGrunts")
 			        
 		endif
 		
@@ -1437,7 +1458,7 @@ endfunction
 
 Function LinearScenePlayFemalePostOrgasm()
 	if FemaleIsVictim()
-		PlaySound(mainFemaleVoice.UnamusedEnd, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 ,debugtext = "UnamusedEnd")
+		PlaySound(mainFemaleVoice.sUnamusedEnd, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 ,debugtext = "UnamusedEnd")
 	else
 		if MaleIsVictim()
 			ASLHandlemaleOrgasmreaction()
@@ -1467,21 +1488,21 @@ Function PlayBlowjob()
 
 	if VoiceVariation == "A"
 		if Utility.RandomFloat(0.0, 1.0) <= ChanceToCommentonBlowjobStage && ASLcurrentlyIntense
-			PlaySound(mainFemaleVoice.AppreciatePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "AppreciatePartner")
+			PlaySound(mainFemaleVoice.sAppreciatePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "AppreciatePartner")
 		elseif Utility.RandomFloat(0.0, 1.0) <= ChanceToCommentonBlowjobStage && !femaleisvictim() && !ASLIsBroken() && !ASLcurrentlyIntense
-			PlaySound(mainFemaleVoice.BlowjobRemarks, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobRemarks")
+			PlaySound(mainFemaleVoice.sBlowjobRemarks, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobRemarks")
 		elseif ASLcurrentlyIntense
-			PlaySound(mainFemaleVoice.BlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionIntense")
+			PlaySound(mainFemaleVoice.sBlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionIntense")
 		else
-			PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
+			PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
 		endif
 	else	
 		if Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonBlowjobStage && currentstage > 1 && !femaleisvictim() && !ASLIsBroken()
-			PlaySound(mainFemaleVoice.BlowjobRemarks, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobRemarks")
+			PlaySound(mainFemaleVoice.sBlowjobRemarks, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobRemarks")
 		elseif ASLcurrentlyIntense
-			PlaySound(mainFemaleVoice.BlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionIntense")
+			PlaySound(mainFemaleVoice.sBlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionIntense")
 		else
-			PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
+			PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
 		endif
 	endif
 
@@ -1495,23 +1516,23 @@ Function PlayBlowjobVarB()
 		if Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonBlowjobStage && currentstage > 1 && !femaleisvictim() && !ASLIsBroken()
 			if CurrentThread.HasSceneTag("Forced") || IsgettingPenetrated()
 				;Blowjob Forced Comments
-				PlaySound(mainFemaleVoice.NoticeMaleWantsMore, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Forced Comments")
+				PlaySound(mainFemaleVoice.sNoticeMaleWantsMore, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Forced Comments")
 			elseif ASLcurrentlyIntense
 				;Blowjob Comments Intense
-				PlaySound(mainFemaleVoice.AppreciatePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Comments Intense")
+				PlaySound(mainFemaleVoice.sAppreciatePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Comments Intense")
 			else
 				;Blowjob Comments
-				PlaySound(mainFemaleVoice.BlowjobRemarks, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Comments")
+				PlaySound(mainFemaleVoice.sBlowjobRemarks, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Comments")
 			endif
 		elseif CurrentThread.HasSceneTag("Forced") || IsgettingPenetrated()
 			;Blowjob Forced
-			PlaySound(mainFemaleVoice.askforanal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Forced")
+			PlaySound(mainFemaleVoice.saskforanal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Forced")
 		elseif ASLcurrentlyIntense
 			;Blowjob Action Intense
-			PlaySound(mainFemaleVoice.BlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Action Intense")
+			PlaySound(mainFemaleVoice.sBlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Action Intense")
 		else
 			;Blowjob Action
-			PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Action")
+			PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Action")
 		endif
 
 	If femaleCloseToOrgasm() && IsgettingPenetrated() ;When female close to orgasm
@@ -1525,7 +1546,7 @@ printdebug("Play Stimulating Others")
 
 	;after close to orgasm handling
 	if	Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage/3 && !FemaleIsVictim()
-		PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
+		PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
 	else
 		PlayBreathyorforeplaysound()
 	EndIf
@@ -1538,24 +1559,24 @@ printdebug("Play Stimulating Others")
 if !femaleisvictim() && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage
 	if ASLisBroken()
 		;Broken Begging
-		PlaySound(mainFemaleVoice.GreetLover, mainFemaleActor, requiredChemistry = 0 , debugtext = "Broken Begging")
+		PlaySound(mainFemaleVoice.sGreetLover, mainFemaleActor, requiredChemistry = 0 , debugtext = "Broken Begging")
 	elseif IsFemdom()
 		if Utility.RandomInt(1,2) == 1
 			;Foreplay Femdom Comments
-			PlaySound(mainFemaleVoice.Satisfied, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay Femdom Comments")
+			PlaySound(mainFemaleVoice.sSatisfied, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay Femdom Comments")
 		else
 			;Amused
-			PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
+			PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
 		endif
 	elseif isTitfuckOthers
 		;Foreplay BoobJob Comments
-		PlaySound(mainFemaleVoice.Foreplayintense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay BoobJob Comments")
+		PlaySound(mainFemaleVoice.sForeplayintense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay BoobJob Comments")
 	elseif isHandjobOthers
 		;Foreplay Handjob Comments
-		PlaySound(mainFemaleVoice.Foreplaysoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay Handjob Comments")
+		PlaySound(mainFemaleVoice.sForeplaysoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay Handjob Comments")
 	elseif IsFootjobOthers
 		;Foreplay FootJob Comments
-		PlaySound(mainFemaleVoice.MadeMeCumSoMuch, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay FootJob Comments")
+		PlaySound(mainFemaleVoice.sMadeMeCumSoMuch, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay FootJob Comments")
 	endif
 else	
 	PlayMoanonlyVarB()
@@ -1569,14 +1590,14 @@ printdebug("Play Stimulated Hard (Huge non Penile insertion)")
 
 
 if CommentedClosetoOrgasm
-	PlaySound(mainFemaleVoice.SensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
+	PlaySound(mainFemaleVoice.sSensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
 else
 	if Utility.RandomFloat(0.0, 1.0) < 0.8
-		PlaySound(mainFemaleVoice.SensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
+		PlaySound(mainFemaleVoice.sSensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
 	else	
-		PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 2 , debugtext = "Oh")
+		PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 2 , debugtext = "Oh")
 		Utility.Wait(Utility.RandomFloat(1.0, 2.0))
-		PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterGape")
+		PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterGape")
 	endif
 endif
 
@@ -1591,7 +1612,7 @@ if CommentedClosetoOrgasm
 
 else
 	;Penetrated Grunt Victim Intense
-	PlaySound(mainFemaleVoice.CumTogetherTease, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Victim Intense")
+	PlaySound(mainFemaleVoice.sCumTogetherTease, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Victim Intense")
 
 endif
 
@@ -1604,20 +1625,20 @@ printdebug("Play Getting Stimulated")
 if ASLCurrentlyintense
 	
 	if CommentedClosetoOrgasm
-		PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
+		PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
 
 	else ;After Handling close to Orgasm
-		PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+		PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 	EndIf
 	
 ;------------------ NOt INTENSE-------------------
 else	
 	if CommentedClosetoOrgasm
-		PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+		PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 	else
 		;after handling close to orgasm
 		If femaleisvictim() && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentUnamused
-			PlaySound(mainFemaleVoice.Unamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Unamused")
+			PlaySound(mainFemaleVoice.sUnamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Unamused")
 		else
 			PlayBreathyorforeplaysound()
 		EndIf
@@ -1636,10 +1657,10 @@ printdebug("Play Getting Stimulated Var B")
 	elseif Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
 		if femaleisvictim()
 			;Stimulated Victim Comments
-			PlaySound(mainFemaleVoice.GreetLoadedFamiliar, mainFemaleActor, requiredChemistry = 0 , debugtext = "Stimulated Victim Comments")
+			PlaySound(mainFemaleVoice.sGreetLoadedFamiliar, mainFemaleActor, requiredChemistry = 0 , debugtext = "Stimulated Victim Comments")
 		else
 			;Stimulated Comments
-			PlaySound(mainFemaleVoice.MaleOrgasmNonOral, mainFemaleActor, requiredChemistry = 0 , debugtext = "Stimulated Comments")
+			PlaySound(mainFemaleVoice.sMaleOrgasmNonOral, mainFemaleActor, requiredChemistry = 0 , debugtext = "Stimulated Comments")
 		endif
 	else 
 		PlayMoanonlyVarB()
@@ -1655,17 +1676,17 @@ printdebug("Play Fucking Others")
 
 if CommentedClosetoOrgasm
 	if ASLcurrentlyintense
-		PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+		PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 	else
 		PlayBreathyorforeplaysound()
 	endif
 else
 	;after close to orgasm handling
 	if	Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage/3
-		PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
+		PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
 	else
 		if ASLcurrentlyintense
-			PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+			PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 		else
 			PlayBreathyorforeplaysound()
 		endif
@@ -1683,7 +1704,7 @@ if CommentedClosetoOrgasm
 	PlayMoanonlyVarB()
 elseif Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage
 	;Amused
-	PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
+	PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
 
 else
 	PlayMoanonlyVarB()	
@@ -1694,22 +1715,22 @@ EndFunction
 Function PlayBroken()
 printdebug("Play Broken")
 if CommentedClosetoOrgasm
-	PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+	PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 elseif  Utility.RandomFloat(0.0, 1.0) < 0.15	&& !ASLcurrentlyintense
 
-	PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")	
+	PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")	
 elseif IsFemdom() && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage/2
 
-	PlaySound(mainFemaleVoice.OnTheAttack, mainFemaleActor, requiredChemistry = 0 , debugtext = "OnTheAttack") 	
+	PlaySound(mainFemaleVoice.sOnTheAttack, mainFemaleActor, requiredChemistry = 0 , debugtext = "OnTheAttack") 	
 elseif  Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage/4
 
-	PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "Amused") 
+	PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "Amused") 
 elseif  Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage/4	
 
-	PlaySound(mainFemaleVoice.InAwe, mainFemaleActor, requiredChemistry = 0 , debugtext = "InAwe")	
+	PlaySound(mainFemaleVoice.sInAwe, mainFemaleActor, requiredChemistry = 0 , debugtext = "InAwe")	
 else
 
-	PlaySound(mainFemaleVoice.AfterOrgasmArouse, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "AfterOrgasmArouse")
+	PlaySound(mainFemaleVoice.sAfterOrgasmArouse, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "AfterOrgasmArouse")
 endif
 endfunction
 
@@ -1721,10 +1742,10 @@ if CommentedClosetoOrgasm
 elseif (IsGettingAnallyPenetrated() || IsGettingVaginallyPenetrated()) && (Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonIntenseStage || MustComment)
 	if ASLCurrentlyintense
 		;Penetrated Broken Comments Intense
-		PlaySound(mainFemaleVoice.BeforeGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Penetrated Broken Comments Intense")
+		PlaySound(mainFemaleVoice.sBeforeGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Penetrated Broken Comments Intense")
 	else
 		;Penetrated Broken Comments
-		PlaySound(mainFemaleVoice.AfterOrgasmArouse, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Penetrated Broken Comments")
+		PlaySound(mainFemaleVoice.sAfterOrgasmArouse, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Penetrated Broken Comments")
 	endif
 else
 	PlayMoanonlyVarB()
@@ -1737,9 +1758,9 @@ printdebug("Play Cowgirl")
 
 if CommentedClosetoOrgasm
 	if ASLcurrentlyintense
-		PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
+		PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
 	else
-		PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+		PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 	endif
 else
 	;make greeting 
@@ -1750,25 +1771,25 @@ else
 	
 	If Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage ; femdom comments
 		if Utility.RandomInt(1,2) == 1
-			PlaySound(mainFemaleVoice.OnTheAttack, mainFemaleActor, requiredChemistry = 0 , debugtext = "OnTheAttack")	
+			PlaySound(mainFemaleVoice.sOnTheAttack, mainFemaleActor, requiredChemistry = 0 , debugtext = "OnTheAttack")	
 		else 
-			PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
+			PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
 		endif
 	elseif ishugepp && Utility.RandomFloat(0.0, 1.0)  < ChanceToCommentonNonIntenseStage && !ASLcurrentlyIntense
-		PlaySound(mainFemaleVoice.InAwe, mainFemaleActor, requiredChemistry = 1 , debugtext = "InAwe")
+		PlaySound(mainFemaleVoice.sInAwe, mainFemaleActor, requiredChemistry = 1 , debugtext = "InAwe")
 	elseif Utility.RandomFloat(0.0, 1.0)  < ChanceToCommentonNonIntenseStage && !ASLcurrentlyIntense
 		if Utility.randomint(1,2) == 1
 			PossiblyAskForCumInSpecificLocation()
 		else
-			PlaySound(mainFemaleVoice.PenetrativeCommentssoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentssoft")	
+			PlaySound(mainFemaleVoice.sPenetrativeCommentssoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentssoft")	
 		endif
 	elseif Utility.RandomFloat(0.0, 1.0)  < ChanceToCommentonIntenseStage && ASLcurrentlyIntense
-		PlaySound(mainFemaleVoice.PenetrativeCommentsIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentsIntense")	
+		PlaySound(mainFemaleVoice.sPenetrativeCommentsIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentsIntense")	
 	else	
 		if ASLcurrentlyintense
-			PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
+			PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
 		else
-			PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+			PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 		endif
 	EndIf
 			
@@ -1787,16 +1808,16 @@ else
 	
 	If !ASLCurrentlyintense && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage ; femdom comments
 		;amused
-		PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
+		PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Amused")
 	endif
 	
 	If Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage ; femdom comments
 		if ASLCurrentlyintense	
 			;Penetrated Comments Femdom Intense
-			PlaySound(mainFemaleVoice.SensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Femdom Intense")	
+			PlaySound(mainFemaleVoice.sSensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Femdom Intense")	
 		else
 			;Penetrated Comments Femdom
-			PlaySound(mainFemaleVoice.PenetrativeCommentsIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Femdom")	
+			PlaySound(mainFemaleVoice.sPenetrativeCommentsIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Femdom")	
 		endif
 	else	
 		PlayMoanonlyVarB()
@@ -1812,19 +1833,19 @@ Function PlayGettingFuckedbyHugePP() ; when on huge pp scenario
 printdebug("Play Getting Fucked by Huge PP")
 
 if CommentedClosetoOrgasm
-	PlaySound(mainFemaleVoice.SensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
+	PlaySound(mainFemaleVoice.sSensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
 else
 	if IsGettingDoublePenetrated()
 	
-		PlaySound(mainFemaleVoice.SensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
+		PlaySound(mainFemaleVoice.sSensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
 		
 	elseif ASLCurrentlyintense	
 		if IsGettingAnallyPenetrated() && utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
-			PlaySound(mainFemaleVoice.IntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "IntenseAnal")
+			PlaySound(mainFemaleVoice.sIntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "IntenseAnal")
 		elseif Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
-			PlaySound(mainFemaleVoice.TeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0)
+			PlaySound(mainFemaleVoice.sTeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0)
 		else
-			PlaySound(mainFemaleVoice.SensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
+			PlaySound(mainFemaleVoice.sSensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
 		endif
 	else
 
@@ -1832,16 +1853,16 @@ else
 		if Utility.RandomFloat(0.0, 1.0) < 0.5
 			PlayBreathyorforeplaysound()
 		else
-			PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+			PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 		endif
 		
 		if Utility.RandomFloat(0.0, 1.0) < 0.2
 			Utility.Wait(Utility.RandomFloat(1.0, 2.0))
 
-			PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 2 , debugtext = "Oh")
+			PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 2 , debugtext = "Oh")
 			Utility.Wait(1.0)
 
-			PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterGape")
+			PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterGape")
 		endif
 	endif
 endif
@@ -1856,19 +1877,19 @@ if CommentedClosetoOrgasm
 else
 	if IsGettingDoublePenetrated()
 		;Penetrated Comments Over The Top
-		PlaySound(mainFemaleVoice.TeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Over The Top")
+		PlaySound(mainFemaleVoice.sTeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Over The Top")
 	
 	elseif ASLCurrentlyintense && utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
 		if IsGettingAnallyPenetrated() && utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
 			;Penetrated Anal Comments Intense
-			PlaySound(mainFemaleVoice.IntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Anal Comments Intense")
+			PlaySound(mainFemaleVoice.sIntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Anal Comments Intense")
 		else
 			;Penetrated Comments Over The Top
-			PlaySound(mainFemaleVoice.TeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Over The Top")
+			PlaySound(mainFemaleVoice.sTeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Over The Top")
 		endif
 	elseif !ASLCurrentlyintense && utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
 		;Penetrated Comments VIctim
-		PlaySound(mainFemaleVoice.RefractoryPeriod, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 2 , debugtext = "Penetrated Comments VIctim")
+		PlaySound(mainFemaleVoice.sRefractoryPeriod, mainFemaleActor, requiredChemistry = 0 ,soundPriority = 2 , debugtext = "Penetrated Comments VIctim")
 		
 	else
 		PlayMoanonlyVarB()
@@ -1887,22 +1908,22 @@ endif
 
 if ASLCurrentlyintense
 	if IsSuckingoffOther()
-		PlaySound(mainFemaleVoice.BlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionIntense")
+		PlaySound(mainFemaleVoice.sBlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionIntense")
 	elseif IsgettingPenetrated()
-		PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
+		PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
 	elseif IsGettingStimulated()
-		PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+		PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 	else
 		PlayBreathyorforeplaysound()
 	endif
 
 else
 	if IsSuckingoffOther()
-		PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
+		PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
 	elseif IsgettingPenetrated()
-		PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+		PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 	elseif isending()
-		PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0  , debugtext = "AfterOrgasmExclamations")
+		PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0  , debugtext = "AfterOrgasmExclamations")
 	else
 		PlayBreathyorforeplaysound()
 	endif
@@ -1919,72 +1940,72 @@ endif
 if ASLCurrentlyintense
 	if IsSuckingoffOther()
 		;Blowjob Action Intense
-		PlaySound(mainFemaleVoice.BlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Action Intense")
+		PlaySound(mainFemaleVoice.sBlowjobActionIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Action Intense")
 	elseif IsgettingPenetrated()
 		if IsGettingDoublePenetrated() || ishugepp()
 			;Penetrated Grunt Over The Top
-			PlaySound(mainFemaleVoice.RomanceMaleThane, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Over The Top")
+			PlaySound(mainFemaleVoice.sRomanceMaleThane, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Over The Top")
 		elseif ASLIsBroken()
 			;Penetrated Grunt Intense
-			PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Intense")
+			PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Intense")
 		elseif femaleisvictim()
 			;Penetrated Grunt Victim Intense
-			PlaySound(mainFemaleVoice.CumTogetherTease, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Victim Intense")
+			PlaySound(mainFemaleVoice.sCumTogetherTease, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Victim Intense")
 		else
 			;Penetrated Grunt Intense
-			PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Intense")
+			PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Intense")
 		endif
 	elseif IsStimulatingOthers()
 		;Breathing
-		PlaySound(mainFemaleVoice.BreathySoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Breathing")
+		PlaySound(mainFemaleVoice.sBreathySoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Breathing")
 	else
 		;Breathing Intense
-		PlaySound(mainFemaleVoice.BreathyIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Breathing Intense")
+		PlaySound(mainFemaleVoice.sBreathyIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Breathing Intense")
 	endif
 
 else
 	if IsSuckingoffOther()
 		;Blowjob Action
-		PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Action")
+		PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Blowjob Action")
 	elseif IsgettingPenetrated()
 		if ishugepp()
 			;Penetrated Grunt Victim
-			PlaySound(mainFemaleVoice.Unamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Victim")
+			PlaySound(mainFemaleVoice.sUnamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Victim")
 		elseif ASLIsBroken()
 			;Panting
-			PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , debugtext = "Panting")
+			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , debugtext = "Panting")
 		elseif femaleisvictim()
 			;Penetrated Grunt Victim
-			PlaySound(mainFemaleVoice.Unamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Victim")
+			PlaySound(mainFemaleVoice.sUnamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt Victim")
 		else
 			;Penetrated Grunt
-			PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt")
+			PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Grunt")
 		endif
 	elseif isending()
 		if CurrentPenetrationLvl() == 1 ;oral
 			;Blowjob Action
-			PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Blowjob Action")
+			PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Blowjob Action")
 		elseif CurrentPenetrationLvl() >= 2 ;vaginal anal
 			if ishugepp()
 				;Panting Heavy
-				PlaySound(mainFemaleVoice.MyTurnToCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Panting Heavy")
+				PlaySound(mainFemaleVoice.sMyTurnToCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Panting Heavy")
 			else
 				;Panting
-				PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Panting")
+				PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Panting")
 			endif
 		elseif femaleRecordedOrgasmCount > 0 ;orgasm due to stimulation before
 			;Panting
-			PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Panting")
+			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Panting")
 		else ;no penetration no orgasm no stimulation
 			;Breathing
-			PlaySound(mainFemaleVoice.BreathySoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Breathing")
+			PlaySound(mainFemaleVoice.sBreathySoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Breathing")
 		EndIf
 	elseif IsGettingStimulated()
 		;Breathing Intense
-		PlaySound(mainFemaleVoice.BreathyIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Breathing Intense")
+		PlaySound(mainFemaleVoice.sBreathyIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "Breathing Intense")
 	else
 		;Breathing
-		PlaySound(mainFemaleVoice.BreathySoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Breathing")
+		PlaySound(mainFemaleVoice.sBreathySoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Breathing")
 	endif
 	
 endif
@@ -1997,31 +2018,31 @@ printdebug("Play Getting Fucked")
 if ASLCurrentlyintense
 	
 	if CommentedClosetoOrgasm
-		PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
+		PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
 	else ;After Handling close to Orgasm
 		if FemaleIsVictim() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
-			PlaySound(mainFemaleVoice.TeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0)
+			PlaySound(mainFemaleVoice.sTeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0)
 		elseIf IsGettingAnallyPenetrated() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
-			PlaySound(mainFemaleVoice.IntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "IntenseAnal")
+			PlaySound(mainFemaleVoice.sIntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "IntenseAnal")
 		elseIf IsGettingVaginallyPenetrated() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
-			PlaySound(mainFemaleVoice.PenetrativeCommentsIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentsIntense")	
+			PlaySound(mainFemaleVoice.sPenetrativeCommentsIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentsIntense")	
 		else
-			PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
+			PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
 		endif
 	EndIf
 	
 ;------------------ NOT INTENSE-------------------
 else	
 	if CommentedClosetoOrgasm
-		PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+		PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 	else
 		;after handling close to orgasm
 		If femaleisvictim() && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentUnamused
-			PlaySound(mainFemaleVoice.Unamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Unamused")
+			PlaySound(mainFemaleVoice.sUnamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Unamused")
 		elseIf  Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonNonIntenseStage
-			PlaySound(mainFemaleVoice.PenetrativeCommentssoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentssoft")	
+			PlaySound(mainFemaleVoice.sPenetrativeCommentssoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentssoft")	
 		else
-			PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+			PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 		EndIf
 
 	endif
@@ -2040,13 +2061,13 @@ if ASLCurrentlyintense
 	elseif Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
 		if FemaleIsVictim()
 			;Penetrated Comments Victim Intense
-			PlaySound(mainFemaleVoice.MissMaleLover, mainFemaleActor, requiredChemistry = 0 , Debugtext = "Penetrated Comments Victim Intense")
+			PlaySound(mainFemaleVoice.sMissMaleLover, mainFemaleActor, requiredChemistry = 0 , Debugtext = "Penetrated Comments Victim Intense")
 		elseIf IsGettingAnallyPenetrated()
 			;Penetrated Anal Comments Intense
-			PlaySound(mainFemaleVoice.IntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Anal Comments Intense")
+			PlaySound(mainFemaleVoice.sIntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Anal Comments Intense")
 		else
 			;Penetrated Comments Intense
-			PlaySound(mainFemaleVoice.LoveyDovey, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Intense")	
+			PlaySound(mainFemaleVoice.sLoveyDovey, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments Intense")	
 		endif
 	else
 		PlayMoanonlyVarB()
@@ -2059,10 +2080,10 @@ else
 	elseif Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
 		If femaleisvictim()
 			;Penetrated Comments VIctim
-			PlaySound(mainFemaleVoice.RefractoryPeriod, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments VIctim")
+			PlaySound(mainFemaleVoice.sRefractoryPeriod, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments VIctim")
 		else
 			;Penetrated Comments
-			PlaySound(mainFemaleVoice.PenetrativeCommentssoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments")
+			PlaySound(mainFemaleVoice.sPenetrativeCommentssoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments")
 		EndIf
 	else
 		PlayMoanonlyVarB()
@@ -2077,19 +2098,19 @@ if ASLCurrentlyintense
 
 	
 	if CommentedClosetoOrgasm
-		PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
+		PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
 	else ;After Handling close to Orgasm
 		If IsGettingAnallyPenetrated() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
 			if Utility.Randomint(1,2) == 1
-				PlaySound(mainFemaleVoice.IntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "IntenseAnal")
+				PlaySound(mainFemaleVoice.sIntenseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "IntenseAnal")
 			else
-				PlaySound(mainFemaleVoice.PenetrativeCommentsIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentsIntense")
+				PlaySound(mainFemaleVoice.sPenetrativeCommentsIntense, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeCommentsIntense")
 			endif	
 		else
 			if CurrentThread.HasSceneTag("Tentacles")
-				PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
+				PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
 			else
-				PlaySound(mainFemaleVoice.SensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
+				PlaySound(mainFemaleVoice.sSensitivePleasure, mainFemaleActor, requiredChemistry = 0 , debugtext = "SensitivePleasure")
 			endif
 		endif
 	EndIf
@@ -2097,18 +2118,18 @@ if ASLCurrentlyintense
 	;Not Intense
 else	
 	if CommentedClosetoOrgasm
-		PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
+		PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , debugtext = "PenetrativeGrunts")
 	else
 		;after handling close to orgasm
 		If femaleisvictim() && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentUnamused
-			PlaySound(mainFemaleVoice.Unamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Unamused")
+			PlaySound(mainFemaleVoice.sUnamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Unamused")
 		elseIf  Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonNonIntenseStage
-			PlaySound(mainFemaleVoice.TeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "TeaseAggressivePartner")
+			PlaySound(mainFemaleVoice.sTeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "TeaseAggressivePartner")
 		else
 			if CurrentThread.HasSceneTag("Tentacles")
-				PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "PenetrativeGrunts")
+				PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "PenetrativeGrunts")
 			else
-				PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
+				PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , debugtext = "NearOrgasmNoises")
 			endif
 		EndIf
 	endif
@@ -2123,9 +2144,9 @@ Function PlayGettingFuckedDoubleVarB()
 	if CommentedClosetoOrgasm
 		PlayMoanonlyVarB()
 	elseif ASLCurrentlyintense && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
-		PlaySound(mainFemaleVoice.TeaseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Double Comments")	
+		PlaySound(mainFemaleVoice.sTeaseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Double Comments")	
 	elseif !ASLCurrentlyintense && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
-		PlaySound(mainFemaleVoice.TeaseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Double Comments")
+		PlaySound(mainFemaleVoice.sTeaseAnal, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Double Comments")
 	else
 		PlayMoanonlyVarB()
 	EndIf
@@ -2147,35 +2168,35 @@ endif
 	if AllowMaleVoice() 
 		;miscutil.PrintConsole ("Playing Male Comments EN stage")
 		if MaleIsVictim()
-			PlaySound(mainMaleVoice.TeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False ,debugtext = "TeaseAggressivePartner")
+			PlaySound(mainMaleVoice.sTeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False ,debugtext = "TeaseAggressivePartner" , voiceActor = mainMaleActor)
 		else
-			PlaySound(mainMaleVoice.PostNutRemark, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = false ,debugtext = "PostNutRemark")
+			PlaySound(mainMaleVoice.sPostNutRemark, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = false ,debugtext = "PostNutRemark" , voiceActor = mainMaleActor)
 			if	CurrentPenetrationLvl() == 1
-				PlaySound(mainFemaleVoice.BlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
+				PlaySound(mainFemaleVoice.sBlowjobActionSoft, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobActionSoft")
 			else
-				PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 ,debugtext = "AfterOrgasmExclamations")
+				PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 ,debugtext = "AfterOrgasmExclamations")
 			endif
 		endif
 	endif
 	
 	Utility.Wait(Utility.RandomFloat(1.0, 2.0))
-	PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 ,debugtext = "AfterOrgasmExclamations")
+	PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 ,debugtext = "AfterOrgasmExclamations")
 
 	if commentedcumlocation == false && !femaleisvictim()
 		commentedcumlocation = true
 		PossiblyRemarkOnCumLocation()
 	elseif commentedorgasmremark == false  && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonNonIntenseStage	
 		If	femaleisvictim() && Utility.RandomFloat(0, 1.0) < ChanceToCommentUnamused * 3
-				PlaySound(mainFemaleVoice.UnamusedEnd, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 ,debugtext = "UnamusedEnd")
+				PlaySound(mainFemaleVoice.sUnamusedEnd, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 ,debugtext = "UnamusedEnd")
 		elseif	femaleRecordedOrgasmCount > Utility.RandomInt(2, 3) && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonNonIntenseStage
-				PlaySound(mainFemaleVoice.MadeMeCumSoMuch, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "MadeMeCumSoMuch")
+				PlaySound(mainFemaleVoice.sMadeMeCumSoMuch, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "MadeMeCumSoMuch")
 		else
-			PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 ,debugtext = "AfterOrgasmExclamations")
+			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 ,debugtext = "AfterOrgasmExclamations")
 		EndIf
 	elseif CurrentThread.HasSceneTag("femdom") && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage
-		PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0 ,debugtext = "Amused")
+		PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0 ,debugtext = "Amused")
 	else
-		PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 ,debugtext = "AfterOrgasmExclamations")
+		PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 ,debugtext = "AfterOrgasmExclamations")
 	endif
 
 endfunction
@@ -2194,9 +2215,9 @@ endif
 
 	if AllowMaleVoice() 
 		if MaleIsVictim()
-			PlaySound(mainMaleVoice.TeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False ,debugtext = "TeaseAggressivePartner")
+			PlaySound(mainMaleVoice.sTeaseAggressivePartner, mainFemaleActor, soundPriority = 2 , waitForCompletion = False ,debugtext = "TeaseAggressivePartner" , voiceActor = mainMaleActor)
 		else
-			PlaySound(mainMaleVoice.PostNutRemark, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = false ,debugtext = "PostNutRemark")
+			PlaySound(mainMaleVoice.sPostNutRemark, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , waitForCompletion = false ,debugtext = "PostNutRemark" , voiceActor = mainMaleActor)
 		endif
 		PlayMoanonlyVarB()
 	endif
@@ -2206,13 +2227,13 @@ endif
 	if Utility.RandomFloat(0.0, 1.0) < ChanceToCommentonNonIntenseStage	&& commentedcumlocation == false
 		if ASLisBroken()
 			;Ending Broken
-			PlaySound(mainFemaleVoice.GreetFamiliar, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ending Broken")
+			PlaySound(mainFemaleVoice.sGreetFamiliar, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ending Broken")
 		
 		elseif !femaleisvictim()
 			PossiblyRemarkOnCumLocationVarB()
 		elseif femaleisvictim()
 			;Ending Victim Comments
-			PlaySound(mainFemaleVoice.UnamusedEnd, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 ,debugtext = "Ending Victim Comments")
+			PlaySound(mainFemaleVoice.sUnamusedEnd, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 ,debugtext = "Ending Victim Comments")
 		endif
 	else
 		PlayMoanonlyVarB()
@@ -2224,15 +2245,15 @@ function PlayBreathyorforeplaysound()
 
 	if ASLCurrentlyintense
 		if Utility.RandomFloat(0.0, 1.0) <= 0.5
-			PlaySound(mainFemaleVoice.Foreplayintense, mainFemaleActor, requiredChemistry = 0 , debugtext ="Foreplayintense")
+			PlaySound(mainFemaleVoice.sForeplayintense, mainFemaleActor, requiredChemistry = 0 , debugtext ="Foreplayintense")
 		else
-			PlaySound(mainFemaleVoice.BreathyIntense, mainFemaleActor, requiredChemistry = 0 , debugtext ="BreathyIntense")
+			PlaySound(mainFemaleVoice.sBreathyIntense, mainFemaleActor, requiredChemistry = 0 , debugtext ="BreathyIntense")
 		endif
 	else
 		if Utility.RandomFloat(0.0, 1.0) <= 0.5 
-			PlaySound(mainFemaleVoice.Foreplaysoft, mainFemaleActor, requiredChemistry = 0 , debugtext ="Foreplaysoft")
+			PlaySound(mainFemaleVoice.sForeplaysoft, mainFemaleActor, requiredChemistry = 0 , debugtext ="Foreplaysoft")
 		else
-			PlaySound(mainFemaleVoice.BreathySoft, mainFemaleActor, requiredChemistry = 0 , debugtext ="BreathySoft")
+			PlaySound(mainFemaleVoice.sBreathySoft, mainFemaleActor, requiredChemistry = 0 , debugtext ="BreathySoft")
 		endif
 	endif
 
@@ -2242,28 +2263,28 @@ function ASLPlayMaleClosetoOrgasmComments()
 			;miscutil.PrintConsole ("Teasing Male Close to Orgasm")
 		if IsStimulatingOthers() && !IsgettingPenetrated() && !IsGettingStimulated() && (SexLab.getsex(mainMaleActor) == 0 || SexLab.getsex(mainMaleActor) == 2)
 			
-			PlaySound(mainFemaleVoice.ReadyToGetGoing, mainFemaleActor, requiredChemistry = 0 , debugtext = "ReadyToGetGoing")
+			PlaySound(mainFemaleVoice.sReadyToGetGoing, mainFemaleActor, requiredChemistry = 0 , debugtext = "ReadyToGetGoing")
 		
 		elseif	mainFemaleEnjoyment > femaleorgasmhypeenjoyment && !femaleisvictim() && IsgettingPenetrated()
 
-			PlaySound(mainFemaleVoice.CumTogetherTease, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "CumTogetherTease")
+			PlaySound(mainFemaleVoice.sCumTogetherTease, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "CumTogetherTease")
 		
 		elseif  FemaleIsVictim() && IsgettingPenetrated()
 
-			PlaySound(mainFemaleVoice.PullOut, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "PullOut")
+			PlaySound(mainFemaleVoice.sPullOut, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "PullOut")
 		elseif IsEarlyToCum()	&& !ASLCurrentlyintense && !femaleisvictim() && IsgettingPenetrated()
 
-			PlaySound(mainFemaleVoice.MaleCloseAlready, mainFemaleActor, requiredChemistry = 1, soundPriority = 1 , debugtext = "MaleCloseAlready" )
+			PlaySound(mainFemaleVoice.sMaleCloseAlready, mainFemaleActor, requiredChemistry = 1, soundPriority = 1 , debugtext = "MaleCloseAlready" )
 		elseif IsFemdom() && !ASLCurrentlyintense
 
-			PlaySound(mainFemaleVoice.MaleCloseNotice, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "MaleCloseNotice")
+			PlaySound(mainFemaleVoice.sMaleCloseNotice, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "MaleCloseNotice")
 			
 		elseif ASLCurrentlyintense  && IsgettingPenetrated()
 		
-			PlaySound(mainFemaleVoice.TeaseMaleCloseToOrgasmIntense, mainFemaleActor, requiredChemistry = 1 , soundPriority = 1 , debugtext = "TeaseMaleCloseToOrgasmIntense")
+			PlaySound(mainFemaleVoice.sTeaseMaleCloseToOrgasmIntense, mainFemaleActor, requiredChemistry = 1 , soundPriority = 1 , debugtext = "TeaseMaleCloseToOrgasmIntense")
 		elseif  IsgettingPenetrated()
 
-			PlaySound(mainFemaleVoice.TeaseMaleCloseToOrgasmSoft, mainFemaleActor, requiredChemistry = 1 , soundPriority = 1 , debugtext = "TeaseMaleCloseToOrgasmSoft")
+			PlaySound(mainFemaleVoice.sTeaseMaleCloseToOrgasmSoft, mainFemaleActor, requiredChemistry = 1 , soundPriority = 1 , debugtext = "TeaseMaleCloseToOrgasmSoft")
 		
 		endif
 				
@@ -2280,45 +2301,45 @@ function ASLPlayMaleClosetoOrgasmCommentsVarB()
 
 	if !FemaleIsVictim() && IsStimulatingOthers() && !IsgettingPenetrated() && (SexLab.getsex(mainMaleActor) == 0 || SexLab.getsex(mainMaleActor) == 2)
 		if IsGettingStimulated()
-			PlaySound(mainFemaleVoice.ReadyToGetGoing, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ready To Get Going")
+			PlaySound(mainFemaleVoice.sReadyToGetGoing, mainFemaleActor, requiredChemistry = 0 , debugtext = "Ready To Get Going")
 		else
 			;Foreplay Tease Orgasm
-			PlaySound(mainFemaleVoice.WantMore, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay Tease Orgasm")
+			PlaySound(mainFemaleVoice.sWantMore, mainFemaleActor, requiredChemistry = 0 , debugtext = "Foreplay Tease Orgasm")
 		endif
 	
 	elseif  FemaleIsVictim() && IsgettingPenetrated()
 		;Penetrated Tell Male to Pull Out
-		PlaySound(mainFemaleVoice.PullOut, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Penetrated Tell Male to Pull Out")
+		PlaySound(mainFemaleVoice.sPullOut, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Penetrated Tell Male to Pull Out")
 	elseif IsFemdom() && IsgettingPenetrated()
 		;Male Orgasm Soon Femdom
-		PlaySound(mainFemaleVoice.MaleCloseNotice, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "Male Orgasm Soon Femdom")
+		PlaySound(mainFemaleVoice.sMaleCloseNotice, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "Male Orgasm Soon Femdom")
 	elseif	!femaleisvictim() && IsgettingPenetrated()
 		if Isintense() 
 			if CurrentPenetrationLvl() == 1
 				;Male Orgasm Soon Ask For Oral Cum
-				PlaySound(mainFemaleVoice.AskForOralCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Oral Cum")
+				PlaySound(mainFemaleVoice.sAskForOralCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Oral Cum")
 			elseif CurrentPenetrationLvl() == 2
 				;Male Orgasm Soon Ask For Vaginal Cum Intense
-				PlaySound(mainFemaleVoice.TeaseMaleCloseToOrgasmSoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Vaginal Cum Intense")
+				PlaySound(mainFemaleVoice.sTeaseMaleCloseToOrgasmSoft, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Vaginal Cum Intense")
 			elseif CurrentPenetrationLvl() == 3
 				;Male Orgasm Soon Ask for Anal Cum Intense
-				PlaySound(mainFemaleVoice.TeaseMaleCloseToOrgasmIntense, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "TeaseMaleCloseToOrgasmIntense")
+				PlaySound(mainFemaleVoice.sTeaseMaleCloseToOrgasmIntense, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "TeaseMaleCloseToOrgasmIntense")
 			EndIf
 		else
 			if CurrentPenetrationLvl() == 1
 				;Male Orgasm Soon Ask For Oral Cum
-				PlaySound(mainFemaleVoice.AskForOralCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Oral Cum")
+				PlaySound(mainFemaleVoice.sAskForOralCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Oral Cum")
 			elseif CurrentPenetrationLvl() == 2
 				;Male Orgasm Soon Ask For Vaginal Cum
-				PlaySound(mainFemaleVoice.AskForVaginalCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Vaginal Cum")
+				PlaySound(mainFemaleVoice.sAskForVaginalCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Vaginal Cum")
 			elseif CurrentPenetrationLvl() == 3
 				;Male Orgasm Soon Ask For Anal Cum
-				PlaySound(mainFemaleVoice.AskForAnalCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Anal Cum")
+				PlaySound(mainFemaleVoice.sAskForAnalCum, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Male Orgasm Soon Ask For Anal Cum")
 			EndIf
 		endif
 	elseif !femaleisvictim() && IsStimulatingOthers()
 		;Foreplay Tease Orgasm
-		PlaySound(mainFemaleVoice.WantMore, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Foreplay Tease Orgasm")
+		PlaySound(mainFemaleVoice.sWantMore, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Foreplay Tease Orgasm")
 	else
 		PlayMoanonlyVarB()
 	endif
@@ -2339,29 +2360,29 @@ endif
 
 	if !ASLCurrentlyintense
 		if IsSuckingoffOther()
-			PlaySound(mainFemaleVoice.BlowjobRemarks, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobRemarks")
+			PlaySound(mainFemaleVoice.sBlowjobRemarks, mainFemaleActor, requiredChemistry = 0 , debugtext = "BlowjobRemarks")
 		elseif (IsStimulatingOthers() || IsGettingStimulated()) && !femaleisvictim() && !IsgettingPenetrated()
-			PlaySound(mainFemaleVoice.ReadyToGetGoing, mainFemaleActor, requiredChemistry = 0 , debugtext = "ReadyToGetGoing")	
+			PlaySound(mainFemaleVoice.sReadyToGetGoing, mainFemaleActor, requiredChemistry = 0 , debugtext = "ReadyToGetGoing")	
 		elseif maleOrgasmCount > femaleRecordedOrgasmCount && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentWhenCloseToOrgasm && !FemaleIsVictim()
-			PlaySound(mainFemaleVoice.MyTurnToCum, mainFemaleActor, requiredChemistry = 3 , soundPriority = 1 , debugtext = "MyTurnToCum")
+			PlaySound(mainFemaleVoice.sMyTurnToCum, mainFemaleActor, requiredChemistry = 3 , soundPriority = 1 , debugtext = "MyTurnToCum")
 		Elseif Utility.RandomFloat(0.0, 1.0) < ChanceToCommentWhenCloseToOrgasm  && CommentedClosetoOrgasm == false
-			PlaySound(mainFemaleVoice.NearOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmExclamations")
+			PlaySound(mainFemaleVoice.sNearOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmExclamations")
 		else
-			PlaySound(mainFemaleVoice.PenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "PenetrativeGrunts")
+			PlaySound(mainFemaleVoice.sPenetrativeGrunts, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "PenetrativeGrunts")
 		endif
 ;-----------------------INTENSE------------------
 	elseif ASLcurrentlyIntense 
 		if IsSuckingoffOther()
-			PlaySound(mainFemaleVoice.AppreciatePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "AppreciatePartner")
+			PlaySound(mainFemaleVoice.sAppreciatePartner, mainFemaleActor, requiredChemistry = 0 , debugtext = "AppreciatePartner")
 		elseIf IshugePP && IsgettingPenetrated() && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentWhenCloseToOrgasm
-			PlaySound(mainFemaleVoice.SensitivePleasure, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "SensitivePleasure")	
+			PlaySound(mainFemaleVoice.sSensitivePleasure, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "SensitivePleasure")	
 
 		elseif IsgettingPenetrated() || IsGettingStimulated()
 		
 			If Utility.RandomFloat(0.0, 1.0) < ChanceToCommentWhenCloseToOrgasm && CommentedClosetoOrgasm == false
-			PlaySound(mainFemaleVoice.NearOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmExclamations")
+			PlaySound(mainFemaleVoice.sNearOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmExclamations")
 			Else 
-				PlaySound(mainFemaleVoice.NearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmNoises")
+				PlaySound(mainFemaleVoice.sNearOrgasmNoises, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "NearOrgasmNoises")
 			EndIf
 		endif
 	endif
@@ -2381,10 +2402,10 @@ Function ASLPlayFemaleOrgasmHypeVarB()
 	
 	If IshugePP && ASLCurrentlyintense || IsGettingDoublePenetrated()
 		;Orgasm Soon Comments Intense
-		PlaySound(mainFemaleVoice.NearOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Orgasm Soon Comments Intense")	
+		PlaySound(mainFemaleVoice.sNearOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Orgasm Soon Comments Intense")	
 	else
 		;Orgasm Soon Comments
-		PlaySound(mainFemaleVoice.ReadyToResume, mainFemaleActor, requiredChemistry = 0 , debugtext = "Orgasm Soon Comments")
+		PlaySound(mainFemaleVoice.sReadyToResume, mainFemaleActor, requiredChemistry = 0 , debugtext = "Orgasm Soon Comments")
 	EndIf
 	CommentedClosetoOrgasm = true
 
@@ -2401,7 +2422,7 @@ function ASLHandlemaleOrgasmreaction()
 
 	
 	if maleOrgasmCount > 1 && !femaleisvictim() && !IsSuckingoffOther() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
-		PlaySound(mainFemaleVoice.InAwe, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "InAwe")
+		PlaySound(mainFemaleVoice.sInAwe, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "InAwe")
 	endif
 
 	;a chance to react to male orgasm
@@ -2409,42 +2430,42 @@ function ASLHandlemaleOrgasmreaction()
 	if CurrentPenetrationLvl() == 1
 					
 		if AllowMaleVoice()
-			PlaySound(mainMaleVoice.JokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2, waitForCompletion = false , debugtext = "JokeAfterOrgasm")
+			PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2, waitForCompletion = false , debugtext = "JokeAfterOrgasm" , voiceActor = mainMaleActor)
 		endif	
 				
-		PlaySound(mainFemaleVoice.CameInMouth, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "CameInMouth")
+		PlaySound(mainFemaleVoice.sCameInMouth, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "CameInMouth")
 				
 	elseif IsCowgirl() || IsGivingAnalPenetration() || IsGivingVaginalPenetration()
 	
-		PlaySound(mainFemaleVoice.MaleOrgasmReactionSoft, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "MaleOrgasmReactionSoft")
+		PlaySound(mainFemaleVoice.sMaleOrgasmReactionSoft, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "MaleOrgasmReactionSoft")
 		
 	elseIf 	ASLCurrentlyintense && IsgettingPenetrated()
 				
 		;Chance for male comments	
 		if AllowMaleVoice()
 
-			PlaySound(mainMaleVoice.JokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "JokeAfterOrgasm")
+			PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "JokeAfterOrgasm" , voiceActor = mainMaleActor)
 			Utility.Wait(Utility.RandomFloat(0.5, 1.0))
 		endif
 		
 		if Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
-			PlaySound(mainFemaleVoice.MaleOrgasmReactionIntense, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "MaleOrgasmReactionIntense")
+			PlaySound(mainFemaleVoice.sMaleOrgasmReactionIntense, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "MaleOrgasmReactionIntense")
 		endif
 
 	Elseif IsgettingPenetrated()
 		if AllowMaleVoice()
-			PlaySound(mainMaleVoice.JokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1,waitForCompletion = False , debugtext = "JokeAfterOrgasm")
-			PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterOrgasmExclamations")
+			PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1,waitForCompletion = False , debugtext = "JokeAfterOrgasm" , voiceActor = mainMaleActor)
+			PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterOrgasmExclamations")
 			Utility.Wait(Utility.RandomFloat(0.5, 2.0))
 		endif
 		
 		if Utility.RandomFloat(0.0, 1.0) <= 0.4	
 			if femaleisvictim()
 
-				PlaySound(mainFemaleVoice.Unamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Unamused")
+				PlaySound(mainFemaleVoice.sUnamused, mainFemaleActor, requiredChemistry = 0 , debugtext = "Unamused")
 			else
 
-				PlaySound(mainFemaleVoice.MaleOrgasmReactionSoft, mainFemaleActor, requiredChemistry = 0, soundPriority = 2)
+				PlaySound(mainFemaleVoice.sMaleOrgasmReactionSoft, mainFemaleActor, requiredChemistry = 0, soundPriority = 2)
 			endif
 		endif
 	EndIf
@@ -2460,7 +2481,7 @@ function ASLHandlemaleOrgasmreactionVarB()
 
 	;Chance for male comments	
 	if AllowMaleVoice() && !MaleIsVictim()
-		PlaySound(mainMaleVoice.JokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "JokeAfterOrgasm" ,waitForCompletion = False)
+		PlaySound(mainMaleVoice.sJokeAfterOrgasm, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "JokeAfterOrgasm" ,waitForCompletion = False , voiceActor = mainMaleActor)
 	endif
 	
 	;Female Panting First 
@@ -2472,27 +2493,27 @@ function ASLHandlemaleOrgasmreactionVarB()
 	elseif Femaleisvictim() && CurrentPenetrationLvl() > 1
 		;Male Orgasmed Inside Victim
 		if (!ASLCurrentlyintense && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage) || (ASLCurrentlyintense || ishugePP) && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
-			PlaySound(mainFemaleVoice.MaleOrgasmReactionSoft, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext= "Male Orgasmed Inside Victim")
+			PlaySound(mainFemaleVoice.sMaleOrgasmReactionSoft, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext= "Male Orgasmed Inside Victim")
 		endif
 	elseif (ASLCurrentlyintense || ishugePP) && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
 		if IsFemdom() && IsgettingPenetrated()
 			;Male Orgasmed Inside Femdom
-			PlaySound(mainFemaleVoice.MaleOrgasmReactionIntense, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Male Orgasmed Inside Femdom")
+			PlaySound(mainFemaleVoice.sMaleOrgasmReactionIntense, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Male Orgasmed Inside Femdom")
 		elseif IsGivingAnalPenetration() || IsGivingVaginalPenetration()
 			;Amused
-			PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Amused")
+			PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Amused")
 		elseIf IsgettingPenetrated()
 			;Male Orgasmed Inside Intense
-			PlaySound(mainFemaleVoice.MaleCloseAlready, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Male Orgasmed Inside Intense")
+			PlaySound(mainFemaleVoice.sMaleCloseAlready, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Male Orgasmed Inside Intense")
 		endif
 
 	elseif !ASLCurrentlyintense && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
 		if femaleisvictim()
 			;Penetrated Comments VIctim
-			PlaySound(mainFemaleVoice.RefractoryPeriod, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments VIctim")
+			PlaySound(mainFemaleVoice.sRefractoryPeriod, mainFemaleActor, requiredChemistry = 0 , debugtext = "Penetrated Comments VIctim")
 		else
 			;Male Orgasmed Inside
-			PlaySound(mainFemaleVoice.InsertionAnalSlow, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Male Orgasmed Inside")
+			PlaySound(mainFemaleVoice.sInsertionAnalSlow, mainFemaleActor, requiredChemistry = 0, soundPriority = 2 , debugtext = "Male Orgasmed Inside")
 		endif
 	else
 		PlayMoanonlyVarB()
@@ -2514,39 +2535,39 @@ elseif VoiceVariation == "A"
 
 	if	ASLIsBroken() && mainMaleActor != None
 	
-		PlaySound(mainFemaleVoice.AfterOrgasmArouse, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="AfterOrgasmArouse")
+		PlaySound(mainFemaleVoice.sAfterOrgasmArouse, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="AfterOrgasmArouse")
 		
 	elseif (IsGivingAnalPenetration() || IsGivingVaginalPenetration() ) && mainMaleActor != None
 
-		PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="Amused")
+		PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="Amused")
 		
 	elseif ASLCurrentlyintense  && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage && mainMaleActor != None
 		if IsCowgirl()
-			PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="Amused")
+			PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="Amused")
 		else
-			PlaySound(mainFemaleVoice.AskForPacingBreak, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AskForPacingBreak")
+			PlaySound(mainFemaleVoice.sAskForPacingBreak, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AskForPacingBreak")
 		endif
 	elseif !ASLCurrentlyintense && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage && mainMaleActor != None
 
-		PlaySound(mainFemaleVoice.AfterOrgasmRemarks, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AfterOrgasmRemarks")
+		PlaySound(mainFemaleVoice.sAfterOrgasmRemarks, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AfterOrgasmRemarks")
 	else
-		PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AfterOrgasmExclamations")
+		PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AfterOrgasmExclamations")
 	endif
 
 else
 	if	ASLIsBroken()
 
-		PlaySound(mainFemaleVoice.AfterOrgasmArouse, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="AfterOrgasmArouse")
+		PlaySound(mainFemaleVoice.sAfterOrgasmArouse, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="AfterOrgasmArouse")
 	elseif IsFemdom() && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage
 
-		PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="Amused")
+		PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="Amused")
 		
 	elseif !ASLCurrentlyintense && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
 	
-		PlaySound(mainFemaleVoice.AfterOrgasmRemarks, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AfterOrgasmRemarks")
+		PlaySound(mainFemaleVoice.sAfterOrgasmRemarks, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AfterOrgasmRemarks")
 		
 	else
-		PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AfterOrgasmExclamations")	
+		PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="AfterOrgasmExclamations")	
 	endif
 endif
 	
@@ -2554,10 +2575,10 @@ If mainMaleActor != None && Utility.RandomFloat(0.0, 1.0) < 0.5 && !FemaleIsVict
 	If !FemaleIsSatisfied() && IsgettingPenetrated()
 			Utility.Wait(Utility.RandomFloat(1.0, 2.0))
 
-			PlaySound(mainFemaleVoice.WantMore, mainFemaleActor, requiredChemistry = 1, soundPriority = 1 , debugtext = "WantMore")
+			PlaySound(mainFemaleVoice.sWantMore, mainFemaleActor, requiredChemistry = 1, soundPriority = 1 , debugtext = "WantMore")
 	else
 
-		PlaySound(mainFemaleVoice.Satisfied, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "Satisfied")
+		PlaySound(mainFemaleVoice.sSatisfied, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "Satisfied")
 	EndIf
 EndIf	
 
@@ -2577,14 +2598,14 @@ Function ASLHandleFemaleOrgasmReactionVarB()
 	elseif CurrentPenetrationLvl() >= 2
 		if	ASLIsBroken() || ASLCurrentlyintense || isHugePP || timesGaped > 8
 			;After Orgasm Comments Intense
-			PlaySound(mainFemaleVoice.AskForPacingBreak, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="After Orgasm Comments Intense")
+			PlaySound(mainFemaleVoice.sAskForPacingBreak, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="After Orgasm Comments Intense")
 		elseif IsFemdom() && Utility.RandomFloat(0.0, 1.0) < ChanceToCommentononAttackingStage
 			;After Orgasm Comments
-			PlaySound(mainFemaleVoice.AfterOrgasmRemarks, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="After Orgasm Comments")
+			PlaySound(mainFemaleVoice.sAfterOrgasmRemarks, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="After Orgasm Comments")
 			
 		elseif !ASLCurrentlyintense && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
 			;After Orgasm Comments
-			PlaySound(mainFemaleVoice.AfterOrgasmRemarks, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="After Orgasm Comments")
+			PlaySound(mainFemaleVoice.sAfterOrgasmRemarks, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="After Orgasm Comments")
 		endif
 	endif
 
@@ -2608,12 +2629,12 @@ endif
 
 	if isShortenedScene() || moanonly == 1 
 		if !PreviousStageHasPenetration() && IsgettingPenetrated()
-			PlaySound(MasterScript.Sounds.PullOutGape, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, waitForCompletion = false , debugtext="PullOutGape")
+			PlaySound(MasterScript.Sounds.sPullOutGape, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, waitForCompletion = false , debugtext="PullOutGape")
 			if ishugepp
 
-				PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterGape")
+				PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterGape")
 			else
-				PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Oh")
+				PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Oh")
 			endif
 			Utility.Wait(Utility.RandomFloat(0.5, 1.0))
 		endif
@@ -2626,10 +2647,10 @@ endif
 	;male fucking somemore  from ending
 	elseif	!IsEnding() && PrevEndingLabel == "ENO" && MainMaleCanControl() && timesGaped > 0
 
-			PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , SkipWait = true , debugtext="Oh")
+			PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , SkipWait = true , debugtext="Oh")
 			Utility.Wait(Utility.RandomFloat(0.5, 1.5))
 			if voicevariation != "B"
-				PlaySound(mainFemaleVoice.NoticeMaleWantsMore, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="NoticeMaleWantsMore")
+				PlaySound(mainFemaleVoice.sNoticeMaleWantsMore, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="NoticeMaleWantsMore")
 			endif	
 			if !MainFemaleisBurstingAtSeams()
 				ASLRemoveThickCumleak()
@@ -2638,39 +2659,39 @@ endif
 	;-------------Transition from no penetration to penetration----------------------
 	elseif !PreviousStageHasPenetration() && IsgettingPenetrated()
 		printdebug("Stage Transition - No Penetration to Penetration")
-		PlaySound(MasterScript.Sounds.PullOutGape, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, waitForCompletion = false , debugtext="PullOutGape")
+		PlaySound(MasterScript.Sounds.sPullOutGape, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, waitForCompletion = false , debugtext="PullOutGape")
 		
 		if ishugepp
 
-			PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterGape")
+			PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "AfterGape")
 		else
-			PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Oh")
+			PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "Oh")
 		endif
 		Utility.Wait(Utility.RandomFloat(0.5, 1.0))
 
 		
 		if AllowMaleVoice()
-			PlaySound(mainMaleVoice.StrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, debugtext="StrugglingEarly")
+			PlaySound(mainMaleVoice.sStrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, debugtext="StrugglingEarly" , voiceActor = mainMaleActor)
 		endif
 		
 		IF !IsSuckingoffOther() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
 			if IsFemdom() && !ishugepp
 
-				PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="Amused")
+				PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="Amused")
 			elseif ASLCurrentlyintense || ishugePP
 
-				PlaySound(mainFemaleVoice.TeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , debugtext="TeaseAggressivePartner")
+				PlaySound(mainFemaleVoice.sTeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , debugtext="TeaseAggressivePartner")
 				
 			elseif femaleisvictim() && Utility.RandomFloat(0.5, 1.0) < 0.5
 			
-				PlaySound(mainFemaleVoice.Unamused, mainFemaleActor, requiredChemistry = 0 , debugtext="Unamused")	
+				PlaySound(mainFemaleVoice.sUnamused, mainFemaleActor, requiredChemistry = 0 , debugtext="Unamused")	
 			elseif IsGettingAnallyPenetrated()
 
-				PlaySound(mainFemaleVoice.InsertionAnalSlow, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="InsertionAnalSlow")
+				PlaySound(mainFemaleVoice.sInsertionAnalSlow, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="InsertionAnalSlow")
 			
 			else
 
-				PlaySound(mainFemaleVoice.InsertionGeneric, mainFemaleActor, requiredChemistry = 0 ,  soundPriority = 1 , debugtext="InsertionGeneric")
+				PlaySound(mainFemaleVoice.sInsertionGeneric, mainFemaleActor, requiredChemistry = 0 ,  soundPriority = 1 , debugtext="InsertionGeneric")
 			endif
 				
 		endif
@@ -2680,39 +2701,39 @@ endif
 		printdebug(" Stage Transition - Maintain Intensity")
 		
 			if AllowMaleVoice()
-				PlaySound(mainMaleVoice.Aggressive, mainFemaleActor, soundPriority = 2, debugtext="Aggressive" )
+				PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, soundPriority = 2, debugtext="Aggressive"  , voiceActor = mainMaleActor)
 			endif
 			
 			if  !Femaleisvictim() && !IsSuckingoffOther() && IsgettingPenetrated() && Utility.randomfloat(0.0,1.0) < chancetocommentonintensestage
-				PlaySound(mainFemaleVoice.InAwe, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="InAwe" )
+				PlaySound(mainFemaleVoice.sInAwe, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="InAwe" )
 			endif
 	;------------------Transition from Slow Penetration to Fast Penetration-----------------
 	elseif !ASLpreviouslyintense && PreviousStageHasPenetration() && ASLcurrentlyintense && IsgettingPenetrated()
 		
 		if AllowMaleVoice() 
-				PlaySound(mainMaleVoice.StrugglingSubtle, mainFemaleActor, soundPriority = 2 , waitForCompletion = false, debugtext="StrugglingSubtle" )
+				PlaySound(mainMaleVoice.sStrugglingSubtle, mainFemaleActor, soundPriority = 2 , waitForCompletion = false, debugtext="StrugglingSubtle"  , voiceActor = mainMaleActor)
 				
 		endif		
 
 		
 		if ishugepp || IsGettingDoublePenetrated()
 
-			PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext="AfterGape")
+			PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext="AfterGape")
 
 		elseif !FemaleIsVictim()
 			
 			if Utility.randomfloat(0.0,1.0) < chancetocommentonintensestage
-				PlaySound(mainFemaleVoice.MaleHalfwayIntense, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="MaleHalfwayIntense")	
+				PlaySound(mainFemaleVoice.sMaleHalfwayIntense, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="MaleHalfwayIntense")	
 			endif		
 		else
 
 			if AllowMaleVoice() 
-				PlaySound(mainMaleVoice.Aggressive, mainFemaleActor, soundPriority = 2 , debugtext = "Aggressive")
+				PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, soundPriority = 2 , debugtext = "Aggressive" , voiceActor = mainMaleActor)
 			endif
 			
 			IF Utility.randomfloat(0.0,1.0) < chancetocommentonintensestage
 			Utility.Wait(Utility.RandomFloat(0.5, 1.5))
-				PlaySound(mainFemaleVoice.TeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "TeaseAggressivePartner")	
+				PlaySound(mainFemaleVoice.sTeaseAggressivePartner, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "TeaseAggressivePartner")	
 			endif
 			
 		endif
@@ -2720,7 +2741,7 @@ endif
 ;----------------------------if non intense after intense penetrative action--------------
 	elseif	ASLpreviouslyintense && !ASLcurrentlyIntense 
 			printdebug(" Stage Transition - Non Intense to Intense")
-				PlaySound(mainFemaleVoice.AfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")
+				PlaySound(mainFemaleVoice.sAfterOrgasmExclamations, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "AfterOrgasmExclamations")
 	
 	endif
 
@@ -2741,13 +2762,13 @@ endif
 
 	if isShortenedScene() || moanonly == 1 
 		if !PreviousStageHasPenetration() && IsgettingPenetrated()
-			PlaySound(MasterScript.Sounds.PullOutGape, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, waitForCompletion = false , debugtext="PullOutGape")
+			PlaySound(MasterScript.Sounds.sPullOutGape, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, waitForCompletion = false , debugtext="PullOutGape")
 			if ishugepp
 				;KneeJerk Intense
-				PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
+				PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
 			else
 				;KneeJerk
-				PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk")
+				PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk")
 			endif
 			Utility.Wait(Utility.RandomFloat(0.5, 1.0))
 		endif
@@ -2769,18 +2790,18 @@ endif
 	;-------------Transition from no penetration to penetration----------------------
 	elseif !PreviousStageHasPenetration() && IsgettingPenetrated()
 		printdebug("Stage Transition - No Penetration to Penetration")
-		PlaySound(MasterScript.Sounds.PullOutGape, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, waitForCompletion = false , debugtext="PullOutGape")
+		PlaySound(MasterScript.Sounds.sPullOutGape, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, waitForCompletion = false , debugtext="PullOutGape")
 		
 		if ishugepp
 			;KneeJerk Intense
-			PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
+			PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
 		else
 			;KneeJerk
-			PlaySound(mainFemaleVoice.Oh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk")
+			PlaySound(mainFemaleVoice.sOh, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk")
 		endif
 
 		if AllowMaleVoice()
-			PlaySound(mainMaleVoice.StrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, debugtext="StrugglingEarly")
+			PlaySound(mainMaleVoice.sStrugglingEarly, mainFemaleActor, requiredChemistry = 0, soundPriority = 2, debugtext="StrugglingEarly" , voiceActor = mainMaleActor)
 		endif
 		
 		IF !IsSuckingoffOther() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonnonintensestage
@@ -2788,14 +2809,14 @@ endif
 				PlayBrokenVarB(true)
 			elseif IsFemdom() && !ishugepp
 				;Amused
-				PlaySound(mainFemaleVoice.Amused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="Amused")
+				PlaySound(mainFemaleVoice.sAmused, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext="Amused")
 			elseif ishugePP
 				;Insertion Over The Top
-				PlaySound(mainFemaleVoice.InsertionAnalExcited, mainFemaleActor, requiredChemistry = 0 , debugtext="Insertion Over The Top")
+				PlaySound(mainFemaleVoice.sInsertionAnalExcited, mainFemaleActor, requiredChemistry = 0 , debugtext="Insertion Over The Top")
 				
 			elseif femaleisvictim()
 				;Penetrated Comments VIctim
-				PlaySound(mainFemaleVoice.RefractoryPeriod, mainFemaleActor, requiredChemistry = 0 , debugtext="Penetrated Comments VIctim")	
+				PlaySound(mainFemaleVoice.sRefractoryPeriod, mainFemaleActor, requiredChemistry = 0 , debugtext="Penetrated Comments VIctim")	
 			endif
 		else
 			PlayMoanonlyVarB()
@@ -2810,19 +2831,19 @@ endif
 	elseif !ASLpreviouslyintense && PreviousStageHasPenetration() && ASLcurrentlyintense && IsgettingPenetrated()
 		
 		if AllowMaleVoice() 
-			PlaySound(mainMaleVoice.StrugglingSubtle, mainFemaleActor, soundPriority = 2 , waitForCompletion = false, debugtext="StrugglingSubtle" )
+			PlaySound(mainMaleVoice.sStrugglingSubtle, mainFemaleActor, soundPriority = 2 , waitForCompletion = false, debugtext="StrugglingSubtle"  , voiceActor = mainMaleActor)
 		endif		
 
 		if ishugepp || IsGettingDoublePenetrated()
 
 			;KneeJerk Intense
-			PlaySound(mainFemaleVoice.AfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
+			PlaySound(mainFemaleVoice.sAfterGape, mainFemaleActor, requiredChemistry = 0 , soundPriority = 2 , debugtext = "KneeJerk Intense")
 		endif
 		
 		if !IsSuckingoffOther() && Utility.RandomFloat(0.0, 1.0) < chancetocommentonintensestage
 			
 			if AllowMaleVoice() 
-				PlaySound(mainMaleVoice.Aggressive, mainFemaleActor, soundPriority = 2 ,waitForCompletion = false, debugtext = "Aggressive")
+				PlaySound(mainMaleVoice.sAggressive, mainFemaleActor, soundPriority = 2 ,waitForCompletion = false, debugtext = "Aggressive" , voiceActor = mainMaleActor)
 				PlayMoanonlyVarB()
 			endif
 			
@@ -2830,13 +2851,13 @@ endif
 				PlayBrokenVarB(true)
 			elseif !FemaleIsVictim()
 				;Intense Transition Comments
-				PlaySound(mainFemaleVoice.MaleHalfwayIntense, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="Intense Transition Comments")		
+				PlaySound(mainFemaleVoice.sMaleHalfwayIntense, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext="Intense Transition Comments")		
 			else
 				
 				IF Utility.randomfloat(0.0,1.0) < chancetocommentonintensestage
 					Utility.Wait(Utility.RandomFloat(0.5, 1.5))
 					;Penetrated Comments Victim Intense
-					PlaySound(mainFemaleVoice.MissMaleLover, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Penetrated Comments Victim Intense")	
+					PlaySound(mainFemaleVoice.sMissMaleLover, mainFemaleActor, requiredChemistry = 0 , soundPriority = 1 , debugtext = "Penetrated Comments Victim Intense")	
 				endif
 			endif
 		endif
@@ -2845,7 +2866,7 @@ endif
 	elseif	ASLpreviouslyintense && !ASLcurrentlyIntense 
 		printdebug(" Stage Transition - Non Intense to Intense")
 		;Panting Heavy
-		PlaySound(mainFemaleVoice.MyTurnToCum, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "Panting Heavy")
+		PlaySound(mainFemaleVoice.sMyTurnToCum, mainFemaleActor, requiredChemistry = 0, soundPriority = 1 , debugtext = "Panting Heavy")
 	
 	endif
 
@@ -2860,11 +2881,11 @@ Function ASLMakeGreetingToMalePartner()
 	EndIf
 
 	if partnerLoaded 
-		PlaySound(mainFemaleVoice.GreetLoadedFamiliar, mainFemaleActor, requiredChemistry = 4 , debugtext = "GreetLoadedFamiliar")
+		PlaySound(mainFemaleVoice.sGreetLoadedFamiliar, mainFemaleActor, requiredChemistry = 4 , debugtext = "GreetLoadedFamiliar")
 	elseif withMaleLover	
-		PlaySound(mainFemaleVoice.GreetLover, mainFemaleActor, requiredChemistry = 6 , debugtext = "GreetLover")
+		PlaySound(mainFemaleVoice.sGreetLover, mainFemaleActor, requiredChemistry = 6 , debugtext = "GreetLover")
 	else
-		PlaySound(mainFemaleVoice.GreetFamiliar, mainFemaleActor, requiredChemistry = 4 , debugtext = "GreetFamiliar")
+		PlaySound(mainFemaleVoice.sGreetFamiliar, mainFemaleActor, requiredChemistry = 4 , debugtext = "GreetFamiliar")
 	endif
 
 EndFunction
@@ -3303,9 +3324,9 @@ Function PlayGaggedSound()
 
 ;intense gag noise
 if ASLCurrentlyintense
-	PlaySound(mainFemaleVoice.AssFlattering, mainFemaleActor, requiredChemistry =0 , debugtext = "AssFlattering")
+	PlaySound(mainFemaleVoice.sAssFlattering, mainFemaleActor, requiredChemistry =0 , debugtext = "AssFlattering")
 else; less intense gag noises
-	PlaySound(mainFemaleVoice.AssToMouth, mainFemaleActor, requiredChemistry = 0, debugtext = "AssToMouth")
+	PlaySound(mainFemaleVoice.sAssToMouth, mainFemaleActor, requiredChemistry = 0, debugtext = "AssToMouth")
 endif
 
 endfunction

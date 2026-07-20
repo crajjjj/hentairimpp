@@ -5,89 +5,46 @@ SexLabFramework Property SexLab Auto
 
 Function IVDTPlayKneeJerk(Bool Wait = false) Global
 
-Sound SoundtoPlay = Game.GetFormFromFile(0xA4A1, "IntelligentVoicedDirtyTalk.esp") As Sound ;Kneejerk
-	if !SoundtoPlay
-		miscutil.printconsole("IVDTVoiceCall KneeJerk Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+PlaySound("Oh", Wait)
 endfunction
 
 Function IVDTPlayKneeJerkIntense(Bool Wait = false) Global
 
-Sound SoundtoPlay = Game.GetFormFromFile(0x371C0, "IntelligentVoicedDirtyTalk.esp") As Sound ;Kneejerk Intense
-	if !SoundtoPlay
-		miscutil.printconsole("IVDTVoiceCall KneeJerk Intense Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+PlaySound("AfterGape", Wait)
 endfunction
 
 Function IVDTPlayPanting(Bool Wait = false) Global
 
-Sound SoundtoPlay = Game.GetFormFromFile(0x7954, "IntelligentVoicedDirtyTalk.esp") As Sound ;Panting
-	if !SoundtoPlay
-		miscutil.printconsole("IVDTVoiceCall Panting Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+PlaySound("AfterOrgasmExclamations", Wait)
 endfunction
 
 Function IVDTPlayOrgasm(Bool Wait = false) Global
 
-Sound SoundtoPlay = Game.GetFormFromFile(0x6E65, "IntelligentVoicedDirtyTalk.esp") As Sound ;Orgasm
-	if !SoundtoPlay
-		miscutil.printconsole("IVDTVoiceCall Orgasm Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+PlaySound("Orgasm", Wait)
 endfunction
 
 Function IVDTPlayGagged(Bool Wait = false) Global
 
-Sound SoundtoPlay = Game.GetFormFromFile(0x6E5F, "IntelligentVoicedDirtyTalk.esp") As Sound ;Gagged
-	if !SoundtoPlay
-		miscutil.printconsole("IVDTVoiceCall Gagged Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+PlaySound("AssToMouth", Wait)
 endfunction
 
 Function IVDTPlayGaggedIntense(Bool Wait = false) Global
 
-Sound SoundtoPlay = Game.GetFormFromFile(0x841B, "IntelligentVoicedDirtyTalk.esp") As Sound ;Gagged Intense
-	if !SoundtoPlay
-		miscutil.printconsole("IVDTVoiceCall Gagged Intense Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+PlaySound("AssFlattering", Wait)
 endfunction
 
 Function IVDTPlayAmused(Bool Wait = false) Global
 
-Sound SoundtoPlay = Game.GetFormFromFile(0xB4D9, "IntelligentVoicedDirtyTalk.esp") As Sound ;Amused
-	if !SoundtoPlay
-		miscutil.printconsole("IVDTVoiceCall Amused Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+PlaySound("Amused", Wait)
 endfunction
 
 Function IVDTPlayStimulated(Bool Wait = false) Global
 
-Sound SoundtoPlay 
-
+String SoundtoPlay = "BreathySoft"
 if GetVoiceVariation() == "B"
-	SoundtoPlay = Game.GetFormFromFile(0x6E5A, "IntelligentVoicedDirtyTalk.esp") As Sound ;breathing intense
-else
-	SoundtoPlay = Game.GetFormFromFile(0x6E56, "IntelligentVoicedDirtyTalk.esp") As Sound ;soft breathing
+	SoundtoPlay = "BreathyIntense"
 endif
-
-	if !SoundtoPlay
-		miscutil.printconsole("IVDTVoiceCall Stimulated Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+PlaySound(SoundtoPlay, Wait)
 endfunction
 
 
@@ -95,12 +52,7 @@ Function SocialPlayWhyDoThis(Bool Wait = false) Global
 	if  GetVoiceVariation() != "B"
 		return
 	endif
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D9, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Why Do This Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Why Do This", Wait)
 endfunction
 
 Function SocialPlayWhatever(Bool Wait = false) Global
@@ -108,24 +60,14 @@ Function SocialPlayWhatever(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D8, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Whatever Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Whatever", Wait)
 endfunction
 
 Function SocialPlayWhatIsThis(Bool Wait = false) Global
 	if  GetVoiceVariation() != "B"
 		return
 	endif
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D7, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play What Is This Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social What Is This", Wait)
 endfunction
 
 Function SocialPlayWhatIsThat(Bool Wait = false) Global
@@ -133,12 +75,7 @@ Function SocialPlayWhatIsThat(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D6, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play What Is That Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social What Is That", Wait)
 endfunction
 
 Function SocialPlayWhatDoYouWant(Bool Wait = false) Global
@@ -146,12 +83,7 @@ Function SocialPlayWhatDoYouWant(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D5, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play What Do You Want Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social What Do You Want", Wait)
 endfunction
 
 Function SocialPlayWakeUpConfused(Bool Wait = false) Global
@@ -159,12 +91,7 @@ Function SocialPlayWakeUpConfused(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D4, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Wake Up Confused Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Wake Up Confused", Wait)
 endfunction
 
 Function SocialPlayWaitAMinute(Bool Wait = false) Global
@@ -172,12 +99,7 @@ Function SocialPlayWaitAMinute(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D3, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Wait A Minute Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Wait A Minute", Wait)
 endfunction
 
 Function SocialPlayThisCantBe(Bool Wait = false) Global
@@ -185,12 +107,7 @@ Function SocialPlayThisCantBe(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D2, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play This Can't Be Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social This Cant Be", Wait)
 endfunction
 
 Function SocialPlayYes(Bool Wait = false) Global
@@ -198,12 +115,7 @@ Function SocialPlayYes(Bool Wait = false) Global
         return
     endif
 
-    Sound SoundtoPlay = Game.GetFormFromFile(0x3C1DA, "IntelligentVoicedDirtyTalk.esp") as Sound
-    if !SoundtoPlay
-        miscutil.printconsole("Social Play Yes Sound is None")
-    else
-        PlaySound(SoundtoPlay, Wait)
-    endif
+    PlaySound("Social Yes", Wait)
 EndFunction
 
 
@@ -212,21 +124,11 @@ Function SocialPlayThanks(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D1, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Thanks Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Thanks", Wait)
 endfunction
 
 Function SocialPlaySigh(Bool Wait = false) Global
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1D0, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Sigh Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Sigh", Wait)
 endfunction
 
 Function SocialPlayShortHesitation(Bool Wait = false) Global
@@ -234,12 +136,7 @@ Function SocialPlayShortHesitation(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1CF, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Short Hesitation Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Short Hesitation", Wait)
 endfunction
 
 Function SocialPlayShock(Bool Wait = false) Global
@@ -247,12 +144,7 @@ Function SocialPlayShock(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1CE, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Shock Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Shock", Wait)
 endfunction
 
 Function SocialPlayReprimand(Bool Wait = false) Global
@@ -260,12 +152,7 @@ Function SocialPlayReprimand(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1CD, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Reprimand Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Reprimand", Wait)
 endfunction
 
 Function SocialPlayRelief(Bool Wait = false) Global
@@ -273,12 +160,7 @@ Function SocialPlayRelief(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1CC, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Relief Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Relief", Wait)
 endfunction
 
 Function SocialPlayReject(Bool Wait = false) Global
@@ -286,12 +168,7 @@ Function SocialPlayReject(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1CB, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Reject Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Reject", Wait)
 endfunction
 
 Function SocialPlayRegret(Bool Wait = false) Global
@@ -299,12 +176,7 @@ Function SocialPlayRegret(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1CA, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Regret Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Regret", Wait)
 endfunction
 
 Function SocialPlayPleaseTakeCareOfMe(Bool Wait = false) Global
@@ -312,12 +184,7 @@ Function SocialPlayPleaseTakeCareOfMe(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C9, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Please Take Care Of Me Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Please Take Care Of Me", Wait)
 endfunction
 
 Function SocialPlayOhNo(Bool Wait = false) Global
@@ -325,12 +192,7 @@ Function SocialPlayOhNo(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C8, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Oh No Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Oh No", Wait)
 endfunction
 
 Function SocialPlayNo(Bool Wait = false) Global
@@ -338,12 +200,7 @@ Function SocialPlayNo(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C7, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play No Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social No", Wait)
 endfunction
 
 Function SocialPlayIWontForgiveYou(Bool Wait = false) Global
@@ -351,12 +208,7 @@ Function SocialPlayIWontForgiveYou(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C6, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play I Won't Forgive You Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social I Wont Forgive You", Wait)
 endfunction
 
 Function SocialPlayIUnderstand(Bool Wait = false) Global
@@ -364,12 +216,7 @@ Function SocialPlayIUnderstand(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C5, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play I Understand Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social I Understand", Wait)
 endfunction
 
 Function SocialPlayISee(Bool Wait = false) Global
@@ -377,12 +224,7 @@ Function SocialPlayISee(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C4, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play I See Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social I See", Wait)
 endfunction
 
 Function SocialPlayIObeyYou(Bool Wait = false) Global
@@ -390,12 +232,7 @@ Function SocialPlayIObeyYou(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C3, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play I Obey You Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social I Obey You", Wait)
 endfunction
 
 Function SocialPlayIDidIt(Bool Wait = false) Global
@@ -403,12 +240,7 @@ Function SocialPlayIDidIt(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C2, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play I Did It Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social I Did It", Wait)
 endfunction
 
 Function SocialPlayHmm(Bool Wait = false) Global
@@ -416,12 +248,7 @@ Function SocialPlayHmm(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C1, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Hmm Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Hmm", Wait)
 endfunction
 
 Function SocialPlayGrunt(Bool Wait = false) Global
@@ -429,12 +256,7 @@ Function SocialPlayGrunt(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1C0, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Grunt Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Grunt", Wait)
 endfunction
 
 Function SocialPlayGreet(Bool Wait = false) Global
@@ -442,12 +264,7 @@ Function SocialPlayGreet(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1BF, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Greet Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Greet", Wait)
 endfunction
 
 Function SocialPlayExcuseMe(Bool Wait = false) Global
@@ -455,12 +272,7 @@ Function SocialPlayExcuseMe(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1BE, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Excuse Me Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Excuse Me", Wait)
 endfunction
 
 Function SocialPlayCuteAngryNoises(Bool Wait = false) Global
@@ -468,12 +280,7 @@ Function SocialPlayCuteAngryNoises(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1BD, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Cute Angry Noises Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Cute Angry Noises", Wait)
 endfunction
 
 Function SocialPlayErm(Bool Wait = false) Global
@@ -481,12 +288,7 @@ Function SocialPlayErm(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1BC, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Erm Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Erm", Wait)
 endfunction
 
 Function SocialPlayCouldItBe(Bool Wait = false) Global
@@ -494,12 +296,7 @@ Function SocialPlayCouldItBe(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1BB, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Could It Be Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Could It Be", Wait)
 endfunction
 
 Function SocialPlayCough(Bool Wait = false) Global
@@ -507,12 +304,7 @@ Function SocialPlayCough(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1BA, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Cough Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Cough", Wait)
 endfunction
 
 Function SocialPlayApologise(Bool Wait = false) Global
@@ -520,12 +312,7 @@ Function SocialPlayApologise(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B9, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Apologise Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Apologise", Wait)
 endfunction
 
 Function SocialPlayLaugh(Bool Wait = false) Global
@@ -533,12 +320,7 @@ Function SocialPlayLaugh(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1DC, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Social Play Laugh Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Social Laugh", Wait)
 endfunction
 
 Function OthersPlayWorkOnSomething(Bool Wait = false) Global
@@ -546,12 +328,7 @@ Function OthersPlayWorkOnSomething(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B8, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Others Play Work On Something Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Others Work On Something", Wait)
 endfunction
 
 Function HornyPlayStruggle(Bool Wait = false) Global
@@ -559,12 +336,7 @@ Function HornyPlayStruggle(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B7, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Struggle Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Struggle", Wait)
 endfunction
 
 Function OthersPlayStartBartering(Bool Wait = false) Global
@@ -572,12 +344,7 @@ Function OthersPlayStartBartering(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B6, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Others Play Start Bartering Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Others Start Bartering", Wait)
 endfunction
 
 Function OthersPlaySleepWait(Bool Wait = false) Global
@@ -585,12 +352,7 @@ Function OthersPlaySleepWait(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B5, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Others Play Sleep Wait Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Others Sleep Wait", Wait)
 endfunction
 
 Function OthersPlaySafeRelieve(Bool Wait = false) Global
@@ -598,12 +360,7 @@ Function OthersPlaySafeRelieve(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B4, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Others Play Safe Relieve Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Others Safe Relieve", Wait)
 endfunction
 
 Function OthersPlayOutIntoWorldSpace(Bool Wait = false) Global
@@ -611,12 +368,7 @@ Function OthersPlayOutIntoWorldSpace(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B3, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Others Play Out Into World Space Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Others Out Into World Space", Wait)
 endfunction
 
 Function OthersPlayLevelUp(Bool Wait = false) Global
@@ -624,12 +376,7 @@ Function OthersPlayLevelUp(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B2, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Others Play Level Up Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Others Level Up", Wait)
 endfunction
 
 Function HornyPlayShowBoobs(Bool Wait = false) Global
@@ -637,12 +384,7 @@ Function HornyPlayShowBoobs(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B1, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Show Boobs Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Show Boobs", Wait)
 endfunction
 
 Function HornyPlaySeduce(Bool Wait = false) Global
@@ -650,12 +392,7 @@ Function HornyPlaySeduce(Bool Wait = false) Global
 		return
 	endif
 
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1B0, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Seduce Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Seduce", Wait)
 
 endfunction
 
@@ -664,12 +401,7 @@ Function HornyPlayRejectSex(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1AF, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Reject Sex Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Reject Sex", Wait)
 endfunction
 
 Function HornyPlayNakedInPublicComments(Bool Wait = false) Global
@@ -677,12 +409,7 @@ Function HornyPlayNakedInPublicComments(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1AE, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Naked In Public Comments Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Naked In Public Comments", Wait)
 endfunction
 
 Function HornyPlayMasturbateCommentsNearOrgasm(Bool Wait = false) Global
@@ -690,12 +417,7 @@ Function HornyPlayMasturbateCommentsNearOrgasm(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1AD, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Masturbate Comments Near Orgasm Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Masturbate Comments Near Orgasm", Wait)
 endfunction
 
 Function HornyPlayMasturbateComments(Bool Wait = false) Global
@@ -703,12 +425,7 @@ Function HornyPlayMasturbateComments(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1AC, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Masturbate Comments Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Masturbate Comments", Wait)
 endfunction
 
 Function HornyPlayLetGoOfMe(Bool Wait = false) Global
@@ -716,12 +433,7 @@ Function HornyPlayLetGoOfMe(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1AB, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Let Go Of Me Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Let Go Of Me", Wait)
 endfunction
 
 Function HornyPlayLeakingCumComments(Bool Wait = false) Global
@@ -729,12 +441,7 @@ Function HornyPlayLeakingCumComments(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1AA, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Leaking Cum Comments Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Leaking Cum Comments", Wait)
 endfunction
 
 Function HornyPlayLactatingComments(Bool Wait = false) Global
@@ -742,12 +449,7 @@ Function HornyPlayLactatingComments(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A9, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Lactating Comments Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Lactating Comments", Wait)
 endfunction
 
 Function HornyPlayComments(Bool Wait = false) Global
@@ -755,12 +457,7 @@ Function HornyPlayComments(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A8, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Comments Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Comments", Wait)
 endfunction
 
 Function HornyPlayBoobsFondled(Bool Wait = false) Global
@@ -768,12 +465,7 @@ Function HornyPlayBoobsFondled(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A7, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Boobs Fondled Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Boobs Fondled", Wait)
 endfunction
 
 Function HornyPlayBlush(Bool Wait = false) Global
@@ -781,12 +473,7 @@ Function HornyPlayBlush(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A6, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Blush Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Blush", Wait)
 endfunction
 
 Function HornyPlayBegForPenis(Bool Wait = false) Global
@@ -794,12 +481,7 @@ Function HornyPlayBegForPenis(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A5, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Beg For Penis Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Beg For Penis", Wait)
 endfunction
 
 Function HornyPlayAcceptSexBroken(Bool Wait = false) Global
@@ -807,12 +489,7 @@ Function HornyPlayAcceptSexBroken(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A4, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Accept Sex Broken Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Accept Sex Broken", Wait)
 endfunction
 
 Function HornyPlayAcceptSex(Bool Wait = false) Global
@@ -820,12 +497,7 @@ Function HornyPlayAcceptSex(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A3, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Horny Play Accept Sex Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Horny Accept Sex", Wait)
 endfunction
 
 Function CombatPlayPowerAttack(Bool Wait = false) Global
@@ -833,12 +505,7 @@ Function CombatPlayPowerAttack(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A2, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Power Attack Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Power Attack", Wait)
 endfunction
 
 Function CombatPlayHit(Bool Wait = false) Global
@@ -846,12 +513,7 @@ Function CombatPlayHit(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A1, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Hit Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Hit", Wait)
 endfunction
 
 Function CombatPlayFollowerDown(Bool Wait = false) Global
@@ -859,12 +521,7 @@ Function CombatPlayFollowerDown(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C1A0, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Follower Down Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Follower Down", Wait)
 endfunction
 
 Function CombatPlayExhaustion(Bool Wait = false) Global
@@ -872,12 +529,7 @@ Function CombatPlayExhaustion(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C19F, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Exhaustion Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Exhaustion", Wait)
 endfunction
 
 Function CombatPlayStateWithStrongEnemy(Bool Wait = false) Global
@@ -885,12 +537,7 @@ Function CombatPlayStateWithStrongEnemy(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C19E, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play State With Strong Enemy Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat State With Strong Enemy", Wait)
 endfunction
 
 Function CombatPlayStateWithEnemy(Bool Wait = false) Global
@@ -898,12 +545,7 @@ Function CombatPlayStateWithEnemy(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C19D, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play State With Enemy Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat State With Enemy", Wait)
 endfunction
 
 Function CombatPlayDungeonEnemyEncounter(Bool Wait = false) Global
@@ -911,12 +553,7 @@ Function CombatPlayDungeonEnemyEncounter(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C19C, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Dungeon Enemy Encounter Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Dungeon Enemy Encounter", Wait)
 endfunction
 
 Function CombatPlayDifficultEnd(Bool Wait = false) Global
@@ -924,12 +561,7 @@ Function CombatPlayDifficultEnd(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C19B, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Difficult End Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Difficult End", Wait)
 endfunction
 
 Function CombatPlayDifficult(Bool Wait = false) Global
@@ -937,12 +569,7 @@ Function CombatPlayDifficult(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C19A, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Difficult Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Difficult", Wait)
 endfunction
 
 Function CombatPlayEndComments(Bool Wait = false) Global
@@ -950,12 +577,7 @@ Function CombatPlayEndComments(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C199, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play End Comments Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat End Comments", Wait)
 endfunction
 
 Function CombatPlayComments(Bool Wait = false) Global
@@ -963,12 +585,7 @@ Function CombatPlayComments(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C198, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Comments Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Comments", Wait)
 endfunction
 
 Function CombatPlayBleedOut(Bool Wait = false) Global
@@ -976,12 +593,7 @@ Function CombatPlayBleedOut(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C197, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Bleed Out Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Bleed Out", Wait)
 endfunction
 
 Function CombatPlayAttack(Bool Wait = false) Global
@@ -989,522 +601,371 @@ Function CombatPlayAttack(Bool Wait = false) Global
 		return
 	endif
 	
-	Sound SoundtoPlay = Game.GetFormFromFile(0x3C196, "IntelligentVoicedDirtyTalk.esp") as Sound
-	if !SoundtoPlay
-		miscutil.printconsole("Combat Play Attack Sound is None")
-	else
-		PlaySound(SoundtoPlay,Wait)
-	endif
+	PlaySound("Combat Attack", Wait)
 endfunction
 
 Function CheckAllSounds() Global
 	int soundsChecked = 0
 	int soundsMissing = 0
-	miscutil.printconsole("--- Starting Sound Check ---")
-
-	Sound Sound_3C1D9 = Game.GetFormFromFile(0x3C1D9, "IntelligentVoicedDirtyTalk.esp") as Sound
+	miscutil.printconsole("--- Starting Sound Check (AudioUtil categories, slot F1) ---")
 	soundsChecked += 1
-	if !Sound_3C1D9
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Attack") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Why Do This' (0x3C1D9) is missing.")
+		miscutil.printconsole("Category 'Combat Attack' has no audio files.")
 	endif
-
-	Sound Sound_3C1D8 = Game.GetFormFromFile(0x3C1D8, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1D8
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Bleed Out") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Whatever' (0x3C1D8) is missing.")
+		miscutil.printconsole("Category 'Combat Bleed Out' has no audio files.")
 	endif
-
-	Sound Sound_3C1D7 = Game.GetFormFromFile(0x3C1D7, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1D7
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Comments") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play What Is This' (0x3C1D7) is missing.")
+		miscutil.printconsole("Category 'Combat Comments' has no audio files.")
 	endif
-
-	Sound Sound_3C1D6 = Game.GetFormFromFile(0x3C1D6, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1D6
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Difficult") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play What Is That' (0x3C1D6) is missing.")
+		miscutil.printconsole("Category 'Combat Difficult' has no audio files.")
 	endif
-
-	Sound Sound_3C1D5 = Game.GetFormFromFile(0x3C1D5, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1D5
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Difficult End") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play What Do You Want' (0x3C1D5) is missing.")
+		miscutil.printconsole("Category 'Combat Difficult End' has no audio files.")
 	endif
-
-	Sound Sound_3C1D4 = Game.GetFormFromFile(0x3C1D4, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1D4
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Dungeon Enemy Encounter") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Wake Up Confused' (0x3C1D4) is missing.")
+		miscutil.printconsole("Category 'Combat Dungeon Enemy Encounter' has no audio files.")
 	endif
-
-	Sound Sound_3C1D3 = Game.GetFormFromFile(0x3C1D3, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1D3
+	if AudioUtil.GetCategoryFileCount("F1", "Combat End Comments") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Wait A Minute' (0x3C1D3) is missing.")
+		miscutil.printconsole("Category 'Combat End Comments' has no audio files.")
 	endif
-
-	Sound Sound_3C1D2 = Game.GetFormFromFile(0x3C1D2, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1D2
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Exhaustion") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play This Cant Be' (0x3C1D2) is missing.")
+		miscutil.printconsole("Category 'Combat Exhaustion' has no audio files.")
 	endif
-
-	Sound Sound_3C1D1 = Game.GetFormFromFile(0x3C1D1, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1D1
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Follower Down") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Thanks' (0x3C1D1) is missing.")
+		miscutil.printconsole("Category 'Combat Follower Down' has no audio files.")
 	endif
-
-	Sound Sound_3C1D0 = Game.GetFormFromFile(0x3C1D0, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1D0
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Hit") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Sigh' (0x3C1D0) is missing.")
+		miscutil.printconsole("Category 'Combat Hit' has no audio files.")
 	endif
-
-	Sound Sound_3C1CF = Game.GetFormFromFile(0x3C1CF, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1CF
+	if AudioUtil.GetCategoryFileCount("F1", "Combat Power Attack") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Short Hesitation' (0x3C1CF) is missing.")
+		miscutil.printconsole("Category 'Combat Power Attack' has no audio files.")
 	endif
-
-	Sound Sound_3C1CE = Game.GetFormFromFile(0x3C1CE, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1CE
+	if AudioUtil.GetCategoryFileCount("F1", "Combat State With Enemy") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Shock' (0x3C1CE) is missing.")
+		miscutil.printconsole("Category 'Combat State With Enemy' has no audio files.")
 	endif
-
-	Sound Sound_3C1CD = Game.GetFormFromFile(0x3C1CD, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1CD
+	if AudioUtil.GetCategoryFileCount("F1", "Combat State With Strong Enemy") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Reprimand' (0x3C1CD) is missing.")
+		miscutil.printconsole("Category 'Combat State With Strong Enemy' has no audio files.")
 	endif
-
-	Sound Sound_3C1CC = Game.GetFormFromFile(0x3C1CC, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1CC
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Accept Sex") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Relief' (0x3C1CC) is missing.")
+		miscutil.printconsole("Category 'Horny Accept Sex' has no audio files.")
 	endif
-
-	Sound Sound_3C1CB = Game.GetFormFromFile(0x3C1CB, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1CB
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Accept Sex Broken") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Reject' (0x3C1CB) is missing.")
+		miscutil.printconsole("Category 'Horny Accept Sex Broken' has no audio files.")
 	endif
-
-	Sound Sound_3C1CA = Game.GetFormFromFile(0x3C1CA, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1CA
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Beg For Penis") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Regret' (0x3C1CA) is missing.")
+		miscutil.printconsole("Category 'Horny Beg For Penis' has no audio files.")
 	endif
-
-	Sound Sound_3C1C9 = Game.GetFormFromFile(0x3C1C9, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C9
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Blush") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Please Take Care Of Me' (0x3C1C9) is missing.")
+		miscutil.printconsole("Category 'Horny Blush' has no audio files.")
 	endif
-
-	Sound Sound_3C1C8 = Game.GetFormFromFile(0x3C1C8, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C8
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Boobs Fondled") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Oh No' (0x3C1C8) is missing.")
+		miscutil.printconsole("Category 'Horny Boobs Fondled' has no audio files.")
 	endif
-
-	Sound Sound_3C1C7 = Game.GetFormFromFile(0x3C1C7, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C7
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Comments") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play No' (0x3C1C7) is missing.")
+		miscutil.printconsole("Category 'Horny Comments' has no audio files.")
 	endif
-
-	Sound Sound_3C1C6 = Game.GetFormFromFile(0x3C1C6, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C6
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Lactating Comments") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play I Wont Forgive You' (0x3C1C6) is missing.")
+		miscutil.printconsole("Category 'Horny Lactating Comments' has no audio files.")
 	endif
-
-	Sound Sound_3C1C5 = Game.GetFormFromFile(0x3C1C5, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C5
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Leaking Cum Comments") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play I Understand' (0x3C1C5) is missing.")
+		miscutil.printconsole("Category 'Horny Leaking Cum Comments' has no audio files.")
 	endif
-
-	Sound Sound_3C1C4 = Game.GetFormFromFile(0x3C1C4, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C4
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Let Go Of Me") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play I See' (0x3C1C4) is missing.")
+		miscutil.printconsole("Category 'Horny Let Go Of Me' has no audio files.")
 	endif
-
-	Sound Sound_3C1C3 = Game.GetFormFromFile(0x3C1C3, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C3
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Masturbate Comments") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play I Obey You' (0x3C1C3) is missing.")
+		miscutil.printconsole("Category 'Horny Masturbate Comments' has no audio files.")
 	endif
-
-	Sound Sound_3C1C2 = Game.GetFormFromFile(0x3C1C2, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C2
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Masturbate Comments Near Orgasm") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play I Did It' (0x3C1C2) is missing.")
+		miscutil.printconsole("Category 'Horny Masturbate Comments Near Orgasm' has no audio files.")
 	endif
-
-	Sound Sound_3C1C1 = Game.GetFormFromFile(0x3C1C1, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C1
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Naked In Public Comments") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Hmm' (0x3C1C1) is missing.")
+		miscutil.printconsole("Category 'Horny Naked In Public Comments' has no audio files.")
 	endif
-
-	Sound Sound_3C1C0 = Game.GetFormFromFile(0x3C1C0, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1C0
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Reject Sex") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Grunt' (0x3C1C0) is missing.")
+		miscutil.printconsole("Category 'Horny Reject Sex' has no audio files.")
 	endif
-
-	Sound Sound_3C1BF = Game.GetFormFromFile(0x3C1BF, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1BF
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Seduce") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Greet' (0x3C1BF) is missing.")
+		miscutil.printconsole("Category 'Horny Seduce' has no audio files.")
 	endif
-
-	Sound Sound_3C1BE = Game.GetFormFromFile(0x3C1BE, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1BE
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Show Boobs") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Excuse Me' (0x3C1BE) is missing.")
+		miscutil.printconsole("Category 'Horny Show Boobs' has no audio files.")
 	endif
-
-	Sound Sound_3C1BD = Game.GetFormFromFile(0x3C1BD, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1BD
+	if AudioUtil.GetCategoryFileCount("F1", "Horny Struggle") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Cute Angry Noises' (0x3C1BD) is missing.")
+		miscutil.printconsole("Category 'Horny Struggle' has no audio files.")
 	endif
-
-	Sound Sound_3C1BC = Game.GetFormFromFile(0x3C1BC, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1BC
+	if AudioUtil.GetCategoryFileCount("F1", "Others Level Up") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Erm' (0x3C1BC) is missing.")
+		miscutil.printconsole("Category 'Others Level Up' has no audio files.")
 	endif
-
-	Sound Sound_3C1BB = Game.GetFormFromFile(0x3C1BB, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1BB
+	if AudioUtil.GetCategoryFileCount("F1", "Others Out Into World Space") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Could It Be' (0x3C1BB) is missing.")
+		miscutil.printconsole("Category 'Others Out Into World Space' has no audio files.")
 	endif
-
-	Sound Sound_3C1BA = Game.GetFormFromFile(0x3C1BA, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1BA
+	if AudioUtil.GetCategoryFileCount("F1", "Others Safe Relieve") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Cough' (0x3C1BA) is missing.")
+		miscutil.printconsole("Category 'Others Safe Relieve' has no audio files.")
 	endif
-
-	Sound Sound_3C1B9 = Game.GetFormFromFile(0x3C1B9, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B9
+	if AudioUtil.GetCategoryFileCount("F1", "Others Sleep Wait") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Social Play Apologise' (0x3C1B9) is missing.")
+		miscutil.printconsole("Category 'Others Sleep Wait' has no audio files.")
 	endif
-
-	Sound Sound_3C1B8 = Game.GetFormFromFile(0x3C1B8, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B8
+	if AudioUtil.GetCategoryFileCount("F1", "Others Start Bartering") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Others Play Work On Something' (0x3C1B8) is missing.")
+		miscutil.printconsole("Category 'Others Start Bartering' has no audio files.")
 	endif
-
-	Sound Sound_3C1B7 = Game.GetFormFromFile(0x3C1B7, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B7
+	if AudioUtil.GetCategoryFileCount("F1", "Others Work On Something") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Struggle' (0x3C1B7) is missing.")
+		miscutil.printconsole("Category 'Others Work On Something' has no audio files.")
 	endif
-
-	Sound Sound_3C1B6 = Game.GetFormFromFile(0x3C1B6, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B6
+	if AudioUtil.GetCategoryFileCount("F1", "Social Apologise") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Others Play Start Bartering' (0x3C1B6) is missing.")
+		miscutil.printconsole("Category 'Social Apologise' has no audio files.")
 	endif
-
-	Sound Sound_3C1B5 = Game.GetFormFromFile(0x3C1B5, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B5
+	if AudioUtil.GetCategoryFileCount("F1", "Social Cough") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Others Play Sleep Wait' (0x3C1B5) is missing.")
+		miscutil.printconsole("Category 'Social Cough' has no audio files.")
 	endif
-
-	Sound Sound_3C1B4 = Game.GetFormFromFile(0x3C1B4, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B4
+	if AudioUtil.GetCategoryFileCount("F1", "Social Could It Be") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Others Play Safe Relieve' (0x3C1B4) is missing.")
+		miscutil.printconsole("Category 'Social Could It Be' has no audio files.")
 	endif
-
-	Sound Sound_3C1B3 = Game.GetFormFromFile(0x3C1B3, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B3
+	if AudioUtil.GetCategoryFileCount("F1", "Social Cute Angry Noises") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Others Play Out Into World Space' (0x3C1B3) is missing.")
+		miscutil.printconsole("Category 'Social Cute Angry Noises' has no audio files.")
 	endif
-
-	Sound Sound_3C1B2 = Game.GetFormFromFile(0x3C1B2, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B2
+	if AudioUtil.GetCategoryFileCount("F1", "Social Erm") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Others Play Level Up' (0x3C1B2) is missing.")
+		miscutil.printconsole("Category 'Social Erm' has no audio files.")
 	endif
-
-	Sound Sound_3C1B1 = Game.GetFormFromFile(0x3C1B1, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B1
+	if AudioUtil.GetCategoryFileCount("F1", "Social Excuse Me") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Show Boobs' (0x3C1B1) is missing.")
+		miscutil.printconsole("Category 'Social Excuse Me' has no audio files.")
 	endif
-
-	Sound Sound_3C1B0 = Game.GetFormFromFile(0x3C1B0, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1B0
+	if AudioUtil.GetCategoryFileCount("F1", "Social Greet") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Seduce' (0x3C1B0) is missing.")
+		miscutil.printconsole("Category 'Social Greet' has no audio files.")
 	endif
-
-	Sound Sound_3C1AF = Game.GetFormFromFile(0x3C1AF, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1AF
+	if AudioUtil.GetCategoryFileCount("F1", "Social Grunt") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Reject Sex' (0x3C1AF) is missing.")
+		miscutil.printconsole("Category 'Social Grunt' has no audio files.")
 	endif
-
-	Sound Sound_3C1AE = Game.GetFormFromFile(0x3C1AE, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1AE
+	if AudioUtil.GetCategoryFileCount("F1", "Social Hmm") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Naked In Public Comments' (0x3C1AE) is missing.")
+		miscutil.printconsole("Category 'Social Hmm' has no audio files.")
 	endif
-
-	Sound Sound_3C1AD = Game.GetFormFromFile(0x3C1AD, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1AD
+	if AudioUtil.GetCategoryFileCount("F1", "Social I Did It") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Masturbate Comments Near Orgasm' (0x3C1AD) is missing.")
+		miscutil.printconsole("Category 'Social I Did It' has no audio files.")
 	endif
-
-	Sound Sound_3C1AC = Game.GetFormFromFile(0x3C1AC, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1AC
+	if AudioUtil.GetCategoryFileCount("F1", "Social I Obey You") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Masturbate Comments' (0x3C1AC) is missing.")
+		miscutil.printconsole("Category 'Social I Obey You' has no audio files.")
 	endif
-
-	Sound Sound_3C1AB = Game.GetFormFromFile(0x3C1AB, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1AB
+	if AudioUtil.GetCategoryFileCount("F1", "Social I See") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Let Go Of Me' (0x3C1AB) is missing.")
+		miscutil.printconsole("Category 'Social I See' has no audio files.")
 	endif
-
-	Sound Sound_3C1AA = Game.GetFormFromFile(0x3C1AA, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1AA
+	if AudioUtil.GetCategoryFileCount("F1", "Social I Understand") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Leaking Cum Comments' (0x3C1AA) is missing.")
+		miscutil.printconsole("Category 'Social I Understand' has no audio files.")
 	endif
-
-	Sound Sound_3C1A9 = Game.GetFormFromFile(0x3C1A9, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A9
+	if AudioUtil.GetCategoryFileCount("F1", "Social I Wont Forgive You") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Lactating Comments' (0x3C1A9) is missing.")
+		miscutil.printconsole("Category 'Social I Wont Forgive You' has no audio files.")
 	endif
-
-	Sound Sound_3C1A8 = Game.GetFormFromFile(0x3C1A8, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A8
+	if AudioUtil.GetCategoryFileCount("F1", "Social No") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Comments' (0x3C1A8) is missing.")
+		miscutil.printconsole("Category 'Social No' has no audio files.")
 	endif
-
-	Sound Sound_3C1A7 = Game.GetFormFromFile(0x3C1A7, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A7
+	if AudioUtil.GetCategoryFileCount("F1", "Social Oh No") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Boobs Fondled' (0x3C1A7) is missing.")
+		miscutil.printconsole("Category 'Social Oh No' has no audio files.")
 	endif
-
-	Sound Sound_3C1A6 = Game.GetFormFromFile(0x3C1A6, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A6
+	if AudioUtil.GetCategoryFileCount("F1", "Social Please Take Care Of Me") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Blush' (0x3C1A6) is missing.")
+		miscutil.printconsole("Category 'Social Please Take Care Of Me' has no audio files.")
 	endif
-
-	Sound Sound_3C1A5 = Game.GetFormFromFile(0x3C1A5, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A5
+	if AudioUtil.GetCategoryFileCount("F1", "Social Regret") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Beg For Penis' (0x3C1A5) is missing.")
+		miscutil.printconsole("Category 'Social Regret' has no audio files.")
 	endif
-
-	Sound Sound_3C1A4 = Game.GetFormFromFile(0x3C1A4, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A4
+	if AudioUtil.GetCategoryFileCount("F1", "Social Reject") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Accept Sex Broken' (0x3C1A4) is missing.")
+		miscutil.printconsole("Category 'Social Reject' has no audio files.")
 	endif
-
-	Sound Sound_3C1A3 = Game.GetFormFromFile(0x3C1A3, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A3
+	if AudioUtil.GetCategoryFileCount("F1", "Social Relief") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Horny Play Accept Sex' (0x3C1A3) is missing.")
+		miscutil.printconsole("Category 'Social Relief' has no audio files.")
 	endif
-
-	Sound Sound_3C1A2 = Game.GetFormFromFile(0x3C1A2, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A2
+	if AudioUtil.GetCategoryFileCount("F1", "Social Reprimand") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Power Attack' (0x3C1A2) is missing.")
+		miscutil.printconsole("Category 'Social Reprimand' has no audio files.")
 	endif
-
-	Sound Sound_3C1A1 = Game.GetFormFromFile(0x3C1A1, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A1
+	if AudioUtil.GetCategoryFileCount("F1", "Social Shock") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Hit' (0x3C1A1) is missing.")
+		miscutil.printconsole("Category 'Social Shock' has no audio files.")
 	endif
-
-	Sound Sound_3C1A0 = Game.GetFormFromFile(0x3C1A0, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C1A0
+	if AudioUtil.GetCategoryFileCount("F1", "Social Short Hesitation") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Follower Down' (0x3C1A0) is missing.")
+		miscutil.printconsole("Category 'Social Short Hesitation' has no audio files.")
 	endif
-
-	Sound Sound_3C19F = Game.GetFormFromFile(0x3C19F, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C19F
+	if AudioUtil.GetCategoryFileCount("F1", "Social Sigh") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Exhaustion' (0x3C19F) is missing.")
+		miscutil.printconsole("Category 'Social Sigh' has no audio files.")
 	endif
-
-	Sound Sound_3C19E = Game.GetFormFromFile(0x3C19E, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C19E
+	if AudioUtil.GetCategoryFileCount("F1", "Social Thanks") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play State With Strong Enemy' (0x3C19E) is missing.")
+		miscutil.printconsole("Category 'Social Thanks' has no audio files.")
 	endif
-
-	Sound Sound_3C19D = Game.GetFormFromFile(0x3C19D, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C19D
+	if AudioUtil.GetCategoryFileCount("F1", "Social This Cant Be") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play State With Enemy' (0x3C19D) is missing.")
+		miscutil.printconsole("Category 'Social This Cant Be' has no audio files.")
 	endif
-
-	Sound Sound_3C19C = Game.GetFormFromFile(0x3C19C, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C19C
+	if AudioUtil.GetCategoryFileCount("F1", "Social Wait A Minute") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Dungeon Enemy Encounter' (0x3C19C) is missing.")
+		miscutil.printconsole("Category 'Social Wait A Minute' has no audio files.")
 	endif
-
-	Sound Sound_3C19B = Game.GetFormFromFile(0x3C19B, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C19B
+	if AudioUtil.GetCategoryFileCount("F1", "Social Wake Up Confused") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Difficult End' (0x3C19B) is missing.")
+		miscutil.printconsole("Category 'Social Wake Up Confused' has no audio files.")
 	endif
-
-	Sound Sound_3C19A = Game.GetFormFromFile(0x3C19A, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C19A
+	if AudioUtil.GetCategoryFileCount("F1", "Social What Do You Want") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Difficult' (0x3C19A) is missing.")
+		miscutil.printconsole("Category 'Social What Do You Want' has no audio files.")
 	endif
-
-	Sound Sound_3C199 = Game.GetFormFromFile(0x3C199, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C199
+	if AudioUtil.GetCategoryFileCount("F1", "Social What Is That") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play End Comments' (0x3C199) is missing.")
+		miscutil.printconsole("Category 'Social What Is That' has no audio files.")
 	endif
-
-	Sound Sound_3C198 = Game.GetFormFromFile(0x3C198, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C198
+	if AudioUtil.GetCategoryFileCount("F1", "Social What Is This") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Comments' (0x3C198) is missing.")
+		miscutil.printconsole("Category 'Social What Is This' has no audio files.")
 	endif
-
-	Sound Sound_3C197 = Game.GetFormFromFile(0x3C197, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C197
+	if AudioUtil.GetCategoryFileCount("F1", "Social Whatever") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Bleed Out' (0x3C197) is missing.")
+		miscutil.printconsole("Category 'Social Whatever' has no audio files.")
 	endif
-
-	Sound Sound_3C196 = Game.GetFormFromFile(0x3C196, "IntelligentVoicedDirtyTalk.esp") as Sound
 	soundsChecked += 1
-	if !Sound_3C196
+	if AudioUtil.GetCategoryFileCount("F1", "Social Why Do This") == 0
 		soundsMissing += 1
-		miscutil.printconsole("Sound 'Combat Play Attack' (0x3C196) is missing.")
+		miscutil.printconsole("Category 'Social Why Do This' has no audio files.")
 	endif
-
 	miscutil.printconsole("--- Sound Check Complete ---")
-	miscutil.printconsole("Total Sounds Checked: " + soundsChecked)
-	miscutil.printconsole("Missing Sounds: " + soundsMissing)
-	miscutil.printconsole("Total Sounds Found: " + (soundsChecked - soundsMissing))
+	miscutil.printconsole("Total Categories Checked: " + soundsChecked)
+	miscutil.printconsole("Missing: " + soundsMissing)
 endfunction
 
-Function PlaySound(Sound SoundToPlay ,Bool Wait = false) Global
+Function PlaySound(String Category, Bool Wait = false) Global
 	Actor Playerref = Game.GetPlayer()
-	if !SoundToPlay || StorageUtil.Getintvalue(Playerref,"HentairimSoundWait",0)
+	if Category == "" || StorageUtil.Getintvalue(Playerref,"HentairimSoundWait",0)
 		return
 	endif
-	int InstanceID
-	int LatestRunningSoundInstance = StorageUtil.Getintvalue(Playerref,"HentairimLatestSoundInstance",0)
-	;Stop Currently Playing Sound if any
-	if  LatestRunningSoundInstance > 0
-		Sound.StopInstance(LatestRunningSoundInstance)
-	endif
-	
+	;the "ivdt_oneshot" channel natively stops the previous one-shot before playing the new one
 	if wait
 		StorageUtil.Setintvalue(Playerref,"HentairimSoundWait",1)
-		SoundtoPlay.Playandwait(Playerref)
+		AudioUtil.PlayVoiceAndWait(Playerref, Category, 1.0, "oneshot", "ivdt_oneshot")
 		StorageUtil.Setintvalue(Playerref,"HentairimSoundWait",0)
 	else
-		InstanceID = SoundtoPlay.Play(Playerref)
-		StorageUtil.Setintvalue(Playerref,"HentairimLatestSoundInstance",InstanceID)
+		AudioUtil.PlayVoice(Playerref, Category, 1.0, "oneshot", "ivdt_oneshot")
 	endif
-	
 endfunction
 
 Bool Function IsMoanonly() Global

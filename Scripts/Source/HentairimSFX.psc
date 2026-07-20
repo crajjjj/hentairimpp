@@ -10,7 +10,6 @@ actor[] actorlist
 IVDTControllerScript Property MasterScript Auto
 Actor FuckingPartner ;Actor who the person with penis is fucking
 Int FuckingPartnerInteractionType
-SoundCategory HentairimSFXCategory
 int Gender
 string SFXTag
 int position
@@ -58,7 +57,7 @@ Function PerformInitialization()
 	HentairimPrepare()	
 	
 	;SFX Initialize
-	HentairimSFXCategory.setvolume(volume)
+	AudioUtil.SetGroupVolume("sfx", volume)
 	printdebug("initialized complete")
 	RegisterForSingleUpdate(0.1)
 EndFunction
@@ -91,7 +90,7 @@ Event SFXOnStageStart(string eventName, string argString, float argNum, form sen
 	
 EndEvent
 
-Sound EjacSound
+String EjacSound = ""
 Event SFXOrgasm(Form actorhavingorgasm, Int thread) 
 	if actorref != actorhavingorgasm as actor 
 		return
@@ -101,7 +100,7 @@ Event SFXOrgasm(Form actorhavingorgasm, Int thread)
 	endif
 
 	if FuckingPartner == Playerref || actorlist[0] == Playerref
-		EjacSound.play(Playerref)
+		AudioUtil.PlaySFX(EjacSound, Playerref, 1.0, "sfx")
 	endif
 	
 EndEvent
@@ -149,73 +148,73 @@ String ConfigFile  = "HentairimSFX/Config.json"
 float volume
 int enableprintdebug
 ;Velocity Based Sound Forms
-Sound SmallWetSlush
-Sound SmallWetSlush2
-Sound SmallFastSlush
-Sound SmallFastSlush2
-Sound MediumSlush
-Sound FastSlush
-Sound BigSlush
-Sound SmallImpact
-Sound MediumImpact1
-Sound MediumImpact2
-Sound MediumImpact3
-Sound MediumImpact4
-Sound MediumImpact5Wet
-Sound FastImpact1
-Sound FastImpact2
-Sound FastImpact3
+String SmallWetSlush = ""
+String SmallWetSlush2 = ""
+String SmallFastSlush = ""
+String SmallFastSlush2 = ""
+String MediumSlush = ""
+String FastSlush = ""
+String BigSlush = ""
+String SmallImpact = ""
+String MediumImpact1 = ""
+String MediumImpact2 = ""
+String MediumImpact3 = ""
+String MediumImpact4 = ""
+String MediumImpact5Wet = ""
+String FastImpact1 = ""
+String FastImpact2 = ""
+String FastImpact3 = ""
 
 ;Sound for random selection
-Sound SmallS
-SOund MediumS
-Sound FastS
-Sound Smalli
-Sound MediumI
-Sound FastI
+String SmallS = ""
+String MediumS = ""
+String FastS = ""
+String Smalli = ""
+String MediumI = ""
+String FastI = ""
 
 ;Normal SFX Sound Forms
-Sound FastClap
-Sound HeavySlushing
-Sound LightSlushing
-Sound MediumClap
-Sound MediumSlushing
-Sound RapidSlushing
-Sound SlowClap
-Sound Kiss1
-Sound Kiss2
-Sound Kiss3
-Sound Kiss4
-Sound Kiss5
-Sound Blowjob1
-Sound Blowjob2
-Sound Blowjob3
-Sound Blowjob4
-Sound Blowjob5
-Sound Blowjob6
-Sound FasTBlowjob1
-Sound FasTBlowjob2
-Sound FasTBlowjob3
-Sound FasTBlowjob4
-Sound FasTBlowjob5
+String FastClap = ""
+String HeavySlushing = ""
+String LightSlushing = ""
+String MediumClap = ""
+String MediumSlushing = ""
+String RapidSlushing = ""
+String SlowClap = ""
+String Kiss1 = ""
+String Kiss2 = ""
+String Kiss3 = ""
+String Kiss4 = ""
+String Kiss5 = ""
+String Blowjob1 = ""
+String Blowjob2 = ""
+String Blowjob3 = ""
+String Blowjob4 = ""
+String Blowjob5 = ""
+String Blowjob6 = ""
+String FasTBlowjob1 = ""
+String FasTBlowjob2 = ""
+String FasTBlowjob3 = ""
+String FasTBlowjob4 = ""
+String FasTBlowjob5 = ""
 
 ;Normal Sound for random selection
 
-Sound SlowBlowjob
-Sound FastBlowjob
-Sound Kissing
-Sound SFXtoPlay
+String SlowBlowjob = ""
+String FastBlowjob = ""
+String Kissing = ""
+String SFXtoPlay = ""
 
-Sound EjacHeavy
-Sound EjacHeavySharp
-Sound EjacHeavyWet
-Sound EjacNormal
-Sound EjacNormalDeep
-Sound EjacSharp
-Sound EjacSmall
-Sound EjacSmallDeep
-Sound GapeAverage
-Sound GapeHuge
+String EjacHeavy = ""
+String EjacHeavySharp = ""
+String EjacHeavyWet = ""
+String EjacNormal = ""
+String EjacNormalDeep = ""
+String EjacSharp = ""
+String EjacSmall = ""
+String EjacSmallDeep = ""
+String GapeAverage = ""
+String GapeHuge = ""
 
 int usevelocity
 int useadaptivevelocity
@@ -235,64 +234,63 @@ victiminsertiontrauma = JsonUtil.GetIntValue(ConfigFile, "victiminsertiontrauma"
 timestosearch = JsonUtil.GetIntValue(ConfigFile, "timestosearch" ,0)
 enableprintdebug = JsonUtil.GetIntValue(ConfigFile, "printdebug" ,0)
 
-HentairimSFXCategory =  Game.GetFormFromFile(0x803, "HentairimSFX.esp") as Soundcategory
 
 ;Velocity SFX
-SmallWetSlush = Game.GetFormFromFile(0x80B, "HentairimSFX.esp") as Sound
-SmallWetSlush2 = Game.GetFormFromFile(0x80C, "HentairimSFX.esp") as Sound
-SmallFastSlush = Game.GetFormFromFile(0x80D, "HentairimSFX.esp") as Sound
-SmallFastSlush2 = Game.GetFormFromFile(0x80E, "HentairimSFX.esp") as Sound
-MediumSlush = Game.GetFormFromFile(0x80F, "HentairimSFX.esp") as Sound
-FastSlush = Game.GetFormFromFile(0x810, "HentairimSFX.esp") as Sound
-BigSlush = Game.GetFormFromFile(0x811, "HentairimSFX.esp") as Sound
-SmallImpact = Game.GetFormFromFile(0x812, "HentairimSFX.esp") as Sound
-MediumImpact1 = Game.GetFormFromFile(0x81B, "HentairimSFX.esp") as Sound
-MediumImpact2 = Game.GetFormFromFile(0x81C, "HentairimSFX.esp") as Sound
-MediumImpact3 = Game.GetFormFromFile(0x81D, "HentairimSFX.esp") as Sound
-MediumImpact4 = Game.GetFormFromFile(0x81E, "HentairimSFX.esp") as Sound
-MediumImpact5Wet = Game.GetFormFromFile(0x81F, "HentairimSFX.esp") as Sound
-FastImpact1 = Game.GetFormFromFile(0x820, "HentairimSFX.esp") as Sound
-FastImpact2 = Game.GetFormFromFile(0x821, "HentairimSFX.esp") as Sound
-FastImpact3 = Game.GetFormFromFile(0x822, "HentairimSFX.esp") as Sound
+SmallWetSlush = "SmallWetSlush"
+SmallWetSlush2 = "SmallWetSlush2"
+SmallFastSlush = "SmallFastSlush"
+SmallFastSlush2 = "SmallFastSlush2"
+MediumSlush = "MediumSlush"
+FastSlush = "FastSlush"
+BigSlush = "BigSlush"
+SmallImpact = "SmallImpact"
+MediumImpact1 = "MediumImpact1"
+MediumImpact2 = "MediumImpact2"
+MediumImpact3 = "MediumImpact3"
+MediumImpact4 = "MediumImpact4"
+MediumImpact5Wet = "MediumImpact5Wet"
+FastImpact1 = "FastImpact1"
+FastImpact2 = "FastImpact2"
+FastImpact3 = "FastImpact3"
 
 ;Normal
-FastClap = Game.GetFormFromFile(0x82B, "HentairimSFX.esp") as Sound
-HeavySlushing = Game.GetFormFromFile(0x82c, "HentairimSFX.esp") as Sound
-LightSlushing  = Game.GetFormFromFile(0x82E, "HentairimSFX.esp") as Sound
-MediumClap  = Game.GetFormFromFile(0x82F, "HentairimSFX.esp") as Sound
-MediumSlushing  = Game.GetFormFromFile(0x830, "HentairimSFX.esp") as Sound
-RapidSlushing  = Game.GetFormFromFile(0x831, "HentairimSFX.esp") as Sound
-SlowClap  = Game.GetFormFromFile(0x832, "HentairimSFX.esp") as Sound
+FastClap = "FastClap"
+HeavySlushing = "HeavySlushing"
+LightSlushing  = "LightSlushing"
+MediumClap  = "MediumClap"
+MediumSlushing  = "MediumSlushing"
+RapidSlushing  = "RapidSlushing"
+SlowClap  = "SlowClap"
 
-Kiss1 = Game.GetFormFromFile(0x834, "HentairimSFX.esp") as Sound
-Kiss2 = Game.GetFormFromFile(0x836, "HentairimSFX.esp") as Sound
-Kiss3 = Game.GetFormFromFile(0x838, "HentairimSFX.esp") as Sound
-Kiss4 = Game.GetFormFromFile(0x83A, "HentairimSFX.esp") as Sound
-Kiss5 = Game.GetFormFromFile(0x83C, "HentairimSFX.esp") as Sound
-Blowjob1 = Game.GetFormFromFile(0x83E, "HentairimSFX.esp") as Sound
-Blowjob2 = Game.GetFormFromFile(0x840, "HentairimSFX.esp") as Sound
-Blowjob3 = Game.GetFormFromFile(0x842, "HentairimSFX.esp") as Sound
-Blowjob4 = Game.GetFormFromFile(0x844, "HentairimSFX.esp") as Sound
-Blowjob5 = Game.GetFormFromFile(0x846, "HentairimSFX.esp") as Sound
-Blowjob6 = Game.GetFormFromFile(0x848, "HentairimSFX.esp") as Sound
-FastBlowjob1 = Game.GetFormFromFile(0x84A, "HentairimSFX.esp") as Sound
-FastBlowjob2 = Game.GetFormFromFile(0x84C, "HentairimSFX.esp") as Sound
-FastBlowjob3 = Game.GetFormFromFile(0x84E, "HentairimSFX.esp") as Sound
-FastBlowjob4 = Game.GetFormFromFile(0x850, "HentairimSFX.esp") as Sound
-FastBlowjob5 = Game.GetFormFromFile(0x852, "HentairimSFX.esp") as Sound
+Kiss1 = "Kiss1"
+Kiss2 = "Kiss2"
+Kiss3 = "Kiss3"
+Kiss4 = "Kiss4"
+Kiss5 = "Kiss5"
+Blowjob1 = "Blowjob1"
+Blowjob2 = "Blowjob2"
+Blowjob3 = "Blowjob3"
+Blowjob4 = "Blowjob4"
+Blowjob5 = "Blowjob5"
+Blowjob6 = "Blowjob6"
+FastBlowjob1 = "FastBlowjob1"
+FastBlowjob2 = "FastBlowjob2"
+FastBlowjob3 = "FastBlowjob3"
+FastBlowjob4 = "FastBlowjob4"
+FastBlowjob5 = "FastBlowjob5"
 
 
-EjacHeavy        = Game.GetFormFromFile(0x86D, "HentairimSFX.esp") as Sound
-EjacHeavySharp   = Game.GetFormFromFile(0x86E, "HentairimSFX.esp") as Sound
-EjacHeavyWet     = Game.GetFormFromFile(0x86F, "HentairimSFX.esp") as Sound
-EjacNormal       = Game.GetFormFromFile(0x870, "HentairimSFX.esp") as Sound
-EjacNormalDeep   = Game.GetFormFromFile(0x871, "HentairimSFX.esp") as Sound
-EjacSharp        = Game.GetFormFromFile(0x872, "HentairimSFX.esp") as Sound
-EjacSmall        = Game.GetFormFromFile(0x873, "HentairimSFX.esp") as Sound
-EjacSmallDeep    = Game.GetFormFromFile(0x874, "HentairimSFX.esp") as Sound
+EjacHeavy        = "EjacHeavy"
+EjacHeavySharp   = "EjacHeavySharp"
+EjacHeavyWet     = "EjacHeavyWet"
+EjacNormal       = "EjacNormal"
+EjacNormalDeep   = "EjacNormalDeep"
+EjacSharp        = "EjacSharp"
+EjacSmall        = "EjacSmall"
+EjacSmallDeep    = "EjacSmallDeep"
 
-GapeAverage      = Game.GetFormFromFile(0x875, "HentairimSFX.esp") as Sound
-GapeHuge         = Game.GetFormFromFile(0x876, "HentairimSFX.esp") as Sound
+GapeAverage      = "GapeAverage"
+GapeHuge         = "GapeHuge"
 
 
 printdebug("volume : " + volume)
@@ -474,7 +472,7 @@ Function RandomizeEjacSound()
 
 endFunction
 
-Sound Function GetSlushSoundToPlay(int InteractionType, float TimetoThrust)
+String Function GetSlushSoundToPlay(int InteractionType, float TimetoThrust)
     PRINTDEBUG("GetSlushSound | TimetoThrust: " + TimetoThrust + " | InteractionType: " + InteractionType)
 
 	if IshugePP && Utility.randomint(1,3) == 1
@@ -510,18 +508,18 @@ Sound Function GetSlushSoundToPlay(int InteractionType, float TimetoThrust)
 
     elseif InteractionType == 3 ; oral (TBD)
 		PrintDebug("GetSlushSoundToPlay: Oral | Returning none (no sound yet)")
-        return none ; no sound yet
+        return "" ; no sound yet
     endif
 
 	PrintDebug("GetSlushSoundToPlay: Returning none (no valid condition met)")
-    return none
+    return ""
 EndFunction
 
 
-Sound Function GetImpactSoundToPlay(float TimetoThrust)
+String Function GetImpactSoundToPlay(float TimetoThrust)
     if !StageShouldplayClap
 		PrintDebug("GetImpactSoundToPlay: StageShouldplayClap is false, returning none")
-        return none
+        return ""
     endif
 
     PRINTDEBUG("GetImpactSound | TimetoThrust: " + TimetoThrust)
@@ -536,7 +534,7 @@ Sound Function GetImpactSoundToPlay(float TimetoThrust)
         return SmallI
 	else
 		PrintDebug("GetImpactSoundToPlay: Returning none (no range matched)")
-		return none
+		return ""
     endif
 EndFunction
 
@@ -564,8 +562,8 @@ Function CalculateAndPlayVelocitySFX()
 	Float TimetoThrust = 0
     Float velocity
 	Float LastVelocity
-	Sound SlushVelocitySFX
-	Sound ImpactVelocitySFX
+	String SlushVelocitySFX = ""
+	String ImpactVelocitySFX = ""
 ;	Bool CanImpact = True ;must reverse slush from outside before impact
 	;Bool CanReverseSlushFromInside = False ;must CanImpact before CanReverseSlushFromInside
 ;	Bool CanReverseSlushFromOutside = False ;must CanReverseSlushFromInside before CanReverseSlushFromOutside
@@ -586,17 +584,17 @@ Function CalculateAndPlayVelocitySFX()
 				if StageShouldplayClap
 					printdebug("playing Impact Velocity")
 					ImpactVelocitySFX = GetImpactSoundToPlay(TimetoThrust)
-					if ImpactVelocitySFX != none
-						ImpactVelocitySFX.Play(FuckingPartner)
+					if ImpactVelocitySFX != ""
+						AudioUtil.PlaySFX(ImpactVelocitySFX, FuckingPartner, 1.0, "sfx")
 					else
 						printdebug("ImpactVelocitySFX : is none!")
 					endif
 				Endif	
 
 					SlushVelocitySFX = GetSlushSoundToPlay(FuckingPartnerInteractionType, TimetoThrust)
-					if SlushVelocitySFX != none
+					if SlushVelocitySFX != ""
 						printdebug("playing Slush Velocity")
-						SlushVelocitySFX.Play(FuckingPartner)
+						AudioUtil.PlaySFX(SlushVelocitySFX, FuckingPartner, 1.0, "sfx")
 					else
 						printdebug("SlushVelocitySFX : is none!")
 					endif
@@ -608,9 +606,9 @@ Function CalculateAndPlayVelocitySFX()
 				
 				PrintDebug("CurrentReverseInTime=" + CurrentReverseInTime as String + " | TimeLastReverseOut=" + TimeLastReverseOut as String + " | Seconds Since Last Reverse In=" + (CurrentReverseInTime - TimeLastReverseOut) as String + " Seconds")
 				SlushVelocitySFX = GetSlushSoundToPlay(FuckingPartnerInteractionType, TimetoThrust)
-				if SlushVelocitySFX != none
+				if SlushVelocitySFX != ""
 					printdebug("playing Slush Velocity")
-					SlushVelocitySFX.Play(FuckingPartner)
+					AudioUtil.PlaySFX(SlushVelocitySFX, FuckingPartner, 1.0, "sfx")
 				else
 					printdebug("SlushVelocitySFX : is none!")
 				endif
@@ -759,8 +757,8 @@ Function PlayFillerSounds()
 	
 	if CurrentThread.GetTimeTotal() - TimeSinceLastFillerSound >= FillerIntervals
 		printdebug("PlayFillerSounds: Interval passed, preparing to play filler sounds")
-		Sound FillerSlushSound
-		Sound FillerImpactSound
+		String FillerSlushSound = ""
+		String FillerImpactSound = ""
 		Float TimetoThrust
 
 		TimetoThrust = Utility.randomfloat(FillerTimetoThrustMin,FillerTimetoThrustMax)
@@ -809,8 +807,8 @@ Function RunAdaptiveVelocitySFX()
 	Float TimetoThrust = 0
     Float velocity
 	Float LastVelocity
-	Sound SlushVelocitySFX
-	Sound ImpactVelocitySFX
+	String SlushVelocitySFX = ""
+	String ImpactVelocitySFX = ""
 
 	while !Masterscript.AnimationisEnding() && DirectorLastLabelTime == MasterScript.GetDirectorLastLabelTime() && !UpdateNow
 			int TimesNotFoundVelocity
@@ -837,17 +835,17 @@ Function RunAdaptiveVelocitySFX()
 				if StageShouldplayClap
 					printdebug("playing Impact Velocity")
 					ImpactVelocitySFX = GetImpactSoundToPlay(TimetoThrust)
-					if ImpactVelocitySFX != none
-						ImpactVelocitySFX.Play(FuckingPartner)
+					if ImpactVelocitySFX != ""
+						AudioUtil.PlaySFX(ImpactVelocitySFX, FuckingPartner, 1.0, "sfx")
 					else
 						printdebug("ImpactVelocitySFX : is none!")
 					endif
 				Endif	
 
 					SlushVelocitySFX = GetSlushSoundToPlay(FuckingPartnerInteractionType, TimetoThrust)
-					if SlushVelocitySFX != none
+					if SlushVelocitySFX != ""
 						printdebug("playing Slush Velocity")
-						SlushVelocitySFX.Play(FuckingPartner)
+						AudioUtil.PlaySFX(SlushVelocitySFX, FuckingPartner, 1.0, "sfx")
 					else
 						printdebug("SlushVelocitySFX : is none!")
 					endif
@@ -860,9 +858,9 @@ Function RunAdaptiveVelocitySFX()
 				
 				PrintDebug("CurrentReverseInTime=" + CurrentReverseInTime as String + " | TimeLastReverseOut=" + TimeLastReverseOut as String + " | Seconds Since Last Reverse In=" + (CurrentReverseInTime - TimeLastReverseOut) as String + " Seconds")
 				SlushVelocitySFX = GetSlushSoundToPlay(FuckingPartnerInteractionType, TimetoThrust)
-				if SlushVelocitySFX != none
+				if SlushVelocitySFX != ""
 					printdebug("playing Slush Velocity")
-					SlushVelocitySFX.Play(FuckingPartner)
+					AudioUtil.PlaySFX(SlushVelocitySFX, FuckingPartner, 1.0, "sfx")
 				else
 					printdebug("SlushVelocitySFX : is none!")
 				endif
@@ -972,11 +970,10 @@ int contactsoundinstance
 
 ;edge one-shots get their own instance slot: PlaySound()'s soundinstance is the
 ;channel for the continuous body SFX, and sharing it would cut those off
-Function PlayContactSound(Sound theSound, Actor actorMakingSound)
-	if contactsoundinstance != 0
-		Sound.StopInstance(contactsoundinstance)
-	endif
-	contactsoundinstance = theSound.Play(actorMakingSound)
+Function PlayContactSound(String theSound, Actor actorMakingSound)
+	;the channel natively stops the previous contact one-shot (per actor, so the
+	;two effect instances don't cut each other's edges)
+	AudioUtil.PlaySFX(theSound, actorMakingSound, 1.0, "sfx", "sfx_contact_" + position)
 EndFunction
 
 Function ProcessContactEdges()
@@ -1013,8 +1010,8 @@ Function ProcessContactEdges()
 			;insertion one-shot only when the label system hasn't classified this as penetration yet
 			if LastPenReceiver != none && !IsGivingVaginalPenetration() && !IsGivingAnalPenetration()
 				printdebug("Contact edge: insertion detected")
-				Sound InsertionSFX = GetSlushSoundToPlay(1, 0.5)
-				if InsertionSFX != none
+				String InsertionSFX = GetSlushSoundToPlay(1, 0.5)
+				if InsertionSFX != ""
 					PlayContactSound(InsertionSFX, LastPenReceiver)
 				endif
 			endif
@@ -1025,9 +1022,9 @@ Function ProcessContactEdges()
 		;contact so the debounce window doesn't inflate the requirement
 		if LastPenReceiver != none && ContactPenLastSeen - ContactPenStartTime >= 4.0
 			printdebug("Contact edge: pull-out detected, playing gape")
-			if IsHugePP && GapeHuge != none
+			if IsHugePP && GapeHuge != ""
 				PlayContactSound(GapeHuge, LastPenReceiver)
-			elseif GapeAverage != none
+			elseif GapeAverage != ""
 				PlayContactSound(GapeAverage, LastPenReceiver)
 			endif
 		endif
@@ -1041,7 +1038,7 @@ Function ProcessContactEdges()
 			PrevContactKissing = true
 			if !IsKissing()
 				Actor kisPartner = CurrentThread.GetPartnerByTypeRev(actorref, 10)
-				if kisPartner != none && CurrentThread.GetPositionIdx(kisPartner) < position && Kissing != none
+				if kisPartner != none && CurrentThread.GetPositionIdx(kisPartner) < position && Kissing != ""
 					;no tender kiss cue when either side is a victim - aggressive
 					;animations bring faces together without it being romantic
 					if usecontactvictimreactions == 1 && (IsVictim || IsVictim(kisPartner))
@@ -1071,9 +1068,9 @@ Function ProcessContactEdges()
 				endif
 				if sucker != none
 					printdebug("Contact edge: oral started")
-					if deep && FastBlowjob != none
+					if deep && FastBlowjob != ""
 						PlayContactSound(FastBlowjob, sucker)
-					elseif SlowBlowjob != none
+					elseif SlowBlowjob != ""
 						PlayContactSound(SlowBlowjob, sucker)
 					endif
 				endif
@@ -1423,16 +1420,14 @@ int soundinstance
 
 
 
-Function PlaySound(Sound theSound, Actor actorMakingSound, Bool waitForCompletion = True)
-	if soundinstance != 0
-		Sound.StopInstance(soundinstance)
-	endif
-	
+Function PlaySound(String theSound, Actor actorMakingSound, Bool waitForCompletion = True)
+	;per-actor channel: each actor's body-SFX stream replaces only its own previous
+	;sound (the old code kept one soundinstance per script instance) - a shared
+	;channel made the two actors' loops cut each other off every play
 	If waitForCompletion
-		theSound.PlayAndWait(actorMakingSound)
-		soundinstance = 0
+		AudioUtil.PlaySFXAndWait(theSound, actorMakingSound, 1.0, "sfx", "sfx_main_" + position)
 	Else
-		soundinstance = theSound.Play(actorMakingSound)
+		AudioUtil.PlaySFX(theSound, actorMakingSound, 1.0, "sfx", "sfx_main_" + position)
 	EndIf
 EndFunction
 
