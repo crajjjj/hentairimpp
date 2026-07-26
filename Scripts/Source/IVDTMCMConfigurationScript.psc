@@ -271,9 +271,15 @@ EndFunction
 
 Function PlaySampleFromVoiceSlot()
 	If voiceSlotIsMale
-		AudioUtil.PlayVoiceFromSlot("M" + voiceSlotNumber, "MCMSampleSounds", Game.GetPlayer(), 1.0, "", "mcm_preview")
+		IVDTVoiceMaleScript maleVoiceToSample = MasterScript.GetMaleVoiceAtSlot(voiceSlotNumber)
+		If maleVoiceToSample != None
+			maleVoiceToSample.MCMSampleSounds.Play(Game.GetPlayer())
+		EndIf
 	Else
-		AudioUtil.PlayVoiceFromSlot("F" + voiceSlotNumber, "MCMSampleSounds", Game.GetPlayer(), 1.0, "", "mcm_preview")
+		IVDTVoiceFemaleScript femaleVoiceToSample = MasterScript.GetFemaleVoiceAtSlot(voiceSlotNumber)
+		If femaleVoiceToSample != None
+			femaleVoiceToSample.MCMSampleSounds.Play(Game.GetPlayer())
+		EndIf
 	EndIf
 EndFunction
 
